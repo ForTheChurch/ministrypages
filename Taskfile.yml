@@ -1,0 +1,19 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmd: task --list
+
+  build:
+    desc: Build the application
+    cmd: go build -o ./bin/buildforthechurch cmd/agentbuild/main.go
+
+  run:
+    desc: Run the application
+    cmd: go run cmd/agentbuild/main.go
+
+  clean:
+    desc: Clean up the build artifacts
+    cmd: rm -f ./bin/buildforthechurch
