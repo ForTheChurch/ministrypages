@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
 
 	"github.com/ForTheChurch/buildforthechurch/internal/gloo"
 	"github.com/caarlos0/env/v11"
@@ -19,7 +21,11 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		if os.IsNotExist(err) {
+			slog.Info("no .env file found, skipping")
+		} else {
+			log.Fatal(err)
+		}
 	}
 
 	var cfg gloo.Config
@@ -46,16 +52,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	human := agent.New(
+	rootAgent := agent.New(
 		"root",
 		"You are a church website builder.",
 		agent.WithModel(llm),
 		agent.WithDescription("A church website builder."),
 	)
 
-	humanTeam := team.New(team.WithAgents(human))
+	agentTeam := team.New(team.WithAgents(rootAgent))
 
-	rt, err := runtime.New(humanTeam)
+	rt, err := runtime.New(agentTeam)
 	if err != nil {
 		log.Fatal(err)
 	}
