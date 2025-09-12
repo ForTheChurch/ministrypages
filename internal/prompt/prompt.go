@@ -3,7 +3,7 @@ package prompt
 import (
 	"bytes"
 	"embed"
-	"path/filepath"
+	"path"
 	"text/template"
 )
 
@@ -15,12 +15,12 @@ type ConvertPageTemplate struct {
 }
 
 func GetConvertPagePrompt() (string, error) {
-	pageTypes, err := promptsFS.ReadFile(filepath.Join("prompts", "page-types.ts"))
+	pageTypes, err := promptsFS.ReadFile(path.Join("prompts", "page-types.ts"))
 	if err != nil {
 		return "", err
 	}
 
-	tmpl, err := template.ParseFS(promptsFS, filepath.Join("prompts", "convert-page.md"))
+	tmpl, err := template.ParseFS(promptsFS, path.Join("prompts", "convert-page.md"))
 	if err != nil {
 		return "", err
 	}
