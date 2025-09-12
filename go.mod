@@ -2,12 +2,14 @@ module github.com/ForTheChurch/buildforthechurch
 
 go 1.25.0
 
-replace github.com/docker/cagent => github.com/cmrigney/cagent v0.0.0-20250911012116-efaa3f35c8a6
+replace github.com/docker/cagent => github.com/cmrigney/cagent v0.0.0-20250912224406-e11ab574fb23
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/docker/cagent v0.0.0-00010101000000-000000000000
+	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
+	github.com/mendableai/firecrawl-go v1.0.0
 )
 
 require (
@@ -19,7 +21,6 @@ require (
 	github.com/anthropics/anthropic-sdk-go v1.9.1 // indirect
 	github.com/dylibso/observe-sdk/go v0.0.0-20240828172851-9145d8ad07e1 // indirect
 	github.com/extism/go-sdk v1.7.1 // indirect
-	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -35,7 +36,6 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-sqlite3 v1.14.32 // indirect
-	github.com/mendableai/firecrawl-go v1.0.0 // indirect
 	github.com/sashabaranov/go-openai v1.41.1 // indirect
 	github.com/spf13/cobra v1.10.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect

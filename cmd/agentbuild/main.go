@@ -17,6 +17,9 @@ import (
 	"github.com/caarlos0/env/v11"
 	"github.com/docker/cagent/pkg/agent"
 	latest "github.com/docker/cagent/pkg/config/v2"
+	"github.com/docker/cagent/pkg/environment"
+	"github.com/docker/cagent/pkg/model/provider"
+	"github.com/docker/cagent/pkg/model/provider/anthropic"
 	"github.com/docker/cagent/pkg/model/provider/openai"
 	"github.com/docker/cagent/pkg/runtime"
 	"github.com/docker/cagent/pkg/session"
@@ -70,19 +73,40 @@ func main() {
 
 	trackUsage := false // Gloo fails with usage tracking enabled
 
-	// Gloo mimics the openai API best
-	llm, err := openai.NewClient(
-		ctx,
-		&latest.ModelConfig{
-			Provider:   "openai",
-			Model:      "us.anthropic.claude-sonnet-4-20250514-v1:0",
-			BaseURL:    gloo.BaseURL,
-			TrackUsage: &trackUsage,
-		},
-		gloo.NewProvider(cfg.Gloo),
-	)
-	if err != nil {
-		log.Fatal(err)
+	var llm provider.Provider
+	if os.Getenv("USE_ANTHROPIC_API") == "true" {
+		if os.Getenv("ANTHROPIC_API_KEY") == "" {
+			log.Fatal("ANTHROPIC_API_KEY is not set")
+		}
+		llm, err = anthropic.NewClient(
+			ctx,
+			&latest.ModelConfig{
+				Provider:   "anthropic",
+				Model:      "claude-sonnet-4-0",
+				MaxTokens:  64000,
+				TrackUsage: &trackUsage,
+			},
+			environment.NewOsEnvProvider(),
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		// Gloo mimics the openai API best
+		llm, err = openai.NewClient(
+			ctx,
+			&latest.ModelConfig{
+				Provider:   "openai",
+				Model:      "us.anthropic.claude-sonnet-4-20250514-v1:0",
+				BaseURL:    gloo.BaseURL,
+				MaxTokens:  64000,
+				TrackUsage: &trackUsage,
+			},
+			gloo.NewProvider(cfg.Gloo),
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	_ = os.Mkdir("output", 0755) //nolint:errcheck
@@ -160,9 +184,11 @@ func main() {
 				Type: "object",
 				Properties: map[string]any{
 					"pageJSON": map[string]any{
-						"type": "string",
+						"type":        "string",
+						"description": "The JSON object representing the page",
 					},
 				},
+				Required: []string{"pageJSON"},
 			},
 		},
 	}

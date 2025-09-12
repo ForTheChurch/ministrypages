@@ -12,8 +12,8 @@ github.com/anthropics/anthropic-sdk-go v1.9.1 h1:raRhZKmayVSVZtLpLDd6IsMXvxLeeSU
 github.com/anthropics/anthropic-sdk-go v1.9.1/go.mod h1:WTz31rIUHUHqai2UslPpw5CwXrQP3geYBioRV4WOLvE=
 github.com/caarlos0/env/v11 v11.3.1 h1:cArPWC15hWmEt+gWk7YBi7lEXTXCvpaSdCiZE2X5mCA=
 github.com/caarlos0/env/v11 v11.3.1/go.mod h1:qupehSf/Y0TUTsxKywqRt/vJjN5nz6vauiYEUUr8P4U=
-github.com/cmrigney/cagent v0.0.0-20250911012116-efaa3f35c8a6 h1:RJbiV/DwNyggR9w3BWqok7bRSe0u6hp2IqyZbStn86k=
-github.com/cmrigney/cagent v0.0.0-20250911012116-efaa3f35c8a6/go.mod h1:g33m/j1QFb2KQ1v0vBuHn145N15tJNsmvNHzOx8CXSI=
+github.com/cmrigney/cagent v0.0.0-20250912224406-e11ab574fb23 h1:mbNyxez66JvKXqwf6jMJ6SkfYEhIBOrvOIdq6OU6Tuw=
+github.com/cmrigney/cagent v0.0.0-20250912224406-e11ab574fb23/go.mod h1:g33m/j1QFb2KQ1v0vBuHn145N15tJNsmvNHzOx8CXSI=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
