@@ -1,7 +1,5 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import sharp from 'sharp' // sharp-import
@@ -78,16 +76,7 @@ export default buildConfig({
   collections: [Pages, Media, Posts, Series, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
-  plugins: [
-    ...plugins,
-    vercelBlobStorage({
-      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    }),
-  ],
+  plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
