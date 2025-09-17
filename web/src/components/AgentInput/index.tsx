@@ -1,26 +1,25 @@
 import React from "react"
+import type { UIField } from 'payload'
 
 import "./index.scss"
 
-const AgentInput: React.FC = () => {
-  return (
-    <form action="">
-      <div className="search-bar">
-        <div className="search-filter"> 
-          <input
-            className="search-filter__input"
-            name="query"
-            placeholder="Enter the URL of a page to migrate" />
-        </div>
-        <div className="search-bar__actions">
-          <button
-            className="pill pill--style-light pill--size-small list-controls__toggle-columns pill--has-action pill--has-icon pill--align-icon-right"
-            type="submit"
-          >Migrate</button>
+const getLabelAsString = (label?: Record<string, string> | string) => {
+  return typeof label === "string" ? label : "";
+}
+async function AgentInput({ field }: { field: UIField }) {
+  const label = field?.label;
 
-        </div>
-      </div >
-    </form>)
+  return (<div>
+    {label && <label>{getLabelAsString(label)}</label>}
+    <div>
+      <input
+        name="query"
+        placeholder="Enter the URL of a page to migrate" />
+      <button
+        type="submit"
+      >Migrate</button>
+    </div>
+  </div>);
 }
 
 export default AgentInput
