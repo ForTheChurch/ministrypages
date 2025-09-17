@@ -58,6 +58,9 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    components: {
+      beforeListTable: ['@/components/AgentInput'],
+    }
   },
   fields: [
     {
