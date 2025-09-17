@@ -64,6 +64,17 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   fields: [
     {
+      name: 'migratePageUrl',
+      type: 'ui',
+      label: 'Migrate existing page',
+      admin: {
+        components: {
+          Field: '@/components/AgentInput',
+        },
+        position: 'sidebar',
+      }
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,
