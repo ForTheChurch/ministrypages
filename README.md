@@ -7,8 +7,9 @@ A website builder for churches
 - [Task](https://taskfile.dev)
 - Gloo AI client credentials
 - [Firecrawl](https://www.firecrawl.dev/) API Key (sign up for a free account)
+- [PayloadCMS API Key](https://payloadcms.com/docs/authentication/api-keys) from the payload web app
 
-# Agent Build
+# Agent API
 
 ## Usage
 
@@ -16,14 +17,61 @@ Create a `.env` file at the root of the repo with the following:
 ```
 GLOO_CLIENT_ID=<client id>
 GLOO_CLIENT_SECRET=<client secret>
+# OR if using Anthropic use these instead
+# ANTHROPIC_API_KEY=<anthropic api key>
+# USE_ANTHROPIC_API=true
+
+AGENT_API_PORT=3005
 FIRECRAWL_API_KEY=<firecrawl key>
+
+PAYLOAD_BASE_URL=http://localhost:3000
+PAYLOAD_API_KEY=<generated api key>
 ```
 
-Check out the test variables at the top of `main.go` (you'll probably want to change them).
-
-Run the test code with:
+Run the API with:
 ```
-task run
+task api
 ```
 
-See the generated output in `output/`
+By default, it listens on port localhost:3005 according to the env var.
+
+## Routes
+
+### `POST /api/pages/convert-single-page`
+Converts a single page. Posts back to PayloadCMS with the updated page.
+
+Request:
+```
+{
+  "url": "<web page url>",
+  "pageId": "<payloadcms page id>"
+}
+```
+
+Response:
+```
+{
+  "task_status": "queued",
+  "task_id": "<task id>"
+}
+```
+
+### `GET /api/pages/task/:id`
+Reports the status of a task given by the `id` parameter.
+
+Response:
+```
+{
+  "task_status": "queued" | "running" | "completed" | "failed"
+}
+```
+
+
+
+## Notice
+
+There's currently a bug in Gloo AI that prevents us from using their API, so you'll have to use Anthropic's for now.
+
+# Agent Build
+
+This tool is just for testing and lives in `cmd/agentbuild`.

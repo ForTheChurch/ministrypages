@@ -12,12 +12,14 @@ Key guidelines:
 - Preserve important metadata like dates, times, contact information
 - Handle common church website elements: service times, pastor information, upcoming events, sermon series, ministry descriptions
 - Clean up and normalize text content (remove excessive whitespace, fix formatting)
-- Media references should reference their original source and not be converted over to the CMS
+- Media references should be ignored.
 - Maintain hierarchical relationships in the data structure
 - Ignore navigation, just focus on page content
 - Validate that the output JSON conforms to the TypeScript type before exporting
 
-Do not explain your process or output. Do not ask clarifying questions. Use the `export-page` tool only once to provide the converted data. After exporting the page, end the chat.
+Do not explain your process or output. Do not ask clarifying questions. Do not make any assumptions. If you don't know a particular piece of information, just leave it out. Do not assume the name of the church.
+
+Use the `export-page` tool only once to provide the converted data. After exporting the page, end the chat.
 
 The TypeScript type definition the JSON object should abide by is the `Page` type below:
 ```

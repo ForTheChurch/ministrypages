@@ -16,6 +16,7 @@ export const Users: CollectionConfig = {
     useAsTitle: 'name',
   },
   auth: {
+    useAPIKey: true,
     tokenExpiration: 7200,
     maxLoginAttempts: 5,
     lockTime: 600 * 1000,

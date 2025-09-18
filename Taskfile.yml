@@ -17,3 +17,7 @@ tasks:
   clean:
     desc: Clean up the build artifacts
     cmd: rm -f ./bin/buildforthechurch
+
+  api:
+    desc: Run the API
+    cmd: go run cmd/api/main.go
