@@ -120,6 +120,7 @@ export interface Config {
   };
   jobs: {
     tasks: {
+      migratePage: TaskMigratePage;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -1080,7 +1081,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'migratePage' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1113,7 +1114,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'migratePage' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -2013,6 +2014,18 @@ export interface FooterSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskMigratePage".
+ */
+export interface TaskMigratePage {
+  input: {
+    url: string;
+  };
+  output: {
+    jobId: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
