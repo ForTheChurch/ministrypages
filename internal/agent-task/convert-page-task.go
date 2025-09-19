@@ -4,7 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"time"
@@ -78,9 +81,58 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 		return fmt.Errorf("error getting convert page prompt: %w", err)
 	}
 
+	toolUploadMedia := tools.Tool{
+		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
+			log.Println("[ConvertPageTask] Upload media tool called")
+
+			type params struct {
+				URL string `json:"url"`
+			}
+			var p params
+			if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &p); err != nil {
+				return nil, err
+			}
+
+			log.Println("[ConvertPageTask] Uploading media from", p.URL)
+
+			filename, err := getMediaFilename(p.URL)
+			if err != nil {
+				return nil, fmt.Errorf("error getting media filename: %w", err)
+			}
+
+			media, err := downloadMedia(ctx, p.URL)
+			if err != nil {
+				return nil, fmt.Errorf("error downloading media: %w", err)
+			}
+
+			id, err := t.payloadCMSClient.UploadMedia(ctx, filename, media)
+			if err != nil {
+				return nil, fmt.Errorf("error uploading media: %w", err)
+			}
+
+			return &tools.ToolCallResult{
+				Output: "Media uploaded successfully. Media ID: " + id,
+			}, nil
+		},
+		Function: &tools.FunctionDefinition{
+			Name:        "upload-media",
+			Description: "Upload a media file to the CMS (picture, video, audio, etc.)",
+			Parameters: tools.FunctionParamaters{
+				Type: "object",
+				Properties: map[string]any{
+					"url": map[string]any{
+						"type":        "string",
+						"description": "The URL of the media file to upload",
+					},
+				},
+				Required: []string{"url"},
+			},
+		},
+	}
+
 	toolExportPage := tools.Tool{
 		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
-			log.Println("[ConvertPageTask] Parsing page produced by agent")
+			log.Println("[ConvertPageTask] Export page tool called")
 
 			_ = os.MkdirAll("output", 0755)
 			// Write the page JSON to a file for debugging
@@ -133,7 +185,7 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 		convertPagePrompt,
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts church website HTML into a PayloadCMS Page JSON object."),
-		agent.WithTools(toolExportPage),
+		agent.WithTools(toolExportPage, toolUploadMedia),
 	)
 
 	agentTeam := team.New(team.WithAgents(rootAgent))
@@ -174,4 +226,27 @@ func (t *ConvertPageTask) scrapePageHtml(ctx context.Context) (string, error) {
 	}
 
 	return result.Html, nil
+}
+
+func downloadMedia(ctx context.Context, url string) ([]byte, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
+
+func getMediaFilename(mediaUrl string) (string, error) {
+	// TODO consider content-disposition header
+	u, err := url.Parse(mediaUrl)
+	if err != nil {
+		return "", fmt.Errorf("error parsing media URL: %w", err)
+	}
+	return filepath.Base(u.Path), nil
 }

@@ -5,7 +5,7 @@
 export interface Page {
   title: string;
   hero: {
-    type: 'none' | 'lowImpact';
+    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText?: {
       root: {
         type: string;
@@ -44,8 +44,9 @@ export interface Page {
           };
         }[]
       | null;
+      media?: string | null; // Media ID - required if hero is type 'highImpact' or 'mediumImpact'
   };
-  layout: (TwoColumn | CallToActionBlock | ContentBlock | ArchiveBlock | FormBlock)[];
+  layout: (TwoColumn | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -53,6 +54,7 @@ export interface Page {
  */
 export interface Post {
   title: string;
+  heroImage?: string | null;
   content: {
     root: {
       type: string;
@@ -192,6 +194,7 @@ export interface TwoColumn {
      */
     appearance?: ('default' | 'outline') | null;
   };
+  image?: string | null; // Media ID
   id?: string | null;
   blockName?: string | null;
   blockType: 'twoColumn';
@@ -293,6 +296,16 @@ export interface ContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: string; // Media ID
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
