@@ -1664,7 +1664,13 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Logo {
   id: string;
+  /**
+   * Add a logo that will be displayed when the site is rendered in dark mode, or when the header has an image.
+   */
   darkLogo?: (string | null) | Media;
+  /**
+   * Add a logo that will be displayed when your site is rendering in light mode, and in the header when no image is added.
+   */
   lightLogo?: (string | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
