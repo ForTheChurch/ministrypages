@@ -3,7 +3,7 @@ package scraper
 import (
 	"fmt"
 
-	"github.com/mendableai/firecrawl-go"
+	"github.com/mendableai/firecrawl-go/v2"
 )
 
 type FirecrawlConfig struct {
