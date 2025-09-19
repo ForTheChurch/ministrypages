@@ -15,9 +15,9 @@ const cspHeader = `
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-    frame-ancestors 'none';
+    frame-ancestors 'self';
     frame-src 'self' https://www.youtube.com https://player.vimeo.com;
-    connect-src 'self' https://www.youtube.com https://player.vimeo.com;
+    connect-src 'self' https://www.youtube.com https://player.vimeo.com ws: wss:;
     media-src 'self' https://www.youtube.com https://player.vimeo.com;
     upgrade-insecure-requests;
 `
@@ -39,11 +39,11 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/((?!admin).*)',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: cspHeader.replace(/\n/g, ''),
+            value: cspHeader.replace(/\n/g, ' ').trim(),
           },
         ],
       },
