@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
+import { Events } from './collections/Events'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -14,9 +15,9 @@ import { Series } from './collections/Series'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { Logo } from './Logo/config'
 import { plugins } from './plugins'
 import { getServerSideURL } from './utilities/getURL'
-import { Logo } from './Logo/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,7 +75,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Media, Posts, Series, Categories, Users],
+  collections: [Pages, Media, Posts, Events, Series, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Logo, Header, Footer],
   plugins,

@@ -16,6 +16,10 @@ export const Series: CollectionConfig = {
     defaultColumns: ['title', 'updatedAt'],
     useAsTitle: 'title',
   },
+  defaultPopulate: {
+    title: true,
+    slug: true,
+  },
   fields: [
     {
       name: 'title',

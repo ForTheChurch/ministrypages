@@ -11,7 +11,7 @@ export const PostHero: React.FC<{
   const { categories, heroImage, publishedAt, title, series } = post
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
+    <div className="relative -mt-[11rem] flex items-end">
       <div
         className={`container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] pb-8 ${
           heroImage && typeof heroImage !== 'string' ? 'text-white' : ''
@@ -64,7 +64,7 @@ export const PostHero: React.FC<{
         )}
         <div
           className={`absolute pointer-events-none left-0 bottom-0 w-full h-full ${
-            heroImage && typeof heroImage !== 'string' ? 'bg-gray-400 opacity-50' : ''
+            heroImage && typeof heroImage !== 'string' ? 'bg-gray-400 opacity-20' : ''
           }`}
         />
       </div>

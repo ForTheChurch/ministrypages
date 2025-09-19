@@ -70,6 +70,7 @@ export interface Config {
     pages: Page;
     media: Media;
     posts: Post;
+    events: Event;
     series: Series;
     categories: Category;
     users: User;
@@ -87,6 +88,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     series: SeriesSelect<false> | SeriesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -808,6 +810,51 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  eventImage?: (string | null) | Media;
+  /**
+   * Here you can add a relevant video link for the event. If a link is provided, we'll embed it on the event. You can paste any YouTube or Vimeo share link - it will be automatically converted to the embeddable format.
+   */
+  videoLink?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  location?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -990,6 +1037,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'posts';
         value: string | Post;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
       } | null)
     | ({
         relationTo: 'series';
@@ -1343,6 +1394,32 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  eventImage?: T;
+  videoLink?: T;
+  content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  location?: T;
+  startTime?: T;
+  endTime?: T;
+  publishedAt?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1811,6 +1888,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'events';
+          value: string | Event;
         } | null);
     global?: string | null;
     user?: (string | null) | User;
