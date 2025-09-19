@@ -103,10 +103,12 @@ export interface Config {
     defaultIDType: string;
   };
   globals: {
+    logo: Logo;
     header: Header;
     footer: Footer;
   };
   globalsSelect: {
+    logo: LogoSelect<false> | LogoSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
@@ -1658,6 +1660,17 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "logo".
+ */
+export interface Logo {
+  id: string;
+  darkLogo?: (string | null) | Media;
+  lightLogo?: (string | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
@@ -1713,6 +1726,17 @@ export interface Footer {
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "logo_select".
+ */
+export interface LogoSelect<T extends boolean = true> {
+  darkLogo?: T;
+  lightLogo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -16,6 +16,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { getServerSideURL } from './utilities/getURL'
+import { Logo } from './Logo/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -75,7 +76,7 @@ export default buildConfig({
   }),
   collections: [Pages, Media, Posts, Series, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Logo, Header, Footer],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
