@@ -9,7 +9,7 @@ export interface Page {
     richText?: {
       root: {
         type: string;
-        children: {
+        children: { // This can't have nested children
           type: string;
           version: number;
           [k: string]: unknown;
@@ -58,7 +58,7 @@ export interface Post {
   content: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -162,7 +162,7 @@ export interface TwoColumn {
   richText?: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -207,7 +207,7 @@ export interface CallToActionBlock {
   richText?: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -315,7 +315,7 @@ export interface ArchiveBlock {
   introContent?: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -351,7 +351,7 @@ export interface FormBlock {
   introContent?: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -408,7 +408,7 @@ export interface Form {
             message?: {
               root: {
                 type: string;
-                children: {
+                children: { // This can't have nested children
                   type: string;
                   version: number;
                   [k: string]: unknown;
@@ -491,7 +491,7 @@ export interface Form {
   confirmationMessage?: {
     root: {
       type: string;
-      children: {
+      children: { // This can't have nested children
         type: string;
         version: number;
         [k: string]: unknown;
@@ -523,7 +523,7 @@ export interface Form {
         message?: {
           root: {
             type: string;
-            children: {
+            children: { // This can't have nested children
               type: string;
               version: number;
               [k: string]: unknown;
