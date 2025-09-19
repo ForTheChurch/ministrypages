@@ -6,6 +6,7 @@ import type { Header } from '@/payload-types'
 
 export async function Header() {
   const headerData: Header = await getCachedGlobal('header', 1)()
+  const logoData = await getCachedGlobal('logo', 1)()
 
-  return <HeaderClient data={headerData} />
+  return <HeaderClient header={headerData} logo={logoData} />
 }
