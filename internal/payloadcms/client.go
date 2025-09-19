@@ -4,32 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
+	"mime"
+	"mime/multipart"
 	"net/http"
-	"strings"
+	"net/textproto"
+	"path/filepath"
 )
-
-type Config struct {
-	BaseURL string `env:"PAYLOAD_BASE_URL,required"`
-	APIKey  string `env:"PAYLOAD_API_KEY,required"`
-}
-
-type Response struct {
-	Errors Errors `json:"errors"`
-}
-
-type Errors []Error
-
-type Error struct {
-	Message string `json:"message"`
-}
-
-func (e Errors) Error() string {
-	var errs []string
-	for _, err := range e {
-		errs = append(errs, err.Message)
-	}
-	return strings.Join(errs, ", ")
-}
 
 type Client struct {
 	cfg    Config
@@ -69,4 +51,58 @@ func (c *Client) UpdatePage(ctx context.Context, page PagePatch) error {
 	}
 
 	return nil
+}
+
+func (c *Client) UploadMedia(ctx context.Context, filename string, media []byte) (string, error) {
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+
+	mimeType := mime.TypeByExtension(filepath.Ext(filename))
+	if mimeType == "" {
+		mimeType = "application/octet-stream"
+	}
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition", multipart.FileContentDisposition("file", filename))
+	h.Set("Content-Type", mimeType)
+	fw, err := w.CreatePart(h)
+	if err != nil {
+		return "", fmt.Errorf("create file part: %w", err)
+	}
+
+	_, err = io.Copy(fw, bytes.NewReader(media))
+	if err != nil {
+		return "", fmt.Errorf("copy media: %w", err)
+	}
+
+	w.Close()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", c.cfg.BaseURL+"/api/media", &b)
+	if err != nil {
+		return "", fmt.Errorf("new request: %w", err)
+	}
+
+	req.Header.Set("Content-Type", w.FormDataContentType())
+	req.Header.Set("Authorization", "users API-Key "+c.cfg.APIKey)
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("do request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var response MediaResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return "", fmt.Errorf("decode response: %w", err)
+	}
+
+	if len(response.Errors) > 0 {
+		return "", response.Errors
+	}
+
+	if response.Doc == nil {
+		return "", fmt.Errorf("no document returned")
+	}
+
+	return response.Doc.ID, nil
 }
