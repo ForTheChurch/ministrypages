@@ -3,6 +3,7 @@ import type { Logo as LogoType } from '@/payload-types'
 import { useTheme } from '@/providers/Theme'
 import React from 'react'
 
+import { Logo as DefaultLogo } from '@/components/Logo'
 import { Media } from '@/components/Media'
 
 interface LogoProps {
@@ -30,16 +31,16 @@ export const Logo: React.FC<LogoProps> = ({
 
   // Get the appropriate logo based on theme
   const getLogo = () => {
-    if (!globalLogoData) return '/logo.png'
+    if (!globalLogoData) return null
 
     const currentTheme = theme || 'light'
     const themeLogo = currentTheme === 'dark' ? globalLogoData.darkLogo : globalLogoData.lightLogo
 
-    return themeLogo || globalLogoData.lightLogo || globalLogoData.darkLogo || '/logo.png'
+    return themeLogo || globalLogoData.lightLogo || globalLogoData.darkLogo
   }
 
   const logo = getLogo()
   const finalClassName = `${sizeClasses[size]} ${className}`.trim()
 
-  return <Media resource={logo} className={finalClassName} />
+  return logo ? <Media resource={logo} className={finalClassName} /> : <DefaultLogo />
 }
