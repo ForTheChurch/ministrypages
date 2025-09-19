@@ -197,7 +197,7 @@ export interface Page {
       | null;
     media?: (string | null) | Media;
   };
-  layout: (TwoColumn | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (TwoColumn | CallToActionBlock | ContentBlock | MediaBlock | PostListBlock | FormBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -576,9 +576,9 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
+ * via the `definition` "PostListBlock".
  */
-export interface ArchiveBlock {
+export interface PostListBlock {
   introContent?: {
     root: {
       type: string;
@@ -595,7 +595,6 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
   categories?: (string | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
@@ -606,7 +605,7 @@ export interface ArchiveBlock {
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'postList';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1151,7 +1150,7 @@ export interface PagesSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
+        postList?: T | PostListBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
       };
   meta?:
@@ -1251,12 +1250,11 @@ export interface MediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
+ * via the `definition` "PostListBlock_select".
  */
-export interface ArchiveBlockSelect<T extends boolean = true> {
+export interface PostListBlockSelect<T extends boolean = true> {
   introContent?: T;
   populateBy?: T;
-  relationTo?: T;
   categories?: T;
   limit?: T;
   selectedDocs?: T;
