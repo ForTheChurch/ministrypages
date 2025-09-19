@@ -20,8 +20,9 @@ For `page-types.ts`, I copied the relevant types from `payload-types.ts` but had
 
 **Other changes**
 - Remove ids of nested things
-- Remove all uses of Media (we don't have the ability to create those yet)
-- Change hero so `type` can only be `lowImpact`. Media is not supported yet.
+- Tweak `Media` uses so that it's only the string (id) and not the object. Remove the `Media` object.
+- Comment `// Media ID` where media string is used
+- Add note to hero media: `// Media ID - required if hero is type 'highImpact' or 'mediumImpact'`
 - Comment that children can't can't have nested children.
 ```
             children: { // This can't have nested children
@@ -34,4 +35,3 @@ For `page-types.ts`, I copied the relevant types from `payload-types.ts` but had
 
 **Future considerations**
 - Provide the name of the church
-- Provide the ability to create things like media via tool call
