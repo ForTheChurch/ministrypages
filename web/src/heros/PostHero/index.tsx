@@ -51,7 +51,7 @@ export const PostHero: React.FC<{
 
           {publishedAt && (
             <div className="flex flex-col gap-1">
-              <p className="text-sm">Fecha de publicación</p>
+              <p className="text-sm">Date published</p>
 
               <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
             </div>

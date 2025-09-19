@@ -8,9 +8,10 @@ import configPromise from '@payload-config'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
 import { getPayload } from 'payload'
-import React, { cache } from 'react'
+import { cache } from 'react'
 
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { VideoEmbed } from '@/components/VideoEmbed'
 import { PostHero } from '@/heros/PostHero'
 import { Series } from '@/payload-types'
 import { formatAuthors } from '@/utilities/formatAuthors'
@@ -72,7 +73,8 @@ export default async function Post({ params: paramsPromise }: Args) {
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
           <div className="max-w-[48rem] mx-auto grid gap-6">
-            <RichText data={post.content} enableGutter={false} />
+            <VideoEmbed videoLink={post.videoLink} />
+            <RichText data={post.content} enableGutter={false} className="w-full" />
             {hasSeries && (
               <div className="flex flex-col gap-4 p-6 bg-card rounded-lg border">
                 <div className="flex flex-col gap-2">
@@ -80,7 +82,7 @@ export default async function Post({ params: paramsPromise }: Args) {
                   {series.description && <p className="text-sm">{series.description}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <p className="text-sm font-medium">Publicaciones de esta serie:</p>
+                  <p className="text-sm font-medium">Posts in this series:</p>
                   <div className="flex flex-col gap-1">
                     {posts?.map((seriesPost, index) => {
                       const isCurrentPost = seriesPost.slug === slug

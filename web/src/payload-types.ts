@@ -219,6 +219,10 @@ export interface Post {
   id: string;
   title: string;
   heroImage?: (string | null) | Media;
+  /**
+   * Here you can add a relevant video link of a sermon or talk. If a link is provided, we'll embed it on the post. You can paste any YouTube or Vimeo share link - it will be automatically converted to the embeddable format.
+   */
+  videoLink?: string | null;
   content: {
     root: {
       type: string;
@@ -1319,6 +1323,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  videoLink?: T;
   content?: T;
   relatedPosts?: T;
   series?: T;

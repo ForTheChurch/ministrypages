@@ -15,6 +15,7 @@ import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { convertVideoUrl } from './hooks/convertVideoUrl'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 
@@ -83,6 +84,30 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+            },
+            {
+              name: 'videoLink',
+              type: 'text',
+              admin: {
+                description:
+                  "Here you can add a relevant video link of a sermon or talk. If a link is provided, we'll embed it on the post. You can paste any YouTube or Vimeo share link - it will be automatically converted to the embeddable format.",
+              },
+              validate: function (value: string | null | undefined) {
+                if (!value) return true
+                if (
+                  value.match(/^https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/) ||
+                  value.match(/^https?:\/\/youtu\.be\/[\w-]+/) ||
+                  value.match(/^https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+/) ||
+                  value.match(/^https?:\/\/(www\.)?vimeo\.com\/\d+/) ||
+                  value.match(/^https?:\/\/player\.vimeo\.com\/video\/\d+/)
+                ) {
+                  return true
+                }
+                return 'Only YouTube or Vimeo links are allowed.'
+              },
+              hooks: {
+                beforeChange: [convertVideoUrl],
+              },
             },
             {
               name: 'content',
@@ -230,7 +255,7 @@ export const Posts: CollectionConfig<'posts'> = {
   versions: {
     drafts: {
       autosave: {
-        interval: 100, // We set this interval for optimal live preview
+        interval: 5000, // We set this interval for optimal live preview
       },
       schedulePublish: true,
     },
