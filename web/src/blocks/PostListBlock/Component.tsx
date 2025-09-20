@@ -5,7 +5,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { PostsList } from '@/components/PostList'
 
 export const PostList: React.FC<
   PostListBlock & {
@@ -63,7 +63,7 @@ export const PostList: React.FC<
               <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
             </div>
           )}
-          <CollectionArchive posts={posts} />
+          <PostsList posts={posts} />
         </div>
       )}
     </>

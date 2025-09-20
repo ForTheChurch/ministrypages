@@ -3,7 +3,7 @@ import type { FieldHook } from 'payload'
 /**
  * Converts YouTube and Vimeo URLs to their embeddable format
  */
-export const convertVideoUrl: FieldHook = ({ value, siblingData }) => {
+export const convertVideoUrl: FieldHook = ({ value }) => {
   if (!value || typeof value !== 'string') {
     return value
   }

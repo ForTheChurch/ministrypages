@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { EventsList } from '@/components/EventList'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
@@ -19,6 +19,10 @@ export default async function Page() {
       title: true,
       slug: true,
       meta: true,
+      eventImage: true,
+      startTime: true,
+      endTime: true,
+      location: true,
     },
   })
 
@@ -40,7 +44,7 @@ export default async function Page() {
         />
       </div>
 
-      <CollectionArchive posts={events.docs} />
+      <EventsList events={events.docs} />
 
       <div className="container">
         {events.totalPages > 1 && events.page && (

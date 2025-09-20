@@ -131,6 +131,18 @@ const config = {
                 fontSize: '3rem',
                 fontWeight: 600,
               },
+              h3: {
+                fontSize: '2.5rem',
+              },
+              h4: {
+                fontSize: '2rem',
+              },
+              h5: {
+                fontSize: '1.5rem',
+              },
+              h6: {
+                fontSize: '1.25rem',
+              },
             },
           ],
         },

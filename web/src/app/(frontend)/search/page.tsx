@@ -1,7 +1,7 @@
 import type { Metadata } from 'next/types'
 
-import { CardPostData } from '@/components/Card'
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { CardPostData } from '@/components/PostCard'
+import { PostsList } from '@/components/PostList'
 import { Search } from '@/search/Component'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -72,7 +72,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       </div>
 
       {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} />
+        <PostsList posts={posts.docs as CardPostData[]} />
       ) : (
         <div className="container">No results found.</div>
       )}

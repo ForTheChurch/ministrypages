@@ -5,7 +5,7 @@ import React from 'react'
 import type { Post } from '@/payload-types'
 
 import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
-import { Card } from '../../components/Card'
+import { PostCard } from '../../components/PostCard'
 
 export type RelatedPostsProps = {
   className?: string
@@ -25,7 +25,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
           {docs?.map((doc, index) => {
             if (typeof doc === 'string') return null
 
-            return <Card key={index} doc={doc} relationTo="posts" showCategories />
+            return <PostCard key={index} doc={doc} relationTo="posts" showCategories />
           })}
         </div>
       </div>

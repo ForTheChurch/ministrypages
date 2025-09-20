@@ -8,10 +8,10 @@ import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TwoColumnBlock } from '@/blocks/TwoColumn/Component'
 import { EventList } from './EventListBlock/Component'
-import { PostList } from './PostListBlock/Component'
+import { PostsList } from './PostListBlock/Component'
 
 const blockComponents = {
-  postList: PostList,
+  postList: PostsList,
   eventList: EventList,
   content: ContentBlock,
   cta: CallToActionBlock,
