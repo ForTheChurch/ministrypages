@@ -56,7 +56,7 @@ Response:
 }
 ```
 
-### `GET /api/pages/task/:id`
+### `GET /api/pages/task/:id` or `GET /api/posts/task/:id`
 Reports the status of a task given by the `id` parameter.
 
 Response:
@@ -66,6 +66,24 @@ Response:
 }
 ```
 
+### `POST /api/posts/apply-youtube-transcript`
+Gets a Youtube transcript, reformats it as a document, and posts the content to PayloadCMS.
+
+Request:
+```
+{
+  "url": "<youtube url>",
+  "postId": "<payloadcms post id>"
+}
+```
+
+Response:
+```
+{
+  "task_status": "queued",
+  "task_id": "<task id>"
+}
+```
 
 
 ## Notice
