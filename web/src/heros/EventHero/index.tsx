@@ -54,7 +54,7 @@ export const EventHero: React.FC<{
         )}
         <div
           className={`absolute pointer-events-none left-0 bottom-0 w-full h-full ${
-            eventImage && typeof eventImage !== 'string' ? 'bg-gray-400 opacity-25' : ''
+            eventImage && typeof eventImage !== 'string' ? 'bg-gray-900 opacity-20' : ''
           }`}
         />
       </div>
