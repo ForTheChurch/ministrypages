@@ -14,6 +14,12 @@ export const TwoColumn: Block = {
   interfaceName: 'TwoColumn',
   fields: [
     {
+      name: 'image',
+      type: 'relationship',
+      relationTo: 'media',
+      hasMany: false,
+    },
+    {
       name: 'imagePosition',
       type: 'select',
       defaultValue: 'right',
@@ -27,6 +33,27 @@ export const TwoColumn: Block = {
           value: 'right',
         },
       ],
+      admin: {
+        description: 'Choose where the image should be on larger screens.',
+      },
+    },
+    {
+      name: 'imagePositionOnMobile',
+      type: 'select',
+      defaultValue: 'top',
+      options: [
+        {
+          label: 'Top',
+          value: 'top',
+        },
+        {
+          label: 'Bottom',
+          value: 'bottom',
+        },
+      ],
+      admin: {
+        description: 'Choose where the image should be on mobile screens.',
+      },
     },
     {
       name: 'richText',
@@ -44,6 +71,36 @@ export const TwoColumn: Block = {
       label: false,
     },
     {
+      name: 'centerTextOnMobile',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'Center the text on mobile screens.',
+      },
+    },
+    {
+      name: 'sectionColor',
+      type: 'select',
+      options: [
+        {
+          label: 'None',
+          value: 'none',
+        },
+        {
+          label: 'Accent',
+          value: 'accent',
+        },
+        {
+          label: 'Secondary',
+          value: 'secondary',
+        },
+        {
+          label: 'Dark',
+          value: 'dark',
+        },
+      ],
+    },
+    {
       name: 'enableLink',
       type: 'checkbox',
     },
@@ -56,11 +113,5 @@ export const TwoColumn: Block = {
         },
       },
     }),
-    {
-      name: 'image',
-      type: 'relationship',
-      relationTo: 'media',
-      hasMany: false,
-    },
   ],
 }

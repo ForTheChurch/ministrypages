@@ -59,11 +59,17 @@ type Props = {
   data: DefaultTypedEditorState
   enableGutter?: boolean
   enableProse?: boolean
-  hero?: boolean
+  removeMargins?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, hero = false, ...rest } = props
+  const {
+    className,
+    enableProse = true,
+    enableGutter = true,
+    removeMargins = false,
+    ...rest
+  } = props
   return (
     <ConvertRichText
       converters={jsxConverters}
@@ -71,7 +77,7 @@ export default function RichText(props: Props) {
         'break-words',
         {
           //when hero is true, we want to make the margin on bottom of headings to be smaller
-          '[&>*]:my-0': hero,
+          '[&>*]:my-0': removeMargins,
           container: enableGutter,
           'max-w-none': !enableGutter,
           'prose md:prose-md dark:prose-invert': enableProse,

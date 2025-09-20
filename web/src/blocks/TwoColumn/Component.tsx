@@ -4,24 +4,62 @@ import React from 'react'
 
 import type { TwoColumn as TwoColumnBlockProps } from '@/payload-types'
 
-import { CMSLink } from '../../components/Link'
 import { Media } from '@/components/Media'
+import { CMSLink } from '../../components/Link'
 
 export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
-  const { imagePosition, image, richText, enableLink, link } = props
+  const {
+    imagePosition,
+    imagePositionOnMobile,
+    image,
+    richText,
+    centerTextOnMobile,
+    enableLink,
+    link,
+    sectionColor,
+  } = props
 
   return (
-    <div className="container my-16 grid gap-12 lg:grid-cols-2 items-start">
-      <div
-        className={clsx('lg:py-6 lg:sticky top-12', { 'lg:order-last': imagePosition === 'right' })}
-      >
-        {image && <Media resource={image} />}
-      </div>
-      <div>
-        {richText && <RichText data={richText} enableGutter={false} />}
+    <section
+      className={clsx('py-24', {
+        'bg-accent text-card-foreground': sectionColor === 'accent',
+        'bg-secondary text-card-foreground': sectionColor === 'secondary',
+        'bg-primary text-primary-foreground': sectionColor === 'dark',
+      })}
+    >
+      <div className="container grid gap-8 md:gap-12 md:grid-cols-2 items-center">
+        <div
+          className={clsx('md:py-6', {
+            'md:order-first': imagePosition === 'left',
+            'md:order-last': imagePosition === 'right',
+            'order-last': imagePositionOnMobile === 'bottom',
+          })}
+        >
+          {image && <Media resource={image} />}
+        </div>
+        <div className={clsx({ 'text-center md:text-left': centerTextOnMobile })}>
+          {richText && (
+            <RichText
+              data={richText}
+              removeMargins
+              enableGutter={false}
+              className={sectionColor === 'dark' ? 'prose-invert' : 'prose-current'}
+            />
+          )}
 
-        {enableLink && <CMSLink {...link} className="mt-4" />}
+          {enableLink && (
+            <CMSLink
+              {...link}
+              className={clsx('mt-6', {
+                'bg-primary-foreground text-primary hover:bg-muted':
+                  sectionColor === 'dark' && link?.appearance === 'default',
+                'border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary':
+                  sectionColor === 'dark' && link?.appearance === 'outline',
+              })}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }

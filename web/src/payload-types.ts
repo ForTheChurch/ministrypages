@@ -425,7 +425,15 @@ export interface User {
  * via the `definition` "TwoColumn".
  */
 export interface TwoColumn {
+  image?: (string | null) | Media;
+  /**
+   * Choose where the image should be on larger screens.
+   */
   imagePosition?: ('left' | 'right') | null;
+  /**
+   * Choose where the image should be on mobile screens.
+   */
+  imagePositionOnMobile?: ('top' | 'bottom') | null;
   richText?: {
     root: {
       type: string;
@@ -441,6 +449,11 @@ export interface TwoColumn {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Center the text on mobile screens.
+   */
+  centerTextOnMobile?: boolean | null;
+  sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   enableLink?: boolean | null;
   link?: {
     type?: ('reference' | 'custom') | null;
@@ -461,7 +474,6 @@ export interface TwoColumn {
      */
     appearance?: ('default' | 'outline') | null;
   };
-  image?: (string | null) | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'twoColumn';
@@ -1205,8 +1217,12 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "TwoColumn_select".
  */
 export interface TwoColumnSelect<T extends boolean = true> {
+  image?: T;
   imagePosition?: T;
+  imagePositionOnMobile?: T;
   richText?: T;
+  centerTextOnMobile?: T;
+  sectionColor?: T;
   enableLink?: T;
   link?:
     | T
@@ -1218,7 +1234,6 @@ export interface TwoColumnSelect<T extends boolean = true> {
         label?: T;
         appearance?: T;
       };
-  image?: T;
   id?: T;
   blockName?: T;
 }
