@@ -75,7 +75,8 @@ Create unique page layouts for any type of content using a powerful layout build
 - Content
 - Media
 - Call To Action
-- Archive
+- Post List
+- Event List
 
 Each block is fully designed and built into the front-end website that comes with this template. See [Website](#website) for more details.
 
