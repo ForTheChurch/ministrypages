@@ -59,10 +59,27 @@ export const Pages: CollectionConfig<'pages'> = {
       }),
     useAsTitle: 'title',
     components: {
-      beforeListTable: ['@/components/AgentInput'],
+      beforeListTable: [],
     }
   },
   fields: [
+    {
+      name: 'pageLockModal',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: {
+            path: '@/components/PageLockModal',
+            clientProps: ({ id, data }: {
+              id: string,
+              data: Partial<CollectionConfig<'pages'>>
+            }) => ({
+              id
+            })
+          }
+        }
+      }
+    },
     {
       name: 'migratePageUrl',
       type: 'ui',
@@ -73,6 +90,12 @@ export const Pages: CollectionConfig<'pages'> = {
         },
         position: 'sidebar',
       }
+    },
+    {
+      name: "migrationTaskId",
+      type: "text",
+      // hidden: true
+      label: "Migration Task ID (TODO: Remove this label and make this field hidden)"
     },
     {
       name: 'title',

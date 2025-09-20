@@ -8,12 +8,14 @@ const getLabelAsString = (label?: Record<string, string> | string) => {
   return typeof label === "string" ? label : "";
 };
 
+
 function AgentInputClient({ field }: {
   field?: UIField
 }) {
   const label = field?.label;
 
   const [url, setUrl] = useState("");
+  const [locked, setLocked] = useState(true);
 
   const handleSubmit = async () => {
     axios.post("/api/jobs", {
