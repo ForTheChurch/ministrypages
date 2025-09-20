@@ -7,10 +7,12 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { TwoColumnBlock } from '@/blocks/TwoColumn/Component'
+import { EventList } from './EventListBlock/Component'
 import { PostList } from './PostListBlock/Component'
 
 const blockComponents = {
   postList: PostList,
+  eventList: EventList,
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,

@@ -3,18 +3,6 @@ import type { CollectionConfig } from 'payload'
 import { TwoColumn } from '@/blocks/TwoColumn/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
-import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
-import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
-
-import { PostList } from '@/blocks/PostListBlock/config'
-
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -22,6 +10,17 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { CallToAction } from '../../blocks/CallToAction/config'
+import { Content } from '../../blocks/Content/config'
+import { EventList } from '../../blocks/EventListBlock/config'
+import { FormBlock } from '../../blocks/Form/config'
+import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { PostList } from '../../blocks/PostListBlock/config'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
+import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -77,7 +76,15 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [TwoColumn, CallToAction, Content, MediaBlock, PostList, FormBlock],
+              blocks: [
+                TwoColumn,
+                CallToAction,
+                Content,
+                MediaBlock,
+                PostList,
+                EventList,
+                FormBlock,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,
