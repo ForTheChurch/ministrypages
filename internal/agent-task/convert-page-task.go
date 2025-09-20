@@ -31,6 +31,7 @@ type ConvertPageTask struct {
 	firecrawlScraper scraper.Scraper
 	payloadCMSClient *payloadcms.Client
 	llm              provider.Provider
+	pageCache        pagecache.PageCache
 }
 
 func NewConvertPageTask(url string, pageID string, firecrawlScraper scraper.Scraper, payloadCMSClient *payloadcms.Client, llm provider.Provider) *ConvertPageTask {
@@ -41,6 +42,7 @@ func NewConvertPageTask(url string, pageID string, firecrawlScraper scraper.Scra
 		firecrawlScraper: firecrawlScraper,
 		payloadCMSClient: payloadCMSClient,
 		llm:              llm,
+		pageCache:        pagecache.NewPageCache("html"),
 	}
 }
 
@@ -58,7 +60,7 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 	defer cancel()
 
 	var html string
-	cachedPage, err := pagecache.GetCachedPage(t.url)
+	cachedPage, err := t.pageCache.GetCachedPage(t.url)
 	if err != nil {
 		return fmt.Errorf("error getting cached page: %w", err)
 	}
@@ -71,7 +73,7 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("error scraping page HTML: %w", err)
 		}
-		if err := pagecache.SetCachedPage(t.url, html); err != nil {
+		if err := t.pageCache.SetCachedPage(t.url, html); err != nil {
 			return fmt.Errorf("error caching page: %w", err)
 		}
 	}

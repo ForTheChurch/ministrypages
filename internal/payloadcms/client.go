@@ -22,6 +22,43 @@ func NewClient(cfg Config, client *http.Client) *Client {
 	return &Client{cfg: cfg, client: client}
 }
 
+func (c *Client) UpdatePostMarkdown(ctx context.Context, postId string, markdown string) error {
+	var params struct {
+		Markdown string `json:"markdown"`
+	}
+
+	params.Markdown = markdown
+
+	jsonBody, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "POST", c.cfg.BaseURL+"/api/posts/"+postId+"/content/markdown", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "users API-Key "+c.cfg.APIKey)
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var response Response
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return err
+	}
+	if len(response.Errors) > 0 {
+		return response.Errors
+	}
+
+	return nil
+}
+
 func (c *Client) UpdatePage(ctx context.Context, page PagePatch) error {
 	jsonBody, err := json.Marshal(page)
 	if err != nil {
