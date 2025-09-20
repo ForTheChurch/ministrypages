@@ -7,13 +7,29 @@ import (
 	"path/filepath"
 )
 
-func GetCachedPage(url string) (string, error) {
+type PageCache interface {
+	GetCachedPage(url string) (string, error)
+	SetCachedPage(url string, page string) error
+}
+
+type localFilePageCache struct {
+	cacheDir string
+	fileExt  string
+}
+
+var _ PageCache = &localFilePageCache{}
+
+func NewPageCache(fileExt string) PageCache {
+	return &localFilePageCache{cacheDir: ".page-cache", fileExt: fileExt}
+}
+
+func (c *localFilePageCache) GetCachedPage(url string) (string, error) {
 	sum, err := hash(url)
 	if err != nil {
 		return "", err
 	}
 
-	content, err := os.ReadFile(filepath.Join(".page-cache", sum+".html"))
+	content, err := os.ReadFile(filepath.Join(c.cacheDir, sum+"."+c.fileExt))
 	if err != nil {
 		if os.IsNotExist(err) {
 			return "", nil
@@ -23,15 +39,15 @@ func GetCachedPage(url string) (string, error) {
 	return string(content), nil
 }
 
-func SetCachedPage(url string, page string) error {
+func (c *localFilePageCache) SetCachedPage(url string, page string) error {
 	sum, err := hash(url)
 	if err != nil {
 		return err
 	}
 
 	// Don't care about errors since this is just a cache
-	_ = os.MkdirAll(".page-cache", 0755)
-	_ = os.WriteFile(filepath.Join(".page-cache", sum+".html"), []byte(page), 0644)
+	_ = os.MkdirAll(c.cacheDir, 0755)
+	_ = os.WriteFile(filepath.Join(c.cacheDir, sum+"."+c.fileExt), []byte(page), 0644)
 	return nil
 }
 
