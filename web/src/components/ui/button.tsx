@@ -19,11 +19,11 @@ const buttonVariants = cva(
         sm: 'rounded py-2 px-3',
       },
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/80',
+        default: 'bg-primary text-primary-foreground hover:bg-card hover:text-card-foreground',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/80',
         ghost: 'hover:bg-card hover:text-accent-foreground',
         link: 'text-primary items-start justify-start underline-offset-4 hover:underline',
-        outline: 'border border-border bg-background hover:bg-card hover:text-accent-foreground',
+        outline: 'border border-primary bg-transparent hover:bg-card hover:border-card',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       },
     },
