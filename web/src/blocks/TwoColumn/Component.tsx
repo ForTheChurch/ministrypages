@@ -1,3 +1,5 @@
+'use client'
+
 import RichText from '@/components/RichText'
 import clsx from 'clsx'
 import React from 'react'
@@ -5,6 +7,7 @@ import React from 'react'
 import type { TwoColumn as TwoColumnBlockProps } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { useTheme } from '@/providers/Theme'
 import { CMSLink } from '../../components/Link'
 
 export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
@@ -18,13 +21,14 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
     link,
     sectionColor,
   } = props
+  const { theme } = useTheme()
 
   return (
     <section
       className={clsx('py-24', {
-        'bg-accent text-card-foreground': sectionColor === 'accent',
-        'bg-secondary text-card-foreground': sectionColor === 'secondary',
-        'bg-primary text-primary-foreground': sectionColor === 'dark',
+        'bg-accent text-card-foreground': sectionColor === 'accent' && theme === 'light',
+        'bg-secondary text-card-foreground': sectionColor === 'secondary' && theme === 'light',
+        'bg-primary text-primary-foreground': sectionColor === 'dark' && theme === 'light',
       })}
     >
       <div className="container grid gap-8 md:gap-12 md:grid-cols-2 items-center">
@@ -52,9 +56,9 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
               {...link}
               className={clsx('mt-6', {
                 'bg-primary-foreground text-primary hover:bg-muted':
-                  sectionColor === 'dark' && link?.appearance === 'default',
+                  sectionColor === 'dark' && link?.appearance === 'default' && theme === 'light',
                 'border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary':
-                  sectionColor === 'dark' && link?.appearance === 'outline',
+                  sectionColor === 'dark' && link?.appearance === 'outline' && theme === 'light',
               })}
             />
           )}
