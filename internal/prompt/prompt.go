@@ -37,3 +37,19 @@ func GetConvertPagePrompt() (string, error) {
 
 	return buf.String(), nil
 }
+
+func GetYoutubeTranscriptPrompt() (string, error) {
+	file, err := promptsFS.Open(path.Join("prompts", "youtube-transcript.md"))
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(file)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}

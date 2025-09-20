@@ -42,12 +42,18 @@ func (s *firecrawlScraper) Scrape(url string) chan ScrapeResult {
 
 		html := doc.HTML
 		markdown := doc.Markdown
+
 		if html == "" {
 			ch <- ScrapeResult{Error: fmt.Errorf("no html returned from firecrawl")}
 			return
 		}
 
-		ch <- ScrapeResult{Html: html, Markdown: markdown}
+		metadata := make(map[string]string)
+		if doc.Metadata != nil && doc.Metadata.Title != nil {
+			metadata["title"] = *doc.Metadata.Title
+		}
+
+		ch <- ScrapeResult{Html: html, Markdown: markdown, Metadata: metadata}
 	}()
 	return ch
 }

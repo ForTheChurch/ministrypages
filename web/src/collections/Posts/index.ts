@@ -1,7 +1,9 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, RichTextField, TabsField } from 'payload'
 
 import {
   BlocksFeature,
+  convertMarkdownToLexical,
+  editorConfigFactory,
   FixedToolbarFeature,
   HeadingFeature,
   HorizontalRuleFeature,
@@ -246,6 +248,67 @@ export const Posts: CollectionConfig<'posts'> = {
       ],
     },
     ...slugField(),
+  ],
+  endpoints: [
+    {
+      path: '/:id/content/markdown',
+      method: 'post',
+      handler: async (req) => {
+        if(!authenticated({ req })) {
+          return Response.json({ errors: [{ message: 'Unauthorized' }] }, { status: 401 })
+        }
+
+        const { id } = req.routeParams as { id: string }
+        const data = await req.json?.()
+
+        if (!data || typeof data.markdown !== 'string' || !data.markdown) {
+          return Response.json(
+            { errors: [{ message: 'No valid markdown provided' }] },
+            { status: 400 },
+          )
+        }
+
+        const post = await req.payload.findByID({
+          id,
+          collection: 'posts',
+        })
+
+        if (!post) {
+          return Response.json({ errors: [{ message: 'Post not found' }] }, { status: 404 })
+        }
+
+        const tabField = Posts.fields.find((field) => field.type === 'tabs') as TabsField
+        const tab = tabField.tabs[0]
+        if (!tab) {
+          return Response.json({ errors: [{ message: 'Content tab not found' }] }, { status: 500 })
+        }
+
+        const contentField = tab.fields.find(
+          (field) => field.type === 'richText' && field.name === 'content',
+        ) as RichTextField
+
+        const lexicalJson = convertMarkdownToLexical({
+          editorConfig: editorConfigFactory.fromField({
+            field: contentField,
+          }),
+          markdown: data.markdown,
+        })
+
+        await req.payload.update({
+          collection: 'posts',
+          id: post.id,
+          data: {
+            content: {
+              root: lexicalJson.root,
+            },
+          },
+        })
+
+        return Response.json({
+          message: 'Post content converted to markdown',
+        })
+      },
+    },
   ],
   hooks: {
     afterChange: [revalidatePost],
