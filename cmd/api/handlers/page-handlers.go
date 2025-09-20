@@ -17,8 +17,8 @@ func NewPageHandler(services *services.Services) *PageHandler {
 
 func (h *PageHandler) ConvertSinglePage(c *gin.Context) {
 	type params struct {
-		URL    string `json:"url"`
-		PageID string `json:"pageId"`
+		URL    string `json:"url" binding:"required"`
+		PageID string `json:"pageId" binding:"required"`
 	}
 
 	var p params
