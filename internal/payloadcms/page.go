@@ -75,7 +75,8 @@ type Block struct {
 	*CallToActionBlock
 	*ContentBlock
 	*MediaBlock
-	*ArchiveBlock
+	*PostListBlock
+	*EventListBlock
 	*FormBlock
 }
 
@@ -92,6 +93,25 @@ type Post struct {
 	PublishedAt      *string           `json:"publishedAt,omitempty"`
 	Authors          []interface{}     `json:"authors,omitempty"` // []string | []User
 	PopulatedAuthors []PopulatedAuthor `json:"populatedAuthors,omitempty"`
+	Slug             *string           `json:"slug,omitempty"`
+	SlugLock         *bool             `json:"slugLock,omitempty"`
+	UpdatedAt        string            `json:"updatedAt"`
+	CreatedAt        string            `json:"createdAt"`
+	Status           *string           `json:"_status,omitempty"`
+}
+
+// Event represents an event in the CMS
+type Event struct {
+	ID               string            `json:"id,omitempty"`
+	Title            string            `json:"title"`
+	EventImage       interface{}       `json:"eventImage,omitempty"` // string | Media
+	VideoLink        *string           `json:"videoLink,omitempty"`
+	Content          RichText          `json:"content"`
+	Location         *string           `json:"location,omitempty"`
+	StartTime        *string           `json:"startTime,omitempty"`
+	EndTime          *string           `json:"endTime,omitempty"`
+	Meta             *Meta             `json:"meta,omitempty"`
+	PublishedAt      *string           `json:"publishedAt,omitempty"`
 	Slug             *string           `json:"slug,omitempty"`
 	SlugLock         *bool             `json:"slugLock,omitempty"`
 	UpdatedAt        string            `json:"updatedAt"`
@@ -203,14 +223,17 @@ type UserSession struct {
 
 // TwoColumn represents a two-column layout block
 type TwoColumn struct {
-	ImagePosition *string     `json:"imagePosition,omitempty"` // 'left' | 'right'
-	RichText      *RichText   `json:"richText,omitempty"`
-	EnableLink    *bool       `json:"enableLink,omitempty"`
-	Link          *Link       `json:"link,omitempty"`
-	Image         interface{} `json:"image,omitempty"` // string | Media
-	ID            *string     `json:"id,omitempty"`
-	BlockName     *string     `json:"blockName,omitempty"`
-	BlockType     string      `json:"blockType"` // 'twoColumn'
+	ImagePosition *string     		`json:"imagePosition,omitempty"` // 'left' | 'right'
+	ImagePositionOnMobile *string `json:"imagePositionOnMobile,omitempty"` // 'top' | 'bottom'
+	RichText      *RichText   		`json:"richText,omitempty"`
+	CenterTextOnMobile *bool      `json:"centerTextOnMobile,omitempty"`
+	SectionColor *string     			`json:"sectionColor,omitempty"` // 'none' | 'accent' | 'secondary' | 'dark'
+	EnableLink    *bool       		`json:"enableLink,omitempty"`
+	Link          *Link       		`json:"link,omitempty"`
+	Image         interface{} 		`json:"image,omitempty"` // string | Media
+	ID            *string     		`json:"id,omitempty"`
+	BlockName     *string     		`json:"blockName,omitempty"`
+	BlockType     string      		`json:"blockType"` // 'twoColumn'
 }
 
 // CallToActionBlock represents a call-to-action block
@@ -247,11 +270,10 @@ type MediaBlock struct {
 	BlockType string      `json:"blockType"` // 'mediaBlock'
 }
 
-// ArchiveBlock represents an archive block
-type ArchiveBlock struct {
+// PostListBlock represents a post list block
+type PostListBlock struct {
 	IntroContent *RichText          `json:"introContent,omitempty"`
 	PopulateBy   *string            `json:"populateBy,omitempty"` // 'collection' | 'selection'
-	RelationTo   *string            `json:"relationTo,omitempty"` // 'posts'
 	Categories   []interface{}      `json:"categories,omitempty"` // []string | []Category
 	Limit        *int               `json:"limit,omitempty"`
 	SelectedDocs []ArchiveReference `json:"selectedDocs,omitempty"`
@@ -260,11 +282,23 @@ type ArchiveBlock struct {
 	BlockType    string             `json:"blockType"` // 'archive'
 }
 
-// ArchiveReference represents a reference in an archive block
+// ArchiveReference represents a reference in an post list or event list block
 type ArchiveReference struct {
-	RelationTo string      `json:"relationTo"` // 'posts'
-	Value      interface{} `json:"value"`      // string | Post
+	RelationTo string      `json:"relationTo"` // 'posts' | 'events'
+	Value      interface{} `json:"value"`      // string | Post | Event
 }
+
+// EventListBlock represents a event list block
+type EventListBlock struct {
+	IntroContent *RichText          `json:"introContent,omitempty"`
+	PopulateBy   *string            `json:"populateBy,omitempty"` // 'collection' | 'selection'
+	Limit        *int               `json:"limit,omitempty"`
+	SelectedDocs []ArchiveReference `json:"selectedDocs,omitempty"`
+	ID           *string            `json:"id,omitempty"`
+	BlockName    *string            `json:"blockName,omitempty"`
+	BlockType    string             `json:"blockType"` // 'archive'
+}
+
 
 // FormBlock represents a form block
 type FormBlock struct {
