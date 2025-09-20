@@ -71,7 +71,7 @@ export default function RichText(props: Props) {
         'break-words',
         {
           //when hero is true, we want to make the margin on bottom of headings to be smaller
-          '[&_h1]:my-2 [&_h2]:my-2 [&_h3]:my-2 [&_h4]:my-2 [&_h5]:my-2 [&_h6]:my-2': hero,
+          '[&>*]:my-0': hero,
           container: enableGutter,
           'max-w-none': !enableGutter,
           'prose md:prose-md dark:prose-invert': enableProse,
