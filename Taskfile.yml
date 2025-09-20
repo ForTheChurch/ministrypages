@@ -8,7 +8,16 @@ tasks:
 
   build:
     desc: Build the application
-    cmd: go build -o ./bin/buildforthechurch cmd/agentbuild/main.go
+    cmds:
+      - cmd: go build -o ./bin/buildforthechurch-build cmd/agentbuild/main.go
+        platforms: [darwin, linux]
+      - cmd: go build -o ./bin/buildforthechurch-api cmd/api/main.go
+        platforms: [darwin, linux]
+      - cmd: go build -o ./bin/buildforthechurch-build.exe cmd/agentbuild/main.go
+        platforms: [windows]
+      - cmd: go build -o ./bin/buildforthechurch-api.exe cmd/api/main.go
+        platforms: [windows]
+      
 
   run:
     desc: Run the application
