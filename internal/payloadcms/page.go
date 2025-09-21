@@ -41,8 +41,8 @@ type Link struct {
 
 // Reference represents a reference to another document
 type Reference struct {
-	RelationTo string      `json:"relationTo"` // 'pages' | 'posts'
-	Value      interface{} `json:"value"`      // string | Page | Post
+	RelationTo string      `json:"relationTo"` // 'pages' | 'posts' | 'events'
+	Value      interface{} `json:"value"`      // string | Page | Post | Event
 }
 
 // RichText represents rich text content
@@ -78,6 +78,7 @@ type Block struct {
 	*PostListBlock
 	*EventListBlock
 	*FormBlock
+	*ImageBanner
 }
 
 // Post represents a blog post in the CMS
@@ -234,6 +235,16 @@ type TwoColumn struct {
 	ID            *string     		`json:"id,omitempty"`
 	BlockName     *string     		`json:"blockName,omitempty"`
 	BlockType     string      		`json:"blockType"` // 'twoColumn'
+}
+
+// ImageBanner represents a image banner layout block
+type ImageBanner struct {
+	RichText      *RichText   		`json:"richText,omitempty"`
+	Image         interface{} 		`json:"image,omitempty"` // string | Media
+	Links         []Link       		`json:"links,omitempty"`
+	ID            *string     		`json:"id,omitempty"`
+	BlockName     *string     		`json:"blockName,omitempty"`
+	BlockType     string      		`json:"blockType"` // 'imageBanner'
 }
 
 // CallToActionBlock represents a call-to-action block

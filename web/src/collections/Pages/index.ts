@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { ImageBanner } from '@/blocks/ImageBanner/config'
 import { TwoColumn } from '@/blocks/TwoColumn/config'
 import { slugField } from '@/fields/slug'
 import { hero } from '@/heros/config'
@@ -78,6 +79,7 @@ export const Pages: CollectionConfig<'pages'> = {
               type: 'blocks',
               blocks: [
                 TwoColumn,
+                ImageBanner,
                 CallToAction,
                 Content,
                 MediaBlock,
