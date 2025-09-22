@@ -40,7 +40,7 @@ const createModal = () => {
   );
 }
 
-function AgentInputClient({ field }: { field?: UIField }) {
+function ConvertSinglePageClient({ field }: { field?: UIField }) {
   const label = field?.label;
 
   const conversionTaskIdField = useFormFields(([fields, dispatch]) => fields.conversionTaskId);
@@ -89,7 +89,7 @@ function AgentInputClient({ field }: { field?: UIField }) {
     let intervalId = setInterval(async () => {
       const conversionTaskId = await getActiveConversionTaskId();
       setActiveTaskId(conversionTaskId);
-      console.log("[AgentInputClient] Updated conversionTaskId: ", conversionTaskId);
+      console.log("[ConvertSinglePageClient] Updated conversionTaskId: ", conversionTaskId);
       if (!conversionTaskId) {
         clearInterval(intervalId);
         reloadPage();
@@ -121,4 +121,4 @@ function AgentInputClient({ field }: { field?: UIField }) {
   );
 }
 
-export default AgentInputClient
+export default ConvertSinglePageClient

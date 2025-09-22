@@ -69,7 +69,7 @@ export const Pages: CollectionConfig<'pages'> = {
       label: 'Convert an existing page',
       admin: {
         components: {
-          Field: '@/components/AgentInput'
+          Field: '@/components/ConvertSinglePage'
         },
         position: 'sidebar',
       }
