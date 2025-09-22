@@ -51,7 +51,6 @@ func main() {
 		Addr:    ":" + cfg.Port,
 		Handler: r,
 	}
-	
 
 	// Initializing the server in a goroutine so that
 	// it won't block the graceful shutdown handling below
