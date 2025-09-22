@@ -11,17 +11,34 @@ const getLabelAsString = (label?: Record<string, string> | string) => {
   return typeof label === "string" ? label : "";
 };
 
+
+const reloadPage = () => {
+  window.location.reload();
+};
+
+const navigate = (url: string) => {
+  window.location.href = url;
+  
+}
+
 const createModal = () => {
+  const onClickGoToPages = () => {
+    navigate("/admin/collections/pages");
+  };
+
+  const onClickCancelTask = () => {
+
+  };
+
   return createPortal(
     <Modal>
       <p>A conversion is in progress. This page will automatically refresh when the task is complete.</p>
-      <button>Go to Pages</button>
-      <button>Cancel Task</button>
+      <button onClick={onClickGoToPages}>Go to Pages</button>
+      <button onClick={onClickCancelTask}>Cancel Task</button>
     </Modal>,
     document.body
   );
 }
-
 
 function AgentInputClient({ field }: { field?: UIField }) {
   const label = field?.label;
@@ -34,10 +51,6 @@ function AgentInputClient({ field }: { field?: UIField }) {
   const { id } = useDocumentInfo();
   const documentId = id;
 
-  const reload = () => {
-    window.location.reload();
-  };
-
   // TODO: Make this more robust
   //  - Handle dirty form
   //  - Handle existing conversion task
@@ -48,7 +61,7 @@ function AgentInputClient({ field }: { field?: UIField }) {
       data: { documentId, url },
     }).then((response) => {
       console.log("Job created:", response.data);
-      reload();
+      reloadPage();
     }).catch((error) => {
       console.error("Error creating job:", error);
     })
@@ -79,7 +92,7 @@ function AgentInputClient({ field }: { field?: UIField }) {
       console.log("[AgentInputClient] Updated conversionTaskId: ", conversionTaskId);
       if (!conversionTaskId) {
         clearInterval(intervalId);
-        reload();
+        reloadPage();
       }
     }, 1000);
 
