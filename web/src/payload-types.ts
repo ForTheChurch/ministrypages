@@ -120,14 +120,18 @@ export interface Config {
   };
   jobs: {
     tasks: {
-      migratePage: TaskMigratePage;
+      beginSinglePageConversion: TaskBeginSinglePageConversion;
+      checkAgentTaskStatus: TaskCheckAgentTaskStatus;
+      notifyAgentTaskComplete: TaskNotifyAgentTaskComplete;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
         output: unknown;
       };
     };
-    workflows: unknown;
+    workflows: {
+      convertSinglePage: WorkflowConvertSinglePage;
+    };
   };
 }
 export interface UserAuthOperations {
@@ -1082,7 +1086,12 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'migratePage' | 'schedulePublish';
+        taskSlug:
+          | 'inline'
+          | 'beginSinglePageConversion'
+          | 'checkAgentTaskStatus'
+          | 'notifyAgentTaskComplete'
+          | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1115,7 +1124,10 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'migratePage' | 'schedulePublish') | null;
+  workflowSlug?: 'convertSinglePage' | null;
+  taskSlug?:
+    | ('inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'notifyAgentTaskComplete' | 'schedulePublish')
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1846,6 +1858,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
         error?: T;
         id?: T;
       };
+  workflowSlug?: T;
   taskSlug?: T;
   queue?: T;
   waitUntil?: T;
@@ -2019,14 +2032,39 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskMigratePage".
+ * via the `definition` "TaskBeginSinglePageConversion".
  */
-export interface TaskMigratePage {
+export interface TaskBeginSinglePageConversion {
   input: {
+    documentId: string;
     url: string;
   };
   output: {
-    jobId: string;
+    agentTaskId: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCheckAgentTaskStatus".
+ */
+export interface TaskCheckAgentTaskStatus {
+  input: {
+    agentTaskId: string;
+  };
+  output: {
+    status: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskNotifyAgentTaskComplete".
+ */
+export interface TaskNotifyAgentTaskComplete {
+  input: {
+    documentId: string;
+  };
+  output: {
+    result: string;
   };
 }
 /**
@@ -2054,6 +2092,16 @@ export interface TaskSchedulePublish {
     user?: (string | null) | User;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowConvertSinglePage".
+ */
+export interface WorkflowConvertSinglePage {
+  input: {
+    documentId: string;
+    url: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,7 +1,7 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import path from 'path'
-import { buildConfig, PayloadRequest, PayloadResponse } from 'payload'
+import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
 
@@ -111,51 +111,185 @@ export default buildConfig({
         // This task is for initiating a migration via the agent backend. This
         // might split into two or more tasks, possibly a workflow.
         retries: 2,
-        slug: 'migratePage',
+        slug: 'beginSinglePageConversion',
         inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          },
           {
             name: 'url',
             type: 'text',
             required: true,
-          }
+          },
         ],
         outputSchema: [
           {
-            name: 'jobId',
+            name: 'agentTaskId',
             type: 'text',
             required: true,
           }
         ],
         // TODO: Move handler to a separate file
         // https://payloadcms.com/docs/jobs-queue/tasks#defining-tasks-in-the-config
-        handler: async ({ input, job, req }: { input: { url: string }, job: any, req: any }) => {
-          const { url } = input;
+        handler: async ({ input, job, req }: { input: { documentId: string, url: string }, job: any, req: any }) => {
+          const { documentId, url } = input;
 
           // TODO: Call agent backend and get a task ID representing the agent's task
-          console.log(`Running  'migratePage' task with URL '${url}'`)
+          console.log(`Running  'beginSinglePageConversion' task with document ID '${documentId}' and URL '${url}'`)
 
-          // Simulate long-running process
-          console.log("Sleeping for 20 seconds");
-          await new Promise(r => setTimeout(r, 20000));
-          console.log("Done sleeping");
 
-          const taskId = "abc123"; // From the agent backend;
+          const agentTaskId = "abc123"; // From the agent backend;
+
+          // TODO: Handle case where existing migration task is in progress
+          await req.payload.update({
+            collection: "pages",
+            id: documentId,
+            data: {
+              migrationTaskId: agentTaskId
+            }
+          });
 
           return {
-            output: {
-              url,
-              taskId
-            }
+            output: { agentTaskId }
           };
         },
         onFail: async () => {
-          console.log("Job 'migratePage' failed");
+          console.log("Job 'beginSinglePageConversion' failed");
         },
         onSuccess: async () => {
-          console.log("Job 'migratePage' succeeded");
+          console.log("Job 'beginSinglePageConversion' succeeded");
+        },
+      },
+      {
+        // This task returns success when the given task is complete
+        retries: 9999,
+        slug: 'checkAgentTaskStatus',
+        inputSchema: [
+          {
+            name: 'agentTaskId',
+            type: 'text',
+            required: true
+          }
+        ],
+        outputSchema: [
+          {
+            name: 'status',
+            type: 'text',
+            required: true,
+          }
+        ],
+        handler: async ({ input, job, req }: { input: { agentTaskId: string }, job: any, req: any }) => {
+          const { agentTaskId } = input;
+
+          // TODO: Call agent backend and get a the status of the task
+          console.log(`[checkAgentTaskStatus] Checking status of task ID '${agentTaskId}'`);
+
+          // Simulate long-running process
+          console.log("[checkAgentTaskStatus] Doing work for 30 seconds");
+          await new Promise(r => setTimeout(r, 30000));
+          console.log("[checkAgentTaskStatus] Work complete");
+
+          const status = "This is a dummy task";
+
+          return {
+            output: { status }
+          };
+        },
+        onFail: async () => {
+          console.log("Job 'checkAgentTaskStatus' failed");
+        },
+        onSuccess: async () => {
+          console.log("Job 'checkAgentTaskStatus' succeeded");
+        },
+      },
+      {
+        // This task updates the `migrationTaskId` field on a page
+        retries: 2,
+        slug: 'notifyAgentTaskComplete',
+        inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          }
+        ],
+        outputSchema: [
+          {
+            name: 'result',
+            type: 'text',
+            required: true,
+          }
+        ],
+        handler: async ({ input, job, req }: { input: { documentId: string }, job: any, req: any }) => {
+          const { documentId } = input;
+
+          // TODO: Call agent backend and get a the status of the task
+          console.log(`Notifying document ID '${documentId}' that the agent task is complete`);
+
+          await req.payload.update({
+            collection: "pages",
+            id: documentId,
+            data: { migrationTaskId: "" }
+          });
+
+          const result = "success";
+
+          return {
+            output: { result }
+          };
+        },
+        onFail: async () => {
+          console.log("Job 'notifyAgentTaskComplete' failed");
+        },
+        onSuccess: async () => {
+          console.log("Job 'notifyAgentTaskComplete' succeeded");
         },
       }
     ],
+    workflows: [
+      {
+        slug: 'convertSinglePage',
+        inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          },
+          {
+            name: 'url',
+            type: 'text',
+            required: true,
+          },
+        ],
+        handler: async ({ job, tasks }) => {
+          // Begin the conversion and get a task ID
+          const taskIdConvertSinglePage = '1';
+          const { agentTaskId } = await tasks.beginSinglePageConversion(taskIdConvertSinglePage, {
+            input: {
+              documentId: job.input.documentId,
+              url: job.input.url
+            }
+          });
+          console.log("[convertSinglePage] agentTaskId:", agentTaskId);
+
+          // Wait on the task to complete
+          const taskIdCheckAgentTaskStatus = '2';
+          const { status } = await tasks.checkAgentTaskStatus(taskIdCheckAgentTaskStatus, {
+            input: { agentTaskId }
+          });
+          console.log("[convertSinglePage] status:", status);
+
+          // Notify the page that the task is complete
+          const taskIdNotifyAgentTaskComplete = '3';
+          const { result } = await tasks.notifyAgentTaskComplete(taskIdNotifyAgentTaskComplete, {
+            input: { documentId: job.input.documentId }
+          });
+          console.log("[convertSinglePage] result:", result);
+        }
+      } as WorkflowConfig<'convertSinglePage'>
+    ]
   },
   endpoints: [
     {
@@ -164,27 +298,53 @@ export default buildConfig({
       method: 'post',
       handler: async (req: PayloadRequest) => {
         console.log('Creating job via the /jobs endpoint');
-        const { task, data } = await req.json();
-        const { url } = data;
+        const { task, workflow, data } = await req.json();
+        const { documentId, url }: { documentId: string, url: string } = data;
+
+        if (task && workflow) {
+          throw new Error("Cannot queue both a task and a workflow");
+        }
+
         const job = await req.payload.jobs.queue({
           task,
+          workflow,
           input: {
-            url: url
+            documentId,
+            url
           }
         });
 
-        // Let this run asynchronously
-        // TODO: Split the queuing and running into two endpoints and allow
-        // the user to handle the asynchronous operation.
-        req.payload.jobs.runByID({ id: job.id })
-          .then((result) => {
-            console.log(`Job ${job.id} completed successfully`);
-          })
-          .catch((error) => {
-            console.error(`Job ${job.id} failed:`, error);
-          });
+        // Schedule the job to start asynchronously
+        setImmediate(async () => {
+          try {
+            await req.payload.jobs.runByID({ id: job.id });
+            console.log(`Job '${job.id}' completed successfully`);
+          } catch (error) {
+            console.error(`Job '${job.id}' failed:`, error);
+          }
+        });
 
-        return Response.json({ message: `Job started. Job ID: ${job.id}, URL: ${url}` }, { status: 201 });
+        return Response.json({ message: `Job created. Job ID: ${job.id}, URL: ${url}` }, { status: 201 });
+      }
+    },
+    {
+      // This endpoint is for getting the status of a job
+      path: '/jobs/:id',
+      method: 'get',
+      handler: async (req: PayloadRequest) => {
+        const { id } = req.routeParams as { id: string };
+
+        const job = await req.payload.findByID({
+          collection: "payload-jobs",
+          id
+        });
+        if (!job) {
+          return Response.json({}, { status: 404 });
+        }
+
+        console.log(`Checking status of job '${id}':`, job.taskStatus);
+
+        return Response.json({ status: job.taskStatus }, { status: 201 });
       }
     }
   ]

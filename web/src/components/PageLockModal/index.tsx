@@ -1,4 +1,4 @@
-import { Payload, UIField } from 'payload'
+import { Payload } from 'payload'
 import PageLockModalClient from './client'
 
 async function PageLockModal({ payload, id }: { payload: Payload, id: string }) {
