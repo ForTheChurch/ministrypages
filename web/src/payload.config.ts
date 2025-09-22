@@ -108,8 +108,8 @@ export default buildConfig({
     },
     tasks: [
       {
-        // This task is for initiating a migration via the agent backend. This
-        // might split into two or more tasks, possibly a workflow.
+        // This task is for initiating a single page conversion via the agent
+        // backend.
         retries: 2,
         slug: 'beginSinglePageConversion',
         inputSchema: [
@@ -136,18 +136,17 @@ export default buildConfig({
         handler: async ({ input, job, req }: { input: { documentId: string, url: string }, job: any, req: any }) => {
           const { documentId, url } = input;
 
+          console.log(`Running task 'beginSinglePageConversion' for document ID '${documentId}' and URL '${url}'`)
+          
           // TODO: Call agent backend and get a task ID representing the agent's task
-          console.log(`Running  'beginSinglePageConversion' task with document ID '${documentId}' and URL '${url}'`)
-
-
           const agentTaskId = "abc123"; // From the agent backend;
 
-          // TODO: Handle case where existing migration task is in progress
+          // TODO: Handle case where existing conversion task is in progress
           await req.payload.update({
             collection: "pages",
             id: documentId,
             data: {
-              migrationTaskId: agentTaskId
+              conversionTaskId: agentTaskId
             }
           });
 
@@ -205,7 +204,7 @@ export default buildConfig({
         },
       },
       {
-        // This task updates the `migrationTaskId` field on a page
+        // This task updates the `conversionTaskId` field on a page
         retries: 2,
         slug: 'notifyAgentTaskComplete',
         inputSchema: [
@@ -231,7 +230,7 @@ export default buildConfig({
           await req.payload.update({
             collection: "pages",
             id: documentId,
-            data: { migrationTaskId: "" }
+            data: { conversionTaskId: "" }
           });
 
           const result = "success";

@@ -64,9 +64,9 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   fields: [
     {
-      name: 'migratePageUrl',
+      name: 'convertSinglePageUrl',
       type: 'ui',
-      label: 'Migrate existing page',
+      label: 'Convert an existing page',
       admin: {
         components: {
           Field: '@/components/AgentInput'
@@ -75,13 +75,13 @@ export const Pages: CollectionConfig<'pages'> = {
       }
     },
     {
-      name: "migrationTaskId",
+      name: "conversionTaskId",
       type: "text",
       admin: {
         readOnly: true
       },
       // hidden: true
-      label: "Migration Task ID (TODO: Remove this label and make this field hidden)",
+      label: "Conversion Task ID (TODO: Remove this label and make this field hidden)",
 
     },
     {

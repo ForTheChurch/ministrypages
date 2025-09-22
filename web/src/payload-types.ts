@@ -158,7 +158,7 @@ export interface UserAuthOperations {
  */
 export interface Page {
   id: string;
-  migrationTaskId?: string | null;
+  conversionTaskId?: string | null;
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
@@ -1236,7 +1236,7 @@ export interface PayloadMigration {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-  migrationTaskId?: T;
+  conversionTaskId?: T;
   title?: T;
   hero?:
     | T

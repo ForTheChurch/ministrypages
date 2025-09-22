@@ -11,24 +11,37 @@ const getLabelAsString = (label?: Record<string, string> | string) => {
   return typeof label === "string" ? label : "";
 };
 
+const createModal = () => {
+  return createPortal(
+    <Modal>
+      <p>A conversion is in progress. This page will automatically refresh when the task is complete.</p>
+      <button>Go to Pages</button>
+      <button>Cancel Task</button>
+    </Modal>,
+    document.body
+  );
+}
+
+
 function AgentInputClient({ field }: { field?: UIField }) {
   const label = field?.label;
 
-  const migrationTaskIdField = useFormFields(([fields, dispatch]) => fields.migrationTaskId);
+  const conversionTaskIdField = useFormFields(([fields, dispatch]) => fields.conversionTaskId);
   const [mounted, setMounted] = useState(false);
   const [url, setUrl] = useState("");
-  const [activeTaskId, setActiveTaskId] = useState(migrationTaskIdField?.value || "");
-
-
+  const [activeTaskId, setActiveTaskId] = useState(conversionTaskIdField?.value || "");
 
   const { id } = useDocumentInfo();
   const documentId = id;
 
   const reload = () => {
-    console.log("Reloading page");
     window.location.reload();
   };
 
+  // TODO: Make this more robust
+  //  - Handle dirty form
+  //  - Handle existing conversion task
+  //  - Better error handling
   const handleSubmit = async () => {
     axios.post("/api/jobs", {
       workflow: "convertSinglePage",
@@ -41,11 +54,11 @@ function AgentInputClient({ field }: { field?: UIField }) {
     })
   };
 
-  const wasConversionInProgress = migrationTaskIdField?.value;
+  const wasConversionInProgress = conversionTaskIdField?.value;
   const getActiveConversionTaskId = async () => {
     const result = await axios.get(`/api/pages/${documentId}`);
-    const { migrationTaskId } = result.data;
-    return migrationTaskId;
+    const { conversionTaskId } = result.data;
+    return conversionTaskId;
   }
 
   // Update the mounted status
@@ -55,43 +68,33 @@ function AgentInputClient({ field }: { field?: UIField }) {
   }, []);
 
 
-  // Wait for the conversion to complete
+  // Poll once every second for conversion complete and then reload
   useEffect(() => {
+    // For starters, only poll if the page was loaded with an active conversion task
     if (!wasConversionInProgress) return;
 
-    let interval = setInterval(async () => {
-      const migrationTaskId = await getActiveConversionTaskId();
-      setActiveTaskId(migrationTaskId);
-      console.log("[AgentInputClient] Updated migrationTaskId: ", migrationTaskId);
-      if (!migrationTaskId) {
-        clearInterval(interval);
+    let intervalId = setInterval(async () => {
+      const conversionTaskId = await getActiveConversionTaskId();
+      setActiveTaskId(conversionTaskId);
+      console.log("[AgentInputClient] Updated conversionTaskId: ", conversionTaskId);
+      if (!conversionTaskId) {
+        clearInterval(intervalId);
         reload();
       }
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalId);
   }, []);
 
 
-  const createModal = () => {
-    console.log("Creating a modal");
-    return createPortal(
-      <Modal>
-        <p>A conversion is in progress. This page will automatically refresh when the task is complete.</p>
-        <button>Go to Pages</button>
-        <button>Cancel Task</button>
-      </Modal>,
-      document.body
-    );
-  }
   return (<>
     {mounted && activeTaskId && createModal()}
     <div>
-      {label && <label htmlFor="inputMigratePageUrl">{getLabelAsString(label)}</label>}
+      {label && <label htmlFor="inputConversionPageUrl">{getLabelAsString(label)}</label>}
       <div>
         <input
-          id="inputMigratePageUrl"
-          placeholder="Enter the URL of a page to migrate"
+          id="inputConversionPageUrl"
+          placeholder="Enter the URL of a page to convert"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />

@@ -1,8 +1,7 @@
 'use client'
 
-import './modal.scss'
-
 import React from "react";
+import './modal.scss'
 
 export default function Modal({ children }: { children: React.ReactNode }) {
     return (
