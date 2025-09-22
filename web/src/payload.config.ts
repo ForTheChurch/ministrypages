@@ -4,6 +4,7 @@ import path from 'path'
 import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
+import axios from 'axios'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
@@ -137,11 +138,16 @@ export default buildConfig({
           const { documentId, url } = input;
 
           console.log(`Running task 'beginSinglePageConversion' for document ID '${documentId}' and URL '${url}'`)
-          
-          // TODO: Call agent backend and get a task ID representing the agent's task
-          const agentTaskId = "abc123"; // From the agent backend;
 
           // TODO: Handle case where existing conversion task is in progress
+          // TODO: Don't hardcode
+          const response = await axios.post("http://localhost:3005/api/pages/convert-single-page",
+            {
+              url,
+              pageId: documentId
+            });
+          const { task_id: agentTaskId, task_status } = response.data;
+
           await req.payload.update({
             collection: "pages",
             id: documentId,
@@ -155,7 +161,7 @@ export default buildConfig({
           };
         },
         onFail: async () => {
-          console.log("Job 'beginSinglePageConversion' failed");
+          console.error("Job 'beginSinglePageConversion' failed");
         },
         onSuccess: async () => {
           console.log("Job 'beginSinglePageConversion' succeeded");
@@ -182,22 +188,21 @@ export default buildConfig({
         handler: async ({ input, job, req }: { input: { agentTaskId: string }, job: any, req: any }) => {
           const { agentTaskId } = input;
 
-          // TODO: Call agent backend and get a the status of the task
           console.log(`[checkAgentTaskStatus] Checking status of task ID '${agentTaskId}'`);
-
-          // Simulate long-running process
-          console.log("[checkAgentTaskStatus] Doing work for 30 seconds");
-          await new Promise(r => setTimeout(r, 30000));
-          console.log("[checkAgentTaskStatus] Work complete");
-
-          const status = "This is a dummy task";
-
+          
+          // TODO: Don't hardcode
+          const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`) as { task_status: string };
+          const { task_status: status } = response;
+          console.log("[checkAgentStatus] status:", status);
+          
+          // TODO: Handle the status
+          
           return {
             output: { status }
           };
         },
         onFail: async () => {
-          console.log("Job 'checkAgentTaskStatus' failed");
+          console.error("Job 'checkAgentTaskStatus' failed");
         },
         onSuccess: async () => {
           console.log("Job 'checkAgentTaskStatus' succeeded");
@@ -224,7 +229,6 @@ export default buildConfig({
         handler: async ({ input, job, req }: { input: { documentId: string }, job: any, req: any }) => {
           const { documentId } = input;
 
-          // TODO: Call agent backend and get a the status of the task
           console.log(`Notifying document ID '${documentId}' that the agent task is complete`);
 
           await req.payload.update({
@@ -240,7 +244,7 @@ export default buildConfig({
           };
         },
         onFail: async () => {
-          console.log("Job 'notifyAgentTaskComplete' failed");
+          console.error("Job 'notifyAgentTaskComplete' failed");
         },
         onSuccess: async () => {
           console.log("Job 'notifyAgentTaskComplete' succeeded");
