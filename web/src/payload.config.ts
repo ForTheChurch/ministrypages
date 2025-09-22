@@ -1,9 +1,10 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
+import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
+import axios from 'axios'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
@@ -85,6 +86,15 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   jobs: {
+    // This exposes the Jobs collection in the Admin panel
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => {
+      if (!defaultJobsCollection.admin) {
+        defaultJobsCollection.admin = {}
+      }
+
+      defaultJobsCollection.admin.hidden = false
+      return defaultJobsCollection
+    },
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
         // Allow logged in users to execute this endpoint (default)
@@ -97,6 +107,248 @@ export default buildConfig({
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [],
+    tasks: [
+      {
+        // This task is for initiating a single page conversion via the agent
+        // backend.
+        retries: 2,
+        slug: 'beginSinglePageConversion',
+        inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          },
+          {
+            name: 'url',
+            type: 'text',
+            required: true,
+          },
+        ],
+        outputSchema: [
+          {
+            name: 'agentTaskId',
+            type: 'text',
+            required: true,
+          }
+        ],
+        // TODO: Move handler to a separate file
+        // https://payloadcms.com/docs/jobs-queue/tasks#defining-tasks-in-the-config
+        handler: async ({ input, job, req }: { input: { documentId: string, url: string }, job: any, req: any }) => {
+          const { documentId, url } = input;
+
+          console.log(`Running task 'beginSinglePageConversion' for document ID '${documentId}' and URL '${url}'`)
+
+          // TODO: Handle case where existing conversion task is in progress
+          // TODO: Don't hardcode
+          const response = await axios.post("http://localhost:3005/api/pages/convert-single-page",
+            {
+              url,
+              pageId: documentId
+            });
+          const { task_id: agentTaskId, task_status } = response.data;
+
+          await req.payload.update({
+            collection: "pages",
+            id: documentId,
+            data: {
+              conversionTaskId: agentTaskId
+            }
+          });
+
+          return {
+            output: { agentTaskId }
+          };
+        },
+        onFail: async () => {
+          console.error("Job 'beginSinglePageConversion' failed");
+        },
+        onSuccess: async () => {
+          console.log("Job 'beginSinglePageConversion' succeeded");
+        },
+      },
+      {
+        // This task returns success when the given task is complete
+        retries: 9999,
+        slug: 'checkAgentTaskStatus',
+        inputSchema: [
+          {
+            name: 'agentTaskId',
+            type: 'text',
+            required: true
+          }
+        ],
+        outputSchema: [
+          {
+            name: 'status',
+            type: 'text',
+            required: true,
+          }
+        ],
+        handler: async ({ input, job, req }: { input: { agentTaskId: string }, job: any, req: any }) => {
+          const { agentTaskId } = input;
+
+          console.log(`[checkAgentTaskStatus] Checking status of task ID '${agentTaskId}'`);
+          
+          // TODO: Don't hardcode
+          const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`) as { task_status: string };
+          const { task_status: status } = response;
+          console.log("[checkAgentStatus] status:", status);
+          
+          // TODO: Handle the status
+          
+          return {
+            output: { status }
+          };
+        },
+        onFail: async () => {
+          console.error("Job 'checkAgentTaskStatus' failed");
+        },
+        onSuccess: async () => {
+          console.log("Job 'checkAgentTaskStatus' succeeded");
+        },
+      },
+      {
+        // This task updates the `conversionTaskId` field on a page
+        retries: 2,
+        slug: 'notifyAgentTaskComplete',
+        inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          }
+        ],
+        outputSchema: [
+          {
+            name: 'result',
+            type: 'text',
+            required: true,
+          }
+        ],
+        handler: async ({ input, job, req }: { input: { documentId: string }, job: any, req: any }) => {
+          const { documentId } = input;
+
+          console.log(`Notifying document ID '${documentId}' that the agent task is complete`);
+
+          await req.payload.update({
+            collection: "pages",
+            id: documentId,
+            data: { conversionTaskId: "" }
+          });
+
+          const result = "success";
+
+          return {
+            output: { result }
+          };
+        },
+        onFail: async () => {
+          console.error("Job 'notifyAgentTaskComplete' failed");
+        },
+        onSuccess: async () => {
+          console.log("Job 'notifyAgentTaskComplete' succeeded");
+        },
+      }
+    ],
+    workflows: [
+      {
+        slug: 'convertSinglePage',
+        inputSchema: [
+          {
+            name: 'documentId',
+            type: 'text',
+            required: true
+          },
+          {
+            name: 'url',
+            type: 'text',
+            required: true,
+          },
+        ],
+        handler: async ({ job, tasks }) => {
+          // Begin the conversion and get a task ID
+          const taskIdConvertSinglePage = '1';
+          const { agentTaskId } = await tasks.beginSinglePageConversion(taskIdConvertSinglePage, {
+            input: {
+              documentId: job.input.documentId,
+              url: job.input.url
+            }
+          });
+          console.log("[convertSinglePage] agentTaskId:", agentTaskId);
+
+          // Wait on the task to complete
+          const taskIdCheckAgentTaskStatus = '2';
+          const { status } = await tasks.checkAgentTaskStatus(taskIdCheckAgentTaskStatus, {
+            input: { agentTaskId }
+          });
+          console.log("[convertSinglePage] status:", status);
+
+          // Notify the page that the task is complete
+          const taskIdNotifyAgentTaskComplete = '3';
+          const { result } = await tasks.notifyAgentTaskComplete(taskIdNotifyAgentTaskComplete, {
+            input: { documentId: job.input.documentId }
+          });
+          console.log("[convertSinglePage] result:", result);
+        }
+      } as WorkflowConfig<'convertSinglePage'>
+    ]
   },
+  endpoints: [
+    {
+      // This endpoint is for creating jobs via the REST API
+      path: '/jobs',
+      method: 'post',
+      handler: async (req: PayloadRequest) => {
+        console.log('Creating job via the /jobs endpoint');
+        const { task, workflow, data } = await req.json();
+        const { documentId, url }: { documentId: string, url: string } = data;
+
+        if (task && workflow) {
+          throw new Error("Cannot queue both a task and a workflow");
+        }
+
+        const job = await req.payload.jobs.queue({
+          task,
+          workflow,
+          input: {
+            documentId,
+            url
+          }
+        });
+
+        // Schedule the job to start asynchronously
+        setImmediate(async () => {
+          try {
+            await req.payload.jobs.runByID({ id: job.id });
+            console.log(`Job '${job.id}' completed successfully`);
+          } catch (error) {
+            console.error(`Job '${job.id}' failed:`, error);
+          }
+        });
+
+        return Response.json({ message: `Job created. Job ID: ${job.id}, URL: ${url}` }, { status: 201 });
+      }
+    },
+    {
+      // This endpoint is for getting the status of a job
+      path: '/jobs/:id',
+      method: 'get',
+      handler: async (req: PayloadRequest) => {
+        const { id } = req.routeParams as { id: string };
+
+        const job = await req.payload.findByID({
+          collection: "payload-jobs",
+          id
+        });
+        if (!job) {
+          return Response.json({}, { status: 404 });
+        }
+
+        console.log(`Checking status of job '${id}':`, job.taskStatus);
+
+        return Response.json({ status: job.taskStatus }, { status: 201 });
+      }
+    }
+  ]
 })

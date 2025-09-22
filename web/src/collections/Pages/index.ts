@@ -58,8 +58,32 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    components: {
+      beforeListTable: [],
+    }
   },
   fields: [
+    {
+      name: 'convertSinglePageUrl',
+      type: 'ui',
+      label: 'Convert an existing page',
+      admin: {
+        components: {
+          Field: '@/components/ConvertSinglePage'
+        },
+        position: 'sidebar',
+      }
+    },
+    {
+      name: "conversionTaskId",
+      type: "text",
+      admin: {
+        readOnly: true
+      },
+      // hidden: true
+      label: "Conversion Task ID (TODO: Remove this label and make this field hidden)",
+
+    },
     {
       name: 'title',
       type: 'text',
