@@ -28,7 +28,7 @@ const createModal = () => {
   };
 
   const onClickCancelTask = () => {
-
+    console.warn("[ConvertSinglePage] 'Cancel Task' button is not implemented");
   };
 
   return createPortal(
@@ -128,28 +128,29 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   }, [activeConversion]);
 
 
-  return (<>
-    {mounted && isAgentTaskActive(activeConversion) && createModal()}
-    <div>
-      {label && <label htmlFor="inputConversionPageUrl">{getLabelAsString(label)}</label>}
+  return (
+    <React.Fragment>
+      {mounted && isAgentTaskActive(activeConversion) && createModal()}
       <div>
-        <input
-          id="inputConversionPageUrl"
-          placeholder="Enter the URL of a page to convert"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <button
-          type="button"
-          onClick={handleSubmit}
-        >Convert</button>
+        {label && <label htmlFor="inputConversionPageUrl">{getLabelAsString(label)}</label>}
+        <div>
+          <input
+            id="inputConversionPageUrl"
+            placeholder="Enter the URL of a page to convert"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleSubmit}
+          >Convert</button>
+        </div>
+        <div>
+          <label>Task status</label>
+          <input value={activeConversion?.agentTaskStatus || "No task running"} disabled />
+        </div>
       </div>
-      <div>
-        <label>Task status</label>
-        <input value={activeConversion?.agentTaskStatus || "No task running"} disabled />
-      </div>
-    </div>
-  </>
+    </React.Fragment>
   );
 }
 
