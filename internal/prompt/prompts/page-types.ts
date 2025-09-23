@@ -42,11 +42,21 @@ export interface Page {
              */
             appearance?: ('default' | 'outline') | null;
           };
+          id?: string | null;
         }[]
       | null;
-      media?: string | null; // Media ID - required if hero is type 'highImpact' or 'mediumImpact'
+    media?: string | null;  // Media ID - required if hero is type 'highImpact' or 'mediumImpact'
   };
-  layout: (TwoColumn | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | TwoColumn
+    | ImageBanner
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | PostListBlock
+    | EventListBlock
+    | FormBlock
+  )[];
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -54,7 +64,7 @@ export interface Page {
  */
 export interface Post {
   title: string;
-  heroImage?: string | null;
+  heroImage?: string | null;  // Media ID
   content: {
     root: {
       type: string;
@@ -73,14 +83,6 @@ export interface Post {
   relatedPosts?: (string | Post)[] | null;
   series?: (string | null) | Series;
   categories?: (string | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    description?: string | null;
-  };
-  publishedAt?: string | null;
   authors?: (string | User)[] | null;
   populatedAuthors?:
     | {
@@ -91,8 +93,6 @@ export interface Post {
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -101,6 +101,7 @@ export interface Post {
 export interface Series {
   id: string;
   title: string;
+  image?: string | null;  // Media ID
   description: string;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -158,7 +159,15 @@ export interface User {
  * via the `definition` "TwoColumn".
  */
 export interface TwoColumn {
+  image?: string | null;  // Media ID
+  /**
+   * Choose where the image should be on larger screens.
+   */
   imagePosition?: ('left' | 'right') | null;
+  /**
+   * Choose where the image should be on mobile screens.
+   */
+  imagePositionOnMobile?: ('top' | 'bottom') | null;
   richText?: {
     root: {
       type: string;
@@ -174,6 +183,11 @@ export interface TwoColumn {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Center the text on mobile screens.
+   */
+  centerTextOnMobile?: boolean | null;
+  sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   enableLink?: boolean | null;
   link?: {
     type?: ('reference' | 'custom') | null;
@@ -194,10 +208,57 @@ export interface TwoColumn {
      */
     appearance?: ('default' | 'outline') | null;
   };
-  image?: string | null; // Media ID
   id?: string | null;
   blockName?: string | null;
   blockType: 'twoColumn';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBanner".
+ */
+export interface ImageBanner {
+  image: string;  // Media ID
+  richText?: {
+    root: {
+      type: string;
+      children: { // This can't have nested children
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  blockName?: string | null;
+  blockType: 'imageBanner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -302,16 +363,16 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: string; // Media ID
+  media: string;  // Media ID
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
+ * via the `definition` "PostListBlock".
  */
-export interface ArchiveBlock {
+export interface PostListBlock {
   introContent?: {
     root: {
       type: string;
@@ -328,7 +389,6 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
   categories?: (string | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
@@ -339,7 +399,69 @@ export interface ArchiveBlock {
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'postList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventListBlock".
+ */
+export interface EventListBlock {
+  introContent?: {
+    root: {
+      type: string;
+      children: { // This can't have nested children
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  populateBy?: ('collection' | 'selection') | null;
+  limit?: number | null;
+  selectedDocs?:
+    | {
+        relationTo: 'events';
+        value: string | Event;
+      }[]
+    | null;
+  blockName?: string | null;
+  blockType: 'eventList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  eventImage?: string | null;  // Media ID
+  /**
+   * Here you can add a relevant video link for the event. If a link is provided, we'll embed it on the event. You can paste any YouTube or Vimeo share link - it will be automatically converted to the embeddable format.
+   */
+  videoLink?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: { // This can't have nested children
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  location?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
