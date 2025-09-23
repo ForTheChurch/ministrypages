@@ -123,7 +123,7 @@ export interface Config {
   jobs: {
     tasks: {
       beginSinglePageConversion: TaskBeginSinglePageConversion;
-      checkAgentTaskStatus: TaskCheckAgentTaskStatus;
+      waitForAgentTask: TaskWaitForAgentTask;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -1098,7 +1098,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'schedulePublish';
+        taskSlug: 'inline' | 'beginSinglePageConversion' | 'waitForAgentTask' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1132,7 +1132,7 @@ export interface PayloadJob {
       }[]
     | null;
   workflowSlug?: 'convertSinglePage' | null;
-  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'waitForAgentTask' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -2059,16 +2059,16 @@ export interface TaskBeginSinglePageConversion {
     url: string;
   };
   output: {
-    agentTaskId: string;
+    singlePageConversionId: string;
   };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskCheckAgentTaskStatus".
+ * via the `definition` "TaskWaitForAgentTask".
  */
-export interface TaskCheckAgentTaskStatus {
+export interface TaskWaitForAgentTask {
   input: {
-    agentTaskId: string;
+    singlePageConversionId: string;
   };
   output: {
     status: string;

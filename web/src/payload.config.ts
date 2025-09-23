@@ -20,6 +20,7 @@ import { Header } from './Header/config'
 import { Logo } from './Logo/config'
 import { plugins } from './plugins'
 import { getServerSideURL } from './utilities/getURL'
+import { SinglePageConversion } from './payload-types'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -128,7 +129,7 @@ export default buildConfig({
         ],
         outputSchema: [
           {
-            name: 'agentTaskId',
+            name: 'singlePageConversionId',
             type: 'text',
             required: true,
           }
@@ -138,9 +139,18 @@ export default buildConfig({
         handler: async ({ input, job, req }: { input: { documentId: string, url: string }, job: any, req: any }) => {
           const { documentId, url } = input;
 
-          console.log(`Running task 'beginSinglePageConversion' for document ID '${documentId}' and URL '${url}'`)
+          const activeTaskCountForPage = await req.payload.count({
+            collection: "single-page-conversions",
+            where: {
+              pageId: { equals: documentId },
+              data: { agentTaskStatus: { in: "queued,running" } }
+            }
+          });
 
-          // TODO: Handle case where existing conversion task is in progress
+          if (activeTaskCountForPage > 0) {
+            throw new Error("[beginSinglePageConversion] Cannot start a new conversion when an existing conversion is active.")
+          }
+
           // TODO: Don't hardcode
           const response = await axios.post("http://localhost:3005/api/pages/convert-single-page",
             {
@@ -149,9 +159,8 @@ export default buildConfig({
             });
           const { task_id: agentTaskId, task_status: agentTaskStatus } = response.data;
 
-          await req.payload.create({
+          const singlePageConversion = await req.payload.create({
             collection: "single-page-conversions",
-            id: documentId,
             data: {
               pageId: documentId,
               agentTaskId,
@@ -160,7 +169,7 @@ export default buildConfig({
           });
 
           return {
-            output: { agentTaskId }
+            output: { singlePageConversionId: singlePageConversion?.id }
           };
         },
         onFail: async () => {
@@ -173,10 +182,10 @@ export default buildConfig({
       {
         // This task returns success when the given task is complete
         retries: 9999,
-        slug: 'checkAgentTaskStatus',
+        slug: 'waitForAgentTask',
         inputSchema: [
           {
-            name: 'agentTaskId',
+            name: 'singlePageConversionId',
             type: 'text',
             required: true
           }
@@ -188,50 +197,58 @@ export default buildConfig({
             required: true,
           }
         ],
-        handler: async ({ input, job, req }: { input: { agentTaskId: string }, job: any, req: any }) => {
-          const { agentTaskId } = input;
+        handler: async ({ input, job, req }: { input: { singlePageConversionId: string }, job: any, req: any }) => {
+          const { singlePageConversionId } = input;
 
-          console.log(`[checkAgentTaskStatus] Checking status of task ID '${agentTaskId}'`);
+          const singlePageConversion = await req.payload.findByID({
+            collection: "single-page-conversions",
+            id: singlePageConversionId
+          });
+          const { agentTaskId } = singlePageConversion;
 
+          if (!singlePageConversion) {
+            throw new Error(`Cannot find single page conversion with ID [${singlePageConversionId}]`)
+          }
+
+          // Configure a timeout on the polling for safety
           const timeoutMs = 300000;
           const endTime = Date.now() + timeoutMs;
           while (true) {
             // TODO: Don't hardcode
             const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`);
+
             const { task_status: agentTaskStatus } = response.data;
-            console.log("[checkAgentStatus] status:", agentTaskStatus);
 
             // Update the task status in the document
-            req.payload.update({
+            await req.payload.update({
               collection: "single-page-conversions",
-              where: { agentTaskId: { equals: agentTaskId } },
+              id: singlePageConversionId,
               data: { agentTaskStatus }
             });
-
 
             // Status schema:
             // {
             //   "task_status": "queued" | "running" | "completed" | "failed"
             // }
             if (agentTaskStatus == "completed" || agentTaskStatus == "failed") {
-              break;
+              return {
+                output: { status: agentTaskStatus }
+              };
             }
 
+            // Timeout
             if (Date.now() >= endTime) {
-              throw new Error("[checkAgentStatus] Timed out");
+              throw new Error("[waitForAgentTask] Timed out");
             }
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
 
-          return {
-            output: { status: agentTaskStatus }
-          };
         },
         onFail: async () => {
-          console.error("Job 'checkAgentTaskStatus' failed");
+          console.error("Job 'waitForAgentTask' failed");
         },
         onSuccess: async () => {
-          console.log("Job 'checkAgentTaskStatus' succeeded");
+          console.log("Job 'waitForAgentTask' succeeded");
         },
       },
     ],
@@ -253,27 +270,18 @@ export default buildConfig({
         handler: async ({ job, tasks }) => {
           // Begin the conversion and get a task ID
           const taskIdConvertSinglePage = '1';
-          const { agentTaskId } = await tasks.beginSinglePageConversion(taskIdConvertSinglePage, {
+          const { singlePageConversionId } = await tasks.beginSinglePageConversion(taskIdConvertSinglePage, {
             input: {
               documentId: job.input.documentId,
               url: job.input.url
             }
           });
-          console.log("[convertSinglePage] agentTaskId:", agentTaskId);
 
           // Wait on the task to complete
-          const taskIdCheckAgentTaskStatus = '2';
-          const { status } = await tasks.checkAgentTaskStatus(taskIdCheckAgentTaskStatus, {
-            input: { agentTaskId }
+          const taskIdWaitForAgentTask = '2';
+          const { status } = await tasks.waitForAgentTask(taskIdWaitForAgentTask, {
+            input: { singlePageConversionId }
           });
-          console.log("[convertSinglePage] status:", status);
-
-          // Notify the page that the task is complete
-          const taskIdNotifyAgentTaskComplete = '3';
-          const { result } = await tasks.notifyAgentTaskComplete(taskIdNotifyAgentTaskComplete, {
-            input: { documentId: job.input.documentId }
-          });
-          console.log("[convertSinglePage] result:", result);
         }
       } as WorkflowConfig<'convertSinglePage'>
     ]
@@ -284,7 +292,6 @@ export default buildConfig({
       path: '/single-page-conversion-tasks',
       method: 'post',
       handler: async (req: PayloadRequest) => {
-        console.log("[/single-page-conversion-tasks] Creating job");
         const { task, workflow, data } = await req.json();
         const { documentId, url }: { documentId: string, url: string } = data;
 
@@ -305,7 +312,6 @@ export default buildConfig({
         setImmediate(async () => {
           try {
             await req.payload.jobs.runByID({ id: job.id });
-            console.log(`[/single-page-conversion-tasks] Job '${job.id}' completed successfully`);
           } catch (error) {
             console.error(`[/single-page-conversion-tasks] Job '${job.id}' failed:`, error);
           }
@@ -320,8 +326,6 @@ export default buildConfig({
       handler: async (req: PayloadRequest) => {
         const { pageId } = req.routeParams as { pageId: string };
 
-        console.log("[/single-page-conversion-tasks/:pageId] pageId:", pageId);
-
         const result = await req.payload.find({
           collection: "single-page-conversions",
           where: {
@@ -329,12 +333,10 @@ export default buildConfig({
           },
           limit: 1,
         });
-        console.log("[/single-page-conversion-tasks/:pageId] result:", result);
         if (result?.docs.length !== 1) {
           return Response.json({}, { status: 404 });
         }
         const doc = result.docs[0];
-        console.log("[/single-page-conversion-tasks/:pageId] doc:", doc);
 
         return Response.json({ doc }, { status: 200 });
       }

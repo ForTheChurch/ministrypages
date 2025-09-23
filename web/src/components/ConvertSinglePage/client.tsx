@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
-import type { Payload, UIField } from "payload"
+import type { Payload, UIField, Where } from "payload"
 import { useDocumentInfo, useFormFields } from '@payloadcms/ui'
 import axios from "axios"
+import { stringify } from "qs-esm"
 import Modal from "./modal"
 
 const getLabelAsString = (label?: Record<string, string> | string) => {
@@ -40,6 +41,30 @@ const createModal = () => {
   );
 }
 
+const getActiveConversionTask = async (documentId: string) => {
+  const query: Where = {
+    agentTaskStatus: { in: "queued,running" },
+  };
+  const queryString = stringify(
+    {
+      where: query,
+      limit: 1,
+      sort: "-createdAt"
+    },
+    { addQueryPrefix: true },
+  );
+
+  try {
+    const result = await axios.get(`/api/single-page-conversion-tasks/${documentId}${queryString}`);
+    const { doc } = result.data;
+    return doc;
+  } catch (error) {
+    if (error.status == 404) {
+      return null;
+    }
+  }
+}
+
 const isAgentTaskActive = (agentTask) => {
   const agentTaskStatus = agentTask?.agentTaskStatus;
   return (agentTaskStatus == "queued") || (agentTaskStatus == "running");
@@ -50,7 +75,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
 
   const [mounted, setMounted] = useState(false);
   const [url, setUrl] = useState("");
-  const [activeTask, setActiveTask] = useState({});
+  const [activeConversion, setActiveConversion] = useState({});
 
   const { id } = useDocumentInfo();
   const documentId = id;
@@ -64,24 +89,11 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
       workflow: "convertSinglePage",
       data: { documentId, url },
     }).then((response) => {
-      console.log("Job created:", response.data);
       reloadPage();
     }).catch((error) => {
       console.error("Error creating job:", error);
     })
   };
-
-  const getActiveConversionTask = async () => {
-    try {
-      const result = await axios.get(`/api/single-page-conversion-tasks/${documentId}`);
-      const { doc } = result.data;
-      return doc;
-    } catch (error) {
-      if (error.status == 404) {
-        return null;
-      }
-    }
-  }
 
   // Update the mounted status
   useEffect(() => {
@@ -89,20 +101,19 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     return () => setMounted(false);
   }, []);
 
-  // Get the initial activeTaskId
+  // Get the initial active conversion
   useEffect(() => {
-    getActiveConversionTask().then(task => setActiveTask(task));
+    getActiveConversionTask(documentId).then(task => setActiveConversion(task));
   }, []);
 
 
   // Poll once every second for conversion complete and then reload
   useEffect(() => {
-    if (!isAgentTaskActive(activeTask)) return;
+    if (!isAgentTaskActive(activeConversion)) return;
 
     let intervalId = setInterval(async () => {
-      const conversionTask = await getActiveConversionTask();
-      setActiveTask(conversionTask);
-      console.log("[ConvertSinglePageClient] Updated conversionTask: ", conversionTask?.agentTaskStatus);
+      const conversionTask = await getActiveConversionTask(documentId);
+      setActiveConversion(conversionTask);
       if (!isAgentTaskActive(conversionTask)) {
         clearInterval(intervalId);
         reloadPage();
@@ -110,11 +121,11 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [activeTask]);
+  }, [activeConversion]);
 
 
   return (<>
-    {mounted && isAgentTaskActive(activeTask) && createModal()}
+    {mounted && isAgentTaskActive(activeConversion) && createModal()}
     <div>
       {label && <label htmlFor="inputConversionPageUrl">{getLabelAsString(label)}</label>}
       <div>
@@ -127,11 +138,11 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
         <button
           type="button"
           onClick={handleSubmit}
-        >Migrate</button>
+        >Convert</button>
       </div>
       <div>
-        <span>Task status:</span>
-        <span>{activeTask?.agentTaskStatus || "No task running"}</span>
+        <label>Task status</label>
+        <input value={activeConversion?.agentTaskStatus || "No task running"} disabled />
       </div>
     </div>
   </>
