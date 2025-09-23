@@ -75,16 +75,6 @@ export const Pages: CollectionConfig<'pages'> = {
       }
     },
     {
-      name: "conversionTaskId",
-      type: "text",
-      admin: {
-        readOnly: true
-      },
-      // hidden: true
-      label: "Conversion Task ID (TODO: Remove this label and make this field hidden)",
-
-    },
-    {
       name: 'title',
       type: 'text',
       required: true,
