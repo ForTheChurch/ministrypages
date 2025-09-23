@@ -43,7 +43,10 @@ const createModal = () => {
 
 const getActiveConversionTask = async (documentId: string) => {
   const query: Where = {
-    agentTaskStatus: { in: "queued,running" },
+    and: [
+      { pageId: { equals: documentId } },
+      { agentTaskStatus: { in: "queued,running" } },
+    ]
   };
   const queryString = stringify(
     {
@@ -55,13 +58,14 @@ const getActiveConversionTask = async (documentId: string) => {
   );
 
   try {
-    const result = await axios.get(`/api/single-page-conversion-tasks/${documentId}${queryString}`);
-    const { doc } = result.data;
-    return doc;
-  } catch (error) {
-    if (error.status == 404) {
+    const result = await axios.get(`/api/single-page-conversions${queryString}`);
+    if (result.data?.totalDocs != 1) {
       return null;
     }
+    const { docs } = result.data;
+    return docs[0];
+  } catch (error) {
+    console.error("[ConvertSinglePage] Failed to get active conversion task with error:", error);
   }
 }
 
@@ -85,7 +89,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   //  - Handle existing conversion task
   //  - Better error handling
   const handleSubmit = async () => {
-    axios.post("/api/single-page-conversion-tasks", {
+    axios.post("/api/begin-single-page-conversion", {
       workflow: "convertSinglePage",
       data: { documentId, url },
     }).then((response) => {

@@ -289,14 +289,14 @@ export default buildConfig({
   endpoints: [
     {
       // This endpoint is for creating jobs via the REST API
-      path: '/single-page-conversion-tasks',
+      path: '/begin-single-page-conversion',
       method: 'post',
       handler: async (req: PayloadRequest) => {
         const { task, workflow, data } = await req.json();
         const { documentId, url }: { documentId: string, url: string } = data;
 
         if (task && workflow) {
-          throw new Error("[/single-page-conversion-tasks] Cannot queue both a task and a workflow");
+          throw new Error("[/begin-single-page-conversion] Cannot queue both a task and a workflow");
         }
 
         const job = await req.payload.jobs.queue({
@@ -313,32 +313,11 @@ export default buildConfig({
           try {
             await req.payload.jobs.runByID({ id: job.id });
           } catch (error) {
-            console.error(`[/single-page-conversion-tasks] Job '${job.id}' failed:`, error);
+            console.error(`[/begin-single-page-conversion] Job '${job.id}' failed:`, error);
           }
         });
 
         return Response.json({ message: `Job created. Job ID: ${job.id}, URL: ${url}` }, { status: 201 });
-      }
-    },
-    {
-      path: '/single-page-conversion-tasks/:pageId',
-      method: 'get',
-      handler: async (req: PayloadRequest) => {
-        const { pageId } = req.routeParams as { pageId: string };
-
-        const result = await req.payload.find({
-          collection: "single-page-conversions",
-          where: {
-            pageId: { equals: pageId }
-          },
-          limit: 1,
-        });
-        if (result?.docs.length !== 1) {
-          return Response.json({}, { status: 404 });
-        }
-        const doc = result.docs[0];
-
-        return Response.json({ doc }, { status: 200 });
       }
     }
   ]
