@@ -18,7 +18,7 @@ const reloadPage = () => {
 
 const navigate = (url: string) => {
   window.location.href = url;
-  
+
 }
 
 const createModal = () => {
@@ -40,13 +40,17 @@ const createModal = () => {
   );
 }
 
+const isAgentTaskActive = (agentTask) => {
+  const agentTaskStatus = agentTask?.agentTaskStatus;
+  return (agentTaskStatus == "queued") || (agentTaskStatus == "running");
+}
+
 function ConvertSinglePageClient({ field }: { field?: UIField }) {
   const label = field?.label;
 
-  const conversionTaskIdField = useFormFields(([fields, dispatch]) => fields.conversionTaskId);
   const [mounted, setMounted] = useState(false);
   const [url, setUrl] = useState("");
-  const [activeTaskId, setActiveTaskId] = useState(conversionTaskIdField?.value || "");
+  const [activeTask, setActiveTask] = useState({});
 
   const { id } = useDocumentInfo();
   const documentId = id;
@@ -56,7 +60,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   //  - Handle existing conversion task
   //  - Better error handling
   const handleSubmit = async () => {
-    axios.post("/api/jobs", {
+    axios.post("/api/single-page-conversion-tasks", {
       workflow: "convertSinglePage",
       data: { documentId, url },
     }).then((response) => {
@@ -67,11 +71,16 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     })
   };
 
-  const wasConversionInProgress = conversionTaskIdField?.value;
-  const getActiveConversionTaskId = async () => {
-    const result = await axios.get(`/api/pages/${documentId}`);
-    const { conversionTaskId } = result.data;
-    return conversionTaskId;
+  const getActiveConversionTask = async () => {
+    try {
+      const result = await axios.get(`/api/single-page-conversion-tasks/${documentId}`);
+      const { doc } = result.data;
+      return doc;
+    } catch (error) {
+      if (error.status == 404) {
+        return null;
+      }
+    }
   }
 
   // Update the mounted status
@@ -80,28 +89,32 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     return () => setMounted(false);
   }, []);
 
-
-  // Poll once every second for conversion complete and then reload
+  // Get the initial activeTaskId
   useEffect(() => {
-    // For starters, only poll if the page was loaded with an active conversion task
-    if (!wasConversionInProgress) return;
-
-    let intervalId = setInterval(async () => {
-      const conversionTaskId = await getActiveConversionTaskId();
-      setActiveTaskId(conversionTaskId);
-      console.log("[ConvertSinglePageClient] Updated conversionTaskId: ", conversionTaskId);
-      if (!conversionTaskId) {
-        clearInterval(intervalId);
-        reloadPage();
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    getActiveConversionTask().then(task => setActiveTask(task));
   }, []);
 
 
+  // Poll once every second for conversion complete and then reload
+  useEffect(() => {
+    if (!isAgentTaskActive(activeTask)) return;
+
+    let intervalId = setInterval(async () => {
+      const conversionTask = await getActiveConversionTask();
+      setActiveTask(conversionTask);
+      console.log("[ConvertSinglePageClient] Updated conversionTask: ", conversionTask?.agentTaskStatus);
+      if (!isAgentTaskActive(conversionTask)) {
+        clearInterval(intervalId);
+        reloadPage();
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [activeTask]);
+
+
   return (<>
-    {mounted && activeTaskId && createModal()}
+    {mounted && isAgentTaskActive(activeTask) && createModal()}
     <div>
       {label && <label htmlFor="inputConversionPageUrl">{getLabelAsString(label)}</label>}
       <div>
@@ -115,6 +128,10 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
           type="button"
           onClick={handleSubmit}
         >Migrate</button>
+      </div>
+      <div>
+        <span>Task status:</span>
+        <span>{activeTask?.agentTaskStatus || "No task running"}</span>
       </div>
     </div>
   </>

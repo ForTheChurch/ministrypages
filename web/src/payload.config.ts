@@ -13,6 +13,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Series } from './collections/Series'
+import { SinglePageConversions } from './collections/SinglePageConversions'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -76,7 +77,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Media, Posts, Events, Series, Categories, Users],
+  collections: [Pages, Media, Posts, Events, Series, Categories, Users, SinglePageConversions],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Logo, Header, Footer],
   plugins,
@@ -146,13 +147,15 @@ export default buildConfig({
               url,
               pageId: documentId
             });
-          const { task_id: agentTaskId, task_status } = response.data;
+          const { task_id: agentTaskId, task_status: agentTaskStatus } = response.data;
 
-          await req.payload.update({
-            collection: "pages",
+          await req.payload.create({
+            collection: "single-page-conversions",
             id: documentId,
             data: {
-              conversionTaskId: agentTaskId
+              pageId: documentId,
+              agentTaskId,
+              agentTaskStatus
             }
           });
 
@@ -189,16 +192,39 @@ export default buildConfig({
           const { agentTaskId } = input;
 
           console.log(`[checkAgentTaskStatus] Checking status of task ID '${agentTaskId}'`);
-          
-          // TODO: Don't hardcode
-          const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`) as { task_status: string };
-          const { task_status: status } = response;
-          console.log("[checkAgentStatus] status:", status);
-          
-          // TODO: Handle the status
-          
+
+          const timeoutMs = 300000;
+          const endTime = Date.now() + timeoutMs;
+          while (true) {
+            // TODO: Don't hardcode
+            const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`);
+            const { task_status: agentTaskStatus } = response.data;
+            console.log("[checkAgentStatus] status:", agentTaskStatus);
+
+            // Update the task status in the document
+            req.payload.update({
+              collection: "single-page-conversions",
+              where: { agentTaskId: { equals: agentTaskId } },
+              data: { agentTaskStatus }
+            });
+
+
+            // Status schema:
+            // {
+            //   "task_status": "queued" | "running" | "completed" | "failed"
+            // }
+            if (agentTaskStatus == "completed" || agentTaskStatus == "failed") {
+              break;
+            }
+
+            if (Date.now() >= endTime) {
+              throw new Error("[checkAgentStatus] Timed out");
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+
           return {
-            output: { status }
+            output: { status: agentTaskStatus }
           };
         },
         onFail: async () => {
@@ -208,48 +234,6 @@ export default buildConfig({
           console.log("Job 'checkAgentTaskStatus' succeeded");
         },
       },
-      {
-        // This task updates the `conversionTaskId` field on a page
-        retries: 2,
-        slug: 'notifyAgentTaskComplete',
-        inputSchema: [
-          {
-            name: 'documentId',
-            type: 'text',
-            required: true
-          }
-        ],
-        outputSchema: [
-          {
-            name: 'result',
-            type: 'text',
-            required: true,
-          }
-        ],
-        handler: async ({ input, job, req }: { input: { documentId: string }, job: any, req: any }) => {
-          const { documentId } = input;
-
-          console.log(`Notifying document ID '${documentId}' that the agent task is complete`);
-
-          await req.payload.update({
-            collection: "pages",
-            id: documentId,
-            data: { conversionTaskId: "" }
-          });
-
-          const result = "success";
-
-          return {
-            output: { result }
-          };
-        },
-        onFail: async () => {
-          console.error("Job 'notifyAgentTaskComplete' failed");
-        },
-        onSuccess: async () => {
-          console.log("Job 'notifyAgentTaskComplete' succeeded");
-        },
-      }
     ],
     workflows: [
       {
@@ -297,15 +281,15 @@ export default buildConfig({
   endpoints: [
     {
       // This endpoint is for creating jobs via the REST API
-      path: '/jobs',
+      path: '/single-page-conversion-tasks',
       method: 'post',
       handler: async (req: PayloadRequest) => {
-        console.log('Creating job via the /jobs endpoint');
+        console.log("[/single-page-conversion-tasks] Creating job");
         const { task, workflow, data } = await req.json();
         const { documentId, url }: { documentId: string, url: string } = data;
 
         if (task && workflow) {
-          throw new Error("Cannot queue both a task and a workflow");
+          throw new Error("[/single-page-conversion-tasks] Cannot queue both a task and a workflow");
         }
 
         const job = await req.payload.jobs.queue({
@@ -321,9 +305,9 @@ export default buildConfig({
         setImmediate(async () => {
           try {
             await req.payload.jobs.runByID({ id: job.id });
-            console.log(`Job '${job.id}' completed successfully`);
+            console.log(`[/single-page-conversion-tasks] Job '${job.id}' completed successfully`);
           } catch (error) {
-            console.error(`Job '${job.id}' failed:`, error);
+            console.error(`[/single-page-conversion-tasks] Job '${job.id}' failed:`, error);
           }
         });
 
@@ -331,23 +315,28 @@ export default buildConfig({
       }
     },
     {
-      // This endpoint is for getting the status of a job
-      path: '/jobs/:id',
+      path: '/single-page-conversion-tasks/:pageId',
       method: 'get',
       handler: async (req: PayloadRequest) => {
-        const { id } = req.routeParams as { id: string };
+        const { pageId } = req.routeParams as { pageId: string };
 
-        const job = await req.payload.findByID({
-          collection: "payload-jobs",
-          id
+        console.log("[/single-page-conversion-tasks/:pageId] pageId:", pageId);
+
+        const result = await req.payload.find({
+          collection: "single-page-conversions",
+          where: {
+            pageId: { equals: pageId }
+          },
+          limit: 1,
         });
-        if (!job) {
+        console.log("[/single-page-conversion-tasks/:pageId] result:", result);
+        if (result?.docs.length !== 1) {
           return Response.json({}, { status: 404 });
         }
+        const doc = result.docs[0];
+        console.log("[/single-page-conversion-tasks/:pageId] doc:", doc);
 
-        console.log(`Checking status of job '${id}':`, job.taskStatus);
-
-        return Response.json({ status: job.taskStatus }, { status: 201 });
+        return Response.json({ doc }, { status: 200 });
       }
     }
   ]

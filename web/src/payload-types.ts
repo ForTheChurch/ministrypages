@@ -74,6 +74,7 @@ export interface Config {
     series: Series;
     categories: Category;
     users: User;
+    'single-page-conversions': SinglePageConversion;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -92,6 +93,7 @@ export interface Config {
     series: SeriesSelect<false> | SeriesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'single-page-conversions': SinglePageConversionsSelect<false> | SinglePageConversionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -122,7 +124,6 @@ export interface Config {
     tasks: {
       beginSinglePageConversion: TaskBeginSinglePageConversion;
       checkAgentTaskStatus: TaskCheckAgentTaskStatus;
-      notifyAgentTaskComplete: TaskNotifyAgentTaskComplete;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -158,7 +159,6 @@ export interface UserAuthOperations {
  */
 export interface Page {
   id: string;
-  conversionTaskId?: string | null;
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
@@ -962,6 +962,18 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "single-page-conversions".
+ */
+export interface SinglePageConversion {
+  id: string;
+  pageId: string | Page;
+  agentTaskId: string;
+  agentTaskStatus: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1086,12 +1098,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug:
-          | 'inline'
-          | 'beginSinglePageConversion'
-          | 'checkAgentTaskStatus'
-          | 'notifyAgentTaskComplete'
-          | 'schedulePublish';
+        taskSlug: 'inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1125,9 +1132,7 @@ export interface PayloadJob {
       }[]
     | null;
   workflowSlug?: 'convertSinglePage' | null;
-  taskSlug?:
-    | ('inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'notifyAgentTaskComplete' | 'schedulePublish')
-    | null;
+  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'checkAgentTaskStatus' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1168,6 +1173,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'single-page-conversions';
+        value: string | SinglePageConversion;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1236,7 +1245,6 @@ export interface PayloadMigration {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-  conversionTaskId?: T;
   title?: T;
   hero?:
     | T
@@ -1641,6 +1649,17 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "single-page-conversions_select".
+ */
+export interface SinglePageConversionsSelect<T extends boolean = true> {
+  pageId?: T;
+  agentTaskId?: T;
+  agentTaskStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2053,18 +2072,6 @@ export interface TaskCheckAgentTaskStatus {
   };
   output: {
     status: string;
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskNotifyAgentTaskComplete".
- */
-export interface TaskNotifyAgentTaskComplete {
-  input: {
-    documentId: string;
-  };
-  output: {
-    result: string;
   };
 }
 /**
