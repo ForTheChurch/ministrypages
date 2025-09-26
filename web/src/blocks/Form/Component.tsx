@@ -1,15 +1,15 @@
 'use client'
 import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
 
-import { useRouter } from 'next/navigation'
-import React, { useCallback, useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { useRouter } from 'next/navigation'
+import React, { useCallback, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { fields } from './fields'
 
 export type FormBlockType = {
   blockName?: string
@@ -114,11 +114,11 @@ export const FormBlock: React.FC<
   )
 
   return (
-    <div className="container lg:max-w-[48rem]">
+    <div className="container grid lg:grid-cols-2 gap-8 w-full">
       {enableIntro && introContent && !hasSubmitted && (
-        <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
+        <RichText data={introContent} removeMargins enableGutter={false} />
       )}
-      <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
+      <div>
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText data={confirmationMessage} />
