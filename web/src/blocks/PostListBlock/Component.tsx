@@ -59,7 +59,7 @@ export const PostList: React.FC<
       {hasPosts && (
         <div className="my-16" id={`block-${id}`}>
           {introContent && (
-            <div className="container mb-16">
+            <div className="container mb-8">
               <RichText
                 className="ms-0 max-w-[48rem]"
                 data={introContent}
