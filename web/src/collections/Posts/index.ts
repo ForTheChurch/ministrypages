@@ -254,7 +254,7 @@ export const Posts: CollectionConfig<'posts'> = {
       path: '/:id/content/markdown',
       method: 'post',
       handler: async (req) => {
-        if(!authenticated({ req })) {
+        if (!authenticated({ req })) {
           return Response.json({ errors: [{ message: 'Unauthorized' }] }, { status: 401 })
         }
 
