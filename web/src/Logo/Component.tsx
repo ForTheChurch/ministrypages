@@ -9,25 +9,16 @@ import { Media } from '@/components/Media'
 interface LogoProps {
   globalLogoData?: LogoType | null
   className?: string
-  size?: 'sm' | 'md' | 'lg'
   theme?: 'light' | 'dark'
 }
 
 export const Logo: React.FC<LogoProps> = ({
   globalLogoData,
   className = '',
-  size = 'md',
   theme: themeOverride,
 }) => {
   const { theme: contextTheme } = useTheme()
   const theme = themeOverride || contextTheme
-
-  // Size classes
-  const sizeClasses = {
-    sm: 'max-w-12',
-    md: 'max-w-20',
-    lg: 'max-w-32',
-  }
 
   // Get the appropriate logo based on theme
   const getLogo = () => {
@@ -40,7 +31,15 @@ export const Logo: React.FC<LogoProps> = ({
   }
 
   const logo = getLogo()
-  const finalClassName = `${sizeClasses[size]} ${className}`.trim()
-
-  return logo ? <Media resource={logo} className={finalClassName} /> : <DefaultLogo />
+  return logo ? (
+    <Media
+      resource={logo}
+      className={className}
+      priority
+      pictureClassName="h-full w-full"
+      imgClassName="w-full h-full"
+    />
+  ) : (
+    <DefaultLogo />
+  )
 }

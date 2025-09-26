@@ -5,11 +5,10 @@ import type { Logo as LogoType } from '@/payload-types'
 import { Logo } from './Component'
 
 interface ServerLogoProps {
-  size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
-export async function ServerLogo({ size = 'md', className }: ServerLogoProps) {
+export async function ServerLogo({ className }: ServerLogoProps) {
   let globalLogoData: LogoType | null = null
 
   try {
@@ -19,5 +18,5 @@ export async function ServerLogo({ size = 'md', className }: ServerLogoProps) {
     console.warn('Failed to load global logo data:', error)
   }
 
-  return <Logo globalLogoData={globalLogoData} size={size} className={className} />
+  return <Logo globalLogoData={globalLogoData} className={className} />
 }
