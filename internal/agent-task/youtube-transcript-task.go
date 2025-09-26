@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/ForTheChurch/buildforthechurch/internal/pagecache"
@@ -18,7 +16,6 @@ import (
 	"github.com/docker/cagent/pkg/runtime"
 	"github.com/docker/cagent/pkg/session"
 	"github.com/docker/cagent/pkg/team"
-	"github.com/docker/cagent/pkg/tools"
 )
 
 type YoutubeTranscriptTask struct {
@@ -103,53 +100,12 @@ func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 		return fmt.Errorf("error getting youtube transcript prompt: %w", err)
 	}
 
-	toolExportMarkdown := tools.Tool{
-		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
-			log.Println("[YoutubeTranscriptTask] Export markdown tool called")
-			type params struct {
-				Markdown string `json:"markdown"`
-			}
-			var p params
-			if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &p); err != nil {
-				return nil, err
-			}
-
-			// Debugging output
-			if err := os.WriteFile(filepath.Join("output", "generated-transcript.md"), []byte(p.Markdown), 0644); err != nil {
-				return nil, err
-			}
-
-			if err := t.payloadCMSClient.UpdatePostMarkdown(ctx, t.postId, p.Markdown); err != nil {
-				log.Println("[YoutubeTranscriptTask] Error updating post markdown:", err)
-				return nil, err
-			}
-
-			return &tools.ToolCallResult{
-				Output: "Markdown exported successfully",
-			}, nil
-		},
-		Function: &tools.FunctionDefinition{
-			Name:        "export-markdown",
-			Description: "Export the transcript into formatted markdown",
-			Parameters: tools.FunctionParamaters{
-				Type: "object",
-				Properties: map[string]any{
-					"markdown": map[string]any{
-						"type":        "string",
-						"description": "The markdown content",
-					},
-				},
-				Required: []string{"markdown"},
-			},
-		},
-	}
-
 	rootAgent := agent.New(
 		"root",
 		youtubeTranscriptPrompt,
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts a sermon YouTube transcript into a formatted markdown document."),
-		agent.WithTools(toolExportMarkdown),
+		agent.WithTools(toolExportMarkdown("YoutubeTranscriptTask", t.postId, t.payloadCMSClient)),
 	)
 
 	agentTeam := team.New(team.WithAgents(rootAgent))

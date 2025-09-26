@@ -2,13 +2,11 @@ package agenttask
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -21,7 +19,6 @@ import (
 	"github.com/docker/cagent/pkg/runtime"
 	"github.com/docker/cagent/pkg/session"
 	"github.com/docker/cagent/pkg/team"
-	"github.com/docker/cagent/pkg/tools"
 )
 
 type ConvertPageTask struct {
@@ -83,111 +80,14 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 		return fmt.Errorf("error getting convert page prompt: %w", err)
 	}
 
-	toolUploadMedia := tools.Tool{
-		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
-			log.Println("[ConvertPageTask] Upload media tool called")
-
-			type params struct {
-				URL string `json:"url"`
-			}
-			var p params
-			if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &p); err != nil {
-				return nil, err
-			}
-
-			log.Println("[ConvertPageTask] Uploading media from", p.URL)
-
-			filename, err := getMediaFilename(p.URL)
-			if err != nil {
-				return nil, fmt.Errorf("error getting media filename: %w", err)
-			}
-
-			media, err := downloadMedia(ctx, p.URL)
-			if err != nil {
-				return nil, fmt.Errorf("error downloading media: %w", err)
-			}
-
-			id, err := t.payloadCMSClient.UploadMedia(ctx, filename, media)
-			if err != nil {
-				return nil, fmt.Errorf("error uploading media: %w", err)
-			}
-
-			return &tools.ToolCallResult{
-				Output: "Media uploaded successfully. Media ID: " + id,
-			}, nil
-		},
-		Function: &tools.FunctionDefinition{
-			Name:        "upload-media",
-			Description: "Upload a media file to the CMS (picture, video, audio, etc.)",
-			Parameters: tools.FunctionParamaters{
-				Type: "object",
-				Properties: map[string]any{
-					"url": map[string]any{
-						"type":        "string",
-						"description": "The URL of the media file to upload",
-					},
-				},
-				Required: []string{"url"},
-			},
-		},
-	}
-
-	toolExportPage := tools.Tool{
-		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
-			log.Println("[ConvertPageTask] Export page tool called")
-
-			_ = os.MkdirAll("output", 0755)
-			// Write the page JSON to a file for debugging
-			_ = os.WriteFile(filepath.Join("output", "generated-page-"+t.pageID+".json"), []byte(toolCall.Function.Arguments), 0644)
-
-			type params struct {
-				PageJSON string `json:"pageJSON"`
-			}
-			var p params
-			if err := json.Unmarshal([]byte(toolCall.Function.Arguments), &p); err != nil {
-				return nil, err
-			}
-
-			var pageData payloadcms.PagePatch
-			if err := json.Unmarshal([]byte(p.PageJSON), &pageData); err != nil {
-				return nil, err
-			}
-
-			pageData.ID = t.pageID
-
-			log.Println("[ConvertPageTask] Patching page produced by agent")
-
-			if err := t.payloadCMSClient.UpdatePage(ctx, pageData); err != nil {
-				log.Println("[ConvertPageTask] Error patching page:", err)
-				return nil, err
-			}
-
-			return &tools.ToolCallResult{
-				Output: "Page exported successfully",
-			}, nil
-		},
-		Function: &tools.FunctionDefinition{
-			Name:        "export-page",
-			Description: "Export the page JSON to a file",
-			Parameters: tools.FunctionParamaters{
-				Type: "object",
-				Properties: map[string]any{
-					"pageJSON": map[string]any{
-						"type":        "string",
-						"description": "The JSON object representing the page",
-					},
-				},
-				Required: []string{"pageJSON"},
-			},
-		},
-	}
-
 	rootAgent := agent.New(
 		"root",
 		convertPagePrompt,
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts church website HTML into a PayloadCMS Page JSON object."),
-		agent.WithTools(toolExportPage, toolUploadMedia),
+		agent.WithTools(
+			toolExportPage("ConvertPageTask", t.pageID, t.payloadCMSClient),
+			toolUploadMedia("ConvertPageTask", t.payloadCMSClient)),
 	)
 
 	agentTeam := team.New(team.WithAgents(rootAgent))
