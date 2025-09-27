@@ -64,12 +64,8 @@ const createModal = () => {
           complete.
         </p>
         <div className="convert-modal-buttons">
-          <button className="button is-primary is-small" onClick={onClickGoToPages}>
-            Go to Pages
-          </button>
-          <button className="button is-light is-small" onClick={onClickCancelTask}>
-            Cancel Task
-          </button>
+          <Button onClick={onClickGoToPages}>Go to Pages</Button>
+          <Button onClick={onClickCancelTask}>Cancel Task</Button>
         </div>
       </div>
     </Modal>,
