@@ -15,6 +15,8 @@ func SetupRoutes(r gin.IRouter, services *services.Services) {
 	pageGroup := r.Group("/pages")
 
 	pageGroup.POST("/convert-single-page", pageHandler.ConvertSinglePage)
+	// probably not at the right level, but that's ok for now
+	pageGroup.POST("/convert-whole-site", pageHandler.ConvertWholeSite)
 	// TODO dedupe this endpoint
 	pageGroup.GET("/task/:id", pageHandler.GetTaskStatus)
 

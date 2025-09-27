@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/mendableai/firecrawl-go/v2"
 )
@@ -54,6 +55,54 @@ func (s *firecrawlScraper) Scrape(url string) chan ScrapeResult {
 		}
 
 		ch <- ScrapeResult{Html: html, Markdown: markdown, Metadata: metadata}
+	}()
+	return ch
+}
+
+func (s *firecrawlScraper) Crawl(url string) chan CrawlResult {
+	ch := make(chan CrawlResult)
+
+	go func() {
+		defer close(ch)
+
+		limit := 20
+		ignoreQueryParameters := true
+
+		response, err := s.app.CrawlURL(url, &firecrawl.CrawlParams{
+			Limit:                 &limit,
+			IgnoreQueryParameters: &ignoreQueryParameters,
+			ScrapeOptions: firecrawl.ScrapeParams{
+				Formats: []string{"html", "markdown"},
+			},
+		}, nil)
+		if err != nil {
+			ch <- CrawlResult{Error: err}
+			return
+		}
+
+		// TODO track failed scrapes
+
+		crawlResult := CrawlResult{
+			Pages: make(map[string]ScrapeResult),
+		}
+
+		for _, doc := range response.Data {
+			if doc.Metadata != nil && doc.Metadata.URL != nil && strings.HasSuffix(*doc.Metadata.URL, ".pdf") {
+				// Skip PDFs (how do I do this better?)
+				continue
+			}
+			scrapeResult := ScrapeResult{
+				Html:     doc.HTML,
+				Markdown: doc.Markdown,
+				Metadata: make(map[string]string),
+			}
+			if doc.Metadata != nil && doc.Metadata.Title != nil {
+				scrapeResult.Metadata["title"] = *doc.Metadata.Title
+			}
+			crawlResult.Pages[*doc.Metadata.URL] = scrapeResult
+		}
+
+		ch <- crawlResult
 	}()
 	return ch
 }

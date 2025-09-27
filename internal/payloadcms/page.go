@@ -1,5 +1,14 @@
 package payloadcms
 
+type PageResponse struct {
+	Response
+	Doc *PageDocument `json:"doc,omitempty"`
+}
+
+type PageDocument struct {
+	ID string `json:"id"`
+}
+
 // Page represents a page in the CMS
 type PagePatch struct {
 	ID          string  `json:"id,omitempty"`
@@ -103,21 +112,21 @@ type Post struct {
 
 // Event represents an event in the CMS
 type Event struct {
-	ID               string            `json:"id,omitempty"`
-	Title            string            `json:"title"`
-	EventImage       interface{}       `json:"eventImage,omitempty"` // string | Media
-	VideoLink        *string           `json:"videoLink,omitempty"`
-	Content          RichText          `json:"content"`
-	Location         *string           `json:"location,omitempty"`
-	StartTime        *string           `json:"startTime,omitempty"`
-	EndTime          *string           `json:"endTime,omitempty"`
-	Meta             *Meta             `json:"meta,omitempty"`
-	PublishedAt      *string           `json:"publishedAt,omitempty"`
-	Slug             *string           `json:"slug,omitempty"`
-	SlugLock         *bool             `json:"slugLock,omitempty"`
-	UpdatedAt        string            `json:"updatedAt"`
-	CreatedAt        string            `json:"createdAt"`
-	Status           *string           `json:"_status,omitempty"`
+	ID          string      `json:"id,omitempty"`
+	Title       string      `json:"title"`
+	EventImage  interface{} `json:"eventImage,omitempty"` // string | Media
+	VideoLink   *string     `json:"videoLink,omitempty"`
+	Content     RichText    `json:"content"`
+	Location    *string     `json:"location,omitempty"`
+	StartTime   *string     `json:"startTime,omitempty"`
+	EndTime     *string     `json:"endTime,omitempty"`
+	Meta        *Meta       `json:"meta,omitempty"`
+	PublishedAt *string     `json:"publishedAt,omitempty"`
+	Slug        *string     `json:"slug,omitempty"`
+	SlugLock    *bool       `json:"slugLock,omitempty"`
+	UpdatedAt   string      `json:"updatedAt"`
+	CreatedAt   string      `json:"createdAt"`
+	Status      *string     `json:"_status,omitempty"`
 }
 
 // PopulatedAuthor represents a populated author reference
@@ -224,27 +233,27 @@ type UserSession struct {
 
 // TwoColumn represents a two-column layout block
 type TwoColumn struct {
-	ImagePosition *string     		`json:"imagePosition,omitempty"` // 'left' | 'right'
-	ImagePositionOnMobile *string `json:"imagePositionOnMobile,omitempty"` // 'top' | 'bottom'
-	RichText      *RichText   		`json:"richText,omitempty"`
-	CenterTextOnMobile *bool      `json:"centerTextOnMobile,omitempty"`
-	SectionColor *string     			`json:"sectionColor,omitempty"` // 'none' | 'accent' | 'secondary' | 'dark'
-	EnableLink    *bool       		`json:"enableLink,omitempty"`
-	Link          *Link       		`json:"link,omitempty"`
-	Image         interface{} 		`json:"image,omitempty"` // string | Media
-	ID            *string     		`json:"id,omitempty"`
-	BlockName     *string     		`json:"blockName,omitempty"`
-	BlockType     string      		`json:"blockType"` // 'twoColumn'
+	ImagePosition         *string     `json:"imagePosition,omitempty"`         // 'left' | 'right'
+	ImagePositionOnMobile *string     `json:"imagePositionOnMobile,omitempty"` // 'top' | 'bottom'
+	RichText              *RichText   `json:"richText,omitempty"`
+	CenterTextOnMobile    *bool       `json:"centerTextOnMobile,omitempty"`
+	SectionColor          *string     `json:"sectionColor,omitempty"` // 'none' | 'accent' | 'secondary' | 'dark'
+	EnableLink            *bool       `json:"enableLink,omitempty"`
+	Link                  *Link       `json:"link,omitempty"`
+	Image                 interface{} `json:"image,omitempty"` // string | Media
+	ID                    *string     `json:"id,omitempty"`
+	BlockName             *string     `json:"blockName,omitempty"`
+	BlockType             string      `json:"blockType"` // 'twoColumn'
 }
 
 // ImageBanner represents a image banner layout block
 type ImageBanner struct {
-	RichText      *RichText   		`json:"richText,omitempty"`
-	Image         interface{} 		`json:"image,omitempty"` // string | Media
-	Links         []Link       		`json:"links,omitempty"`
-	ID            *string     		`json:"id,omitempty"`
-	BlockName     *string     		`json:"blockName,omitempty"`
-	BlockType     string      		`json:"blockType"` // 'imageBanner'
+	RichText  *RichText   `json:"richText,omitempty"`
+	Image     interface{} `json:"image,omitempty"` // string | Media
+	Links     []Link      `json:"links,omitempty"`
+	ID        *string     `json:"id,omitempty"`
+	BlockName *string     `json:"blockName,omitempty"`
+	BlockType string      `json:"blockType"` // 'imageBanner'
 }
 
 // CallToActionBlock represents a call-to-action block
@@ -309,7 +318,6 @@ type EventListBlock struct {
 	BlockName    *string            `json:"blockName,omitempty"`
 	BlockType    string             `json:"blockType"` // 'archive'
 }
-
 
 // FormBlock represents a form block
 type FormBlock struct {

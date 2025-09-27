@@ -56,6 +56,26 @@ Response:
 }
 ```
 
+### `POST /api/pages/convert-whole-site`
+Converts a whole site. Creates pages in payloadcms and updates them.
+
+**NOTE:** This can become expensive, consuming a large number of LLM tokens. Keep an eye on it while it runs.
+
+Request:
+```
+{
+  "url": "<root website url>",
+}
+```
+
+Response:
+```
+{
+  "task_status": "queued",
+  "task_id": "<task id>"
+}
+```
+
 ### `GET /api/pages/task/:id` or `GET /api/posts/task/:id`
 Reports the status of a task given by the `id` parameter.
 

@@ -38,6 +38,27 @@ func (h *PageHandler) ConvertSinglePage(c *gin.Context) {
 	c.JSON(200, gin.H{"task_status": agenttaskmanager.TaskStatusQueued, "task_id": id})
 }
 
+func (h *PageHandler) ConvertWholeSite(c *gin.Context) {
+	type params struct {
+		URL string `json:"url" binding:"required"`
+	}
+
+	var p params
+	if err := c.ShouldBindJSON(&p); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := h.services.GetAgentTaskManager().QueueTask(agenttask.NewConvertWholeSiteTask(
+		p.URL, h.services.GetScraper(), h.services.GetPayloadCMSClient(), h.services.GetLLM()))
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{"task_status": agenttaskmanager.TaskStatusQueued, "task_id": id})
+}
+
 func (h *PageHandler) GetTaskStatus(c *gin.Context) {
 	id := c.Param("id")
 	status, ok := h.services.GetAgentTaskManager().GetTaskStatus(id)

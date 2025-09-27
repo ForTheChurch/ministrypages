@@ -59,6 +59,67 @@ func (c *Client) UpdatePostMarkdown(ctx context.Context, postId string, markdown
 	return nil
 }
 
+func (c *Client) CreatePage(ctx context.Context, title string, slug string) (string, error) {
+	var params struct {
+		Title string `json:"title"`
+		Slug  string `json:"slug"`
+		Hero  struct {
+			Type  string `json:"type"`
+			Links []any  `json:"links"`
+		} `json:"hero"`
+		Layout []struct {
+			BlockType string `json:"blockType"`
+			Columns   []any  `json:"columns"`
+		} `json:"layout"`
+	}
+
+	params.Title = title
+	params.Slug = slug
+	params.Hero.Type = "lowImpact"
+	params.Hero.Links = []any{}
+	// The schema requires at least one block for now
+	params.Layout = []struct {
+		BlockType string `json:"blockType"`
+		Columns   []any  `json:"columns"`
+	}{
+		{
+			BlockType: "content",
+			Columns:   []any{},
+		},
+	}
+
+	jsonBody, err := json.Marshal(params)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println("SENDING JSON BODY: ", string(jsonBody))
+
+	req, err := http.NewRequestWithContext(ctx, "POST", c.cfg.BaseURL+"/api/pages", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "users API-Key "+c.cfg.APIKey)
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	var response PageResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return "", err
+	}
+	if len(response.Errors) > 0 {
+		return "", response.Errors
+	}
+
+	return response.Doc.ID, nil
+}
+
 func (c *Client) UpdatePage(ctx context.Context, page PagePatch) error {
 	jsonBody, err := json.Marshal(page)
 	if err != nil {
