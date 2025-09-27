@@ -12,6 +12,8 @@ import (
 
 type TaskStatus string
 
+// Task status constants - these must match the frontend types
+// Frontend also includes 'idle' status for when no task is active
 const (
 	TaskStatusQueued    TaskStatus = "queued"
 	TaskStatusRunning   TaskStatus = "running"
@@ -81,11 +83,11 @@ func (a *AgentTaskManager) run(ctx context.Context) {
 				a.mu.Unlock()
 
 				log.Println("Error executing task:", err)
+			} else {
+				a.mu.Lock()
+				a.taskStatus[task.ID()] = TaskStatusCompleted
+				a.mu.Unlock()
 			}
-
-			a.mu.Lock()
-			a.taskStatus[task.ID()] = TaskStatusCompleted
-			a.mu.Unlock()
 		case <-ctx.Done():
 			a.finished.Store(true)
 			return
