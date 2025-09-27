@@ -107,11 +107,13 @@ export interface Config {
     defaultIDType: string;
   };
   globals: {
+    church: Church;
     logo: Logo;
     header: Header;
     footer: Footer;
   };
   globalsSelect: {
+    church: ChurchSelect<false> | ChurchSelect<true>;
     logo: LogoSelect<false> | LogoSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
@@ -1919,6 +1921,40 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "church".
+ */
+export interface Church {
+  id: string;
+  /**
+   * Enter the name of your church.
+   */
+  name: string;
+  /**
+   * Upload an image of your church. This will be displayed by default on social media sharing when a page doesn't have an image.
+   */
+  image: string | Media;
+  /**
+   * Add a general description of your church that you want to display in search engine results.
+   */
+  description: string;
+  'Church Location': {
+    /**
+     * Add the street address of where you have Sunday services.
+     */
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  'Contact Information'?: {
+    phone?: string | null;
+    email?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "logo".
  */
 export interface Logo {
@@ -1991,6 +2027,32 @@ export interface Footer {
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "church_select".
+ */
+export interface ChurchSelect<T extends boolean = true> {
+  name?: T;
+  image?: T;
+  description?: T;
+  'Church Location'?:
+    | T
+    | {
+        address?: T;
+        city?: T;
+        state?: T;
+        zip?: T;
+      };
+  'Contact Information'?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

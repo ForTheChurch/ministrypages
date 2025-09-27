@@ -1,0 +1,96 @@
+import type { GlobalConfig } from 'payload'
+
+import { revalidateSite } from './hooks/revalidateSite'
+
+export const Church: GlobalConfig = {
+  slug: 'church',
+  access: {
+    read: () => true,
+  },
+  fields: [
+    {
+      name: 'name',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Enter the name of your church.',
+      },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      admin: {
+        description:
+          "Upload an image of your church. This will be displayed by default on social media sharing when a page doesn't have an image.",
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      required: true,
+      admin: {
+        description:
+          'Add a general description of your church that you want to display in search engine results.',
+      },
+    },
+    {
+      name: 'Church Location',
+      type: 'group',
+      fields: [
+        {
+          name: 'address',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Add the street address of where you have Sunday services.',
+          },
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'city',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'state',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'zip',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Contact Information',
+      type: 'group',
+      fields: [
+        {
+          name: 'phone',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+        },
+        {
+          name: 'email',
+          type: 'text',
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
+    },
+  ],
+  hooks: {
+    afterChange: [revalidateSite],
+  },
+}
