@@ -4,7 +4,6 @@ import path from 'path'
 import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
-import axios from 'axios'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Categories } from './collections/Categories'
@@ -20,7 +19,7 @@ import { Header } from './Header/config'
 import { Logo } from './Logo/config'
 import { plugins } from './plugins'
 import { getServerSideURL } from './utilities/getURL'
-import { SinglePageConversion } from './payload-types'
+import agentApi from './utilities/agentApi'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -152,7 +151,7 @@ export default buildConfig({
           }
 
           // TODO: Don't hardcode
-          const response = await axios.post("http://localhost:3005/api/pages/convert-single-page",
+          const response = await agentApi.post("/pages/convert-single-page",
             {
               url,
               pageId: documentId
@@ -215,7 +214,7 @@ export default buildConfig({
           const endTime = Date.now() + timeoutMs;
           while (true) {
             // TODO: Don't hardcode
-            const response = await axios.get(`http://localhost:3005/api/pages/task/${agentTaskId}`);
+            const response = await agentApi.get("/pages/task/${agentTaskId}");
 
             const { task_status: agentTaskStatus } = response.data;
 
