@@ -9,6 +9,32 @@ import { createPortal } from 'react-dom'
 import Modal from './modal'
 import './styles.css'
 
+// Type definitions
+interface ConversionTask {
+  id: string
+  pageId: string
+  agentTaskStatus: 'queued' | 'running' | 'completed' | 'failed' | 'idle'
+  createdAt: string
+  updatedAt: string
+  url?: string
+  error?: string
+}
+
+interface ConversionTaskResponse {
+  totalDocs: number
+  docs: ConversionTask[]
+}
+
+interface BeginConversionRequest {
+  workflow: string
+  data: {
+    documentId: string
+    url: string
+  }
+}
+
+type TaskStatus = 'queued' | 'running' | 'completed' | 'failed' | 'idle'
+
 const getLabelAsString = (label?: Record<string, string> | string) => {
   return typeof label === 'string' ? label : ''
 }
@@ -51,7 +77,7 @@ const createModal = () => {
   )
 }
 
-const getActiveConversionTask = async (documentId: string) => {
+const getActiveConversionTask = async (documentId: string): Promise<ConversionTask | null> => {
   const query: Where = {
     and: [{ pageId: { equals: documentId } }, { agentTaskStatus: { in: 'queued,running' } }],
   }
@@ -65,29 +91,33 @@ const getActiveConversionTask = async (documentId: string) => {
   )
 
   try {
-    const result = await axios.get(`/api/single-page-conversions${queryString}`)
-    if (result.data?.totalDocs != 1) {
+    const result = await axios.get<ConversionTaskResponse>(
+      `/api/single-page-conversions${queryString}`,
+    )
+    if (result.data?.totalDocs !== 1) {
       return null
     }
     const { docs } = result.data
-    return docs[0]
+    return docs[0] || null
   } catch (error) {
     console.error('[ConvertSinglePage] Failed to get active conversion task with error:', error)
+    return null
   }
 }
 
-const isAgentTaskActive = (agentTask) => {
-  const agentTaskStatus = agentTask?.agentTaskStatus
-  return agentTaskStatus == 'queued' || agentTaskStatus == 'running'
+const isAgentTaskActive = (agentTask: ConversionTask | null | undefined): boolean => {
+  if (!agentTask) return false
+  const agentTaskStatus = agentTask.agentTaskStatus
+  return agentTaskStatus === 'queued' || agentTaskStatus === 'running'
 }
 
 function ConvertSinglePageClient({ field }: { field?: UIField }) {
   const label = field?.label
 
-  const [mounted, setMounted] = useState(false)
-  const [url, setUrl] = useState('')
-  const [activeConversion, setActiveConversion] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [mounted, setMounted] = useState<boolean>(false)
+  const [url, setUrl] = useState<string>('')
+  const [activeConversion, setActiveConversion] = useState<ConversionTask | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const { id } = useDocumentInfo()
   const documentId = id
@@ -96,20 +126,25 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   //  - Handle dirty form
   //  - Handle existing conversion task
   //  - Better error handling
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
+    if (!documentId) return
     setIsLoading(true)
-    axios
-      .post('/api/begin-single-page-conversion', {
-        workflow: 'convertSinglePage',
-        data: { documentId, url },
-      })
-      .then((response) => {
-        reloadPage()
-      })
-      .catch((error) => {
-        console.error('Error creating job:', error)
-        setIsLoading(false)
-      })
+    const requestData: BeginConversionRequest = {
+      workflow: 'convertSinglePage',
+      data: { documentId: String(documentId), url },
+    }
+
+    try {
+      await axios.post('/api/begin-single-page-conversion', requestData)
+      // Don't reload immediately - let the polling handle the status updates
+      setIsLoading(false)
+      // Trigger a status check to get the new task
+      const newTask = await getActiveConversionTask(String(documentId))
+      setActiveConversion(newTask)
+    } catch (error) {
+      console.error('Error creating job:', error)
+      setIsLoading(false)
+    }
   }
 
   // Update the mounted status
@@ -120,15 +155,17 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
 
   // Get the initial active conversion
   useEffect(() => {
-    getActiveConversionTask(documentId).then((task) => setActiveConversion(task))
-  }, [])
+    if (documentId) {
+      getActiveConversionTask(String(documentId)).then((task) => setActiveConversion(task))
+    }
+  }, [documentId])
 
   // Poll once every second for conversion complete and then reload
   useEffect(() => {
-    if (!isAgentTaskActive(activeConversion)) return
+    if (!isAgentTaskActive(activeConversion) || !documentId) return
 
     const intervalId = setInterval(async () => {
-      const conversionTask = await getActiveConversionTask(documentId)
+      const conversionTask = await getActiveConversionTask(String(documentId))
       setActiveConversion(conversionTask)
       if (!isAgentTaskActive(conversionTask)) {
         clearInterval(intervalId)
@@ -137,9 +174,9 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     }, 5000)
 
     return () => clearInterval(intervalId)
-  }, [activeConversion])
+  }, [activeConversion, documentId])
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (status: TaskStatus | string): string => {
     switch (status) {
       case 'queued':
         return 'convert-status-queued'
@@ -154,7 +191,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     }
   }
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: TaskStatus | string): string => {
     switch (status) {
       case 'queued':
         return '⏳'
@@ -169,9 +206,13 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     }
   }
 
+  if (!mounted) {
+    return null
+  }
+
   return (
     <React.Fragment>
-      {mounted && isAgentTaskActive(activeConversion) && createModal()}
+      {isAgentTaskActive(activeConversion) && createModal()}
       <div className="convert-container">
         <div className="convert-header">
           <h3 className="convert-title">
@@ -190,7 +231,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
                 path="inputConversionPageUrl"
                 placeholder="https://example.com/page-to-convert"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
                 className="convert-input"
               />
               <Button
