@@ -151,7 +151,7 @@ export default buildConfig({
             collection: 'single-page-conversions',
             where: {
               pageId: { equals: documentId },
-              data: { agentTaskStatus: { in: 'queued,running' } },
+              data: { agentTaskStatus: { in: ['queued', 'running'] } },
             },
           })
 
@@ -234,7 +234,7 @@ export default buildConfig({
           const endTime = Date.now() + timeoutMs
           while (true) {
             // TODO: Don't hardcode
-            const response = await agentApi.get('/pages/task/${agentTaskId}')
+            const response = await agentApi.get(`/pages/task/${agentTaskId}`)
 
             const { task_status: agentTaskStatus } = response.data
 
