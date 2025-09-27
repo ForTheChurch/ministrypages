@@ -6,34 +6,14 @@ import type { UIField, Where } from 'payload'
 import { stringify } from 'qs-esm'
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import type {
+  BeginConversionRequest,
+  ConversionTask,
+  ConversionTaskResponse,
+  TaskStatus,
+} from '../../custom-types'
 import Modal from './modal'
 import './styles.css'
-
-// Type definitions
-interface ConversionTask {
-  id: string
-  pageId: string
-  agentTaskStatus: 'queued' | 'running' | 'completed' | 'failed' | 'idle'
-  createdAt: string
-  updatedAt: string
-  url?: string
-  error?: string
-}
-
-interface ConversionTaskResponse {
-  totalDocs: number
-  docs: ConversionTask[]
-}
-
-interface BeginConversionRequest {
-  workflow: string
-  data: {
-    documentId: string
-    url: string
-  }
-}
-
-type TaskStatus = 'queued' | 'running' | 'completed' | 'failed' | 'idle'
 
 const getLabelAsString = (label?: Record<string, string> | string) => {
   return typeof label === 'string' ? label : ''
