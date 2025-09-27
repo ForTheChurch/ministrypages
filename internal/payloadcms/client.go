@@ -93,8 +93,6 @@ func (c *Client) CreatePage(ctx context.Context, title string, slug string) (str
 		return "", err
 	}
 
-	fmt.Println("SENDING JSON BODY: ", string(jsonBody))
-
 	req, err := http.NewRequestWithContext(ctx, "POST", c.cfg.BaseURL+"/api/pages", bytes.NewBuffer(jsonBody))
 	if err != nil {
 		return "", err
