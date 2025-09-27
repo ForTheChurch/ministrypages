@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from 'axios'
 
 const agentApi = axios.create({
-    baseURL: `${process.env.AGENT_URL || 'http://localhost:3005'}/api`,
-});
+  baseURL: `${process.env.AGENT_URL || 'http://localhost:3005'}/api`,
+})
 
-export default agentApi;
+export default agentApi

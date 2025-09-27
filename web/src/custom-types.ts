@@ -22,3 +22,14 @@ export interface BeginConversionRequest {
 }
 
 export type TaskStatus = 'queued' | 'running' | 'completed' | 'failed' | 'idle'
+
+export interface ApiError {
+  message: string
+  status?: number
+  response?: {
+    status: number
+    data?: {
+      error?: string
+    }
+  }
+}

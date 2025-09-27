@@ -7,6 +7,7 @@ import { stringify } from 'qs-esm'
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type {
+  ApiError,
   BeginConversionRequest,
   ConversionTask,
   ConversionTaskResponse,
@@ -76,7 +77,12 @@ const getActiveConversionTask = async (documentId: string): Promise<ConversionTa
     const { docs } = result.data
     return docs[0] || null
   } catch (error) {
-    console.error('[ConvertSinglePage] Failed to get active conversion task with error:', error)
+    const apiError = error as ApiError
+    console.error('[ConvertSinglePage] Failed to get active conversion task:', {
+      error: apiError.message,
+      status: apiError.response?.status,
+      documentId,
+    })
     return null
   }
 }
@@ -118,8 +124,15 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
       const newTask = await getActiveConversionTask(String(documentId))
       setActiveConversion(newTask)
     } catch (error) {
-      console.error('Error creating job:', error)
+      const apiError = error as ApiError
+      console.error('[ConvertSinglePage] Error creating job:', {
+        error: apiError.message,
+        status: apiError.response?.status,
+        url,
+        documentId,
+      })
       setIsLoading(false)
+      // TODO: Show user-friendly error message
     }
   }
 

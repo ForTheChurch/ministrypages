@@ -138,6 +138,14 @@
   font-size: 0.875rem;
   margin: 0;
   line-height: 1.4;
+  font-weight: 500;
+}
+
+.convert-modal-subtext {
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
 }
 
 .convert-modal-buttons {
