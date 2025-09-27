@@ -1,22 +1,30 @@
 import type { Metadata } from 'next'
+import { getChurchData, getChurchImageUrl } from './getChurchData'
 import { getServerSideURL } from './getURL'
 
-const defaultOpenGraph: Metadata['openGraph'] = {
-  type: 'website',
-  description: 'Learn about our church',
-  images: [
-    {
-      url: `${getServerSideURL()}/images/hero.jpg`,
-    },
-  ],
-  siteName: 'ForTheChurch',
-  title: 'ForTheChurch',
+const getDefaultOpenGraph = async (): Promise<Metadata['openGraph']> => {
+  const churchData = await getChurchData()
+  const churchImageUrl = getChurchImageUrl(churchData)
+
+  return {
+    type: 'website',
+    description: churchData?.description || 'Learn about our church',
+    images: churchImageUrl
+      ? [{ url: churchImageUrl }]
+      : [{ url: `${getServerSideURL()}/images/hero.jpg` }],
+    siteName: churchData?.name || 'ForTheChurch',
+    title: churchData?.name || 'ForTheChurch',
+  }
 }
 
-export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {
+export const mergeOpenGraph = async (
+  og?: Metadata['openGraph'],
+): Promise<Metadata['openGraph']> => {
+  const defaultOpenGraph = await getDefaultOpenGraph()
+
   return {
     ...defaultOpenGraph,
     ...og,
-    images: og?.images ? og.images : defaultOpenGraph.images,
+    images: og?.images ? og.images : defaultOpenGraph?.images,
   }
 }

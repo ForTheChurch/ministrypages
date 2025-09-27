@@ -11,6 +11,7 @@ import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { getChurchData } from '@/utilities/getChurchData'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
@@ -47,7 +48,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   )
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
+export async function generateMetadata(): Promise<Metadata> {
+  const churchData = await getChurchData()
+
+  return {
+    metadataBase: new URL(getServerSideURL()),
+    title: churchData?.name || 'ForTheChurch',
+    description: churchData?.description || 'Learn about our church',
+    openGraph: await mergeOpenGraph(),
+  }
 }

@@ -3,6 +3,7 @@ import type { Metadata } from 'next/types'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import { PostsList } from '@/components/PostList'
+import { getChurchData } from '@/utilities/getChurchData'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
@@ -61,8 +62,11 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
+  const churchData = await getChurchData()
+  const churchName = churchData?.name || 'ForTheChurch'
+
   return {
-    title: `ForTheChurch Posts Page ${pageNumber || ''}`,
+    title: `${churchName} Posts Page ${pageNumber || ''}`,
   }
 }
 

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 
-import type { Config, Media, Page, Post } from '../payload-types'
+import type { Config, Event, Media, Page, Post } from '../payload-types'
 
+import { getChurchData, getChurchImageUrl } from './getChurchData'
 import { getServerSideURL } from './getURL'
 import { mergeOpenGraph } from './mergeOpenGraph'
 
@@ -20,18 +21,31 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
 }
 
 export const generateMeta = async (args: {
-  doc: Partial<Page> | Partial<Post> | null
+  doc: Partial<Page> | Partial<Post> | Partial<Event> | null
 }): Promise<Metadata> => {
   const { doc } = args
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  // Get Church data for fallbacks
+  const churchData = await getChurchData()
+  const churchImageUrl = getChurchImageUrl(churchData)
 
-  const title = doc?.meta?.title ? doc.meta.title : 'ForTheChurch'
+  // Use page-specific image or fall back to Church image or default
+  const ogImage = getImageURL(doc?.meta?.image) || churchImageUrl
+  const churchName = churchData?.name || 'ForTheChurch'
+  // Use page title or fall back to Church name or default
+  const title = doc?.meta?.title
+    ? `${doc.meta.title} | ${churchName}`
+    : doc?.title
+      ? `${doc.title} | ${churchName}`
+      : churchName
+
+  // Use page description or fall back to Church description
+  const description = doc?.meta?.description || churchData?.description
 
   return {
-    description: doc?.meta?.description,
-    openGraph: mergeOpenGraph({
-      description: doc?.meta?.description || '',
+    description,
+    openGraph: await mergeOpenGraph({
+      description: description || '',
       images: ogImage
         ? [
             {
