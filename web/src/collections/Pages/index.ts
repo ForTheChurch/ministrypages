@@ -60,7 +60,7 @@ export const Pages: CollectionConfig<'pages'> = {
     useAsTitle: 'title',
     components: {
       beforeListTable: [],
-    }
+    },
   },
   fields: [
     {
@@ -69,10 +69,10 @@ export const Pages: CollectionConfig<'pages'> = {
       label: 'Convert an existing page',
       admin: {
         components: {
-          Field: '@/components/ConvertSinglePage'
+          Field: '@/components/ConvertSinglePage',
         },
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'title',
