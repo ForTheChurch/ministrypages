@@ -2,8 +2,6 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../access/authenticated'
 import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
-import { populatePublishedAt } from '../hooks/populatePublishedAt'
-import { generatePreviewPath } from '../utilities/generatePreviewPath'
 
 export const SinglePageConversions: CollectionConfig = {
   slug: 'single-page-conversions',
@@ -20,6 +18,12 @@ export const SinglePageConversions: CollectionConfig = {
   admin: {
     useAsTitle: 'id',
   },
+  indexes: [
+    {
+      unique: true,
+      fields: ['pageId', 'agentTaskId'],
+    },
+  ],
   fields: [
     {
       name: 'pageId',
@@ -28,14 +32,14 @@ export const SinglePageConversions: CollectionConfig = {
       required: true,
     },
     {
-      name: "agentTaskId",
-      type: "text",
-      required: true
+      name: 'agentTaskId',
+      type: 'text',
+      required: true,
     },
     {
-      name: "agentTaskStatus",
-      type: "text",
-      required: true
-    }
+      name: 'agentTaskStatus',
+      type: 'text',
+      required: true,
+    },
   ],
 }
