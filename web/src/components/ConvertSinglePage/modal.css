@@ -27,3 +27,7 @@
   font-size: 16px;
   line-height: 1.5;
 }
+
+.modal-content button {
+  margin: 0;
+}
