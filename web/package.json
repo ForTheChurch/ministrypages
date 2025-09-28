@@ -16,7 +16,8 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "test": "vitest"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "^3.55.1",
@@ -58,17 +59,23 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/typography": "^0.5.13",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
     "@types/escape-html": "^1.0.2",
     "@types/node": "22.5.4",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.2",
+    "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.34.0",
     "eslint-config-next": "15.5.0",
+    "jsdom": "^27.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^3.4.3",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",
