@@ -15,7 +15,7 @@ export const TwoColumn: Block = {
   fields: [
     {
       name: 'image',
-      type: 'relationship',
+      type: 'upload',
       relationTo: 'media',
       hasMany: false,
     },
