@@ -3,20 +3,20 @@ import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-b
 
 import RichText from '@/components/RichText'
 import { Button } from '@/components/ui/button'
-import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { getClientSideURL } from '@/utilities/getURL'
 import { fields } from './fields'
+import { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 
 export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
   form: FormType
-  introContent?: SerializedEditorState
+  introContent?: DefaultTypedEditorState
 }
 
 export const FormBlock: React.FC<
