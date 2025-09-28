@@ -45,8 +45,12 @@ const createModal = () => {
           complete.
         </p>
         <div className="convert-modal-buttons">
-          <Button onClick={onClickGoToPages}>Go to Pages</Button>
-          <Button onClick={onClickCancelTask}>Cancel Task</Button>
+          <Button onClick={onClickGoToPages} size="large">
+            Go to Pages
+          </Button>
+          <Button onClick={onClickCancelTask} size="large">
+            Cancel Task
+          </Button>
         </div>
       </div>
     </Modal>,
@@ -145,7 +149,9 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   // Get the initial active conversion
   useEffect(() => {
     if (documentId) {
-      getActiveConversionTask(String(documentId)).then((task) => setActiveConversion(task))
+      getActiveConversionTask(String(documentId)).then((task) => {
+        setActiveConversion(task)
+      })
     }
   }, [documentId])
 
