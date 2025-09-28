@@ -151,7 +151,7 @@ export default buildConfig({
             collection: 'single-page-conversions',
             where: {
               pageId: { equals: documentId },
-              data: { agentTaskStatus: { in: ['queued', 'running'] } },
+              agentTaskStatus: { in: ['queued', 'running'] },
             },
           })
 
@@ -313,7 +313,12 @@ export default buildConfig({
       path: '/begin-single-page-conversion',
       method: 'post',
       handler: async (req: PayloadRequest) => {
-        const { task, workflow, data } = await req.json()
+        if (!req.json) {
+          throw new Error('[/begin-single-page-conversion] Request has no JSON method')
+        }
+
+        const body = await req.json()
+        const { task, workflow, data } = body
         const { documentId, url }: { documentId: string; url: string } = data
 
         if (task && workflow) {
