@@ -16,7 +16,7 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self';
-    frame-src 'self' https://www.youtube.com https://player.vimeo.com https://esvmedia.org;
+    frame-src 'self' https://www.youtube.com https://player.vimeo.com https://esvmedia.org https://static.esvmedia.org;
     connect-src 'self' https://www.youtube.com https://player.vimeo.com ws: wss:;
     media-src 'self' https://www.youtube.com https://player.vimeo.com;
     upgrade-insecure-requests;
