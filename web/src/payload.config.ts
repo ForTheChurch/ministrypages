@@ -313,7 +313,7 @@ export default buildConfig({
       path: '/begin-single-page-conversion',
       method: 'post',
       handler: async (req: PayloadRequest) => {
-        if (!req.json) {
+        if (typeof req.json !== 'function') {
           throw new Error('[/begin-single-page-conversion] Request has no JSON method')
         }
 
