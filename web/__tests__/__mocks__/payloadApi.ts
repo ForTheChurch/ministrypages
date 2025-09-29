@@ -7,7 +7,7 @@ export const createTask = vi.fn(async (taskData: any) => {
   }
   
   return {
-    id: Math.random().toString(36).substr(2, 9),
+    id: Math.random().toString(36).slice(2, 11),
     ...taskData,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
