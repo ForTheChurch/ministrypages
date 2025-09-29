@@ -28,7 +28,7 @@ const navigate = (url: string) => {
   window.location.href = url
 }
 
-const createModal = () => {
+const createModal = (isWaitingForTask: boolean = false) => {
   const onClickGoToPages = () => {
     navigate('/admin/collections/pages')
   }
@@ -40,17 +40,28 @@ const createModal = () => {
   return createPortal(
     <Modal>
       <div className="convert-modal-content">
-        <p className="convert-modal-text">
-          A conversion is in progress. This page will automatically refresh when the task is
-          complete.
-        </p>
+        {isWaitingForTask ? (
+          <>
+            <div className="convert-modal-spinner">
+              <div className="spinner"></div>
+            </div>
+            <p className="convert-modal-text">Creating conversion task...</p>
+          </>
+        ) : (
+          <p className="convert-modal-text">
+            A conversion is in progress. This page will automatically refresh when the task is
+            complete.
+          </p>
+        )}
         <div className="convert-modal-buttons">
           <Button onClick={onClickGoToPages} size="large">
             Go to Pages
           </Button>
-          <Button onClick={onClickCancelTask} size="large">
-            Cancel Task
-          </Button>
+          {!isWaitingForTask && (
+            <Button onClick={onClickCancelTask} size="large">
+              Cancel Task
+            </Button>
+          )}
         </div>
       </div>
     </Modal>,
@@ -104,6 +115,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   const [url, setUrl] = useState<string>('')
   const [activeConversion, setActiveConversion] = useState<ConversionTask | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isWaitingForTask, setIsWaitingForTask] = useState<boolean>(false)
 
   const { id } = useDocumentInfo()
   const documentId = id
@@ -122,11 +134,26 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
 
     try {
       await axios.post('/api/begin-single-page-conversion', requestData)
-      // Don't reload immediately - let the polling handle the status updates
       setIsLoading(false)
-      // Trigger a status check to get the new task
-      const newTask = await getActiveConversionTask(String(documentId))
-      setActiveConversion(newTask)
+      setIsWaitingForTask(true) // Show spinner modal immediately
+
+      // Poll for the new task to appear
+      const pollForTask = async (attempts = 0, maxAttempts = 10): Promise<void> => {
+        const newTask = await getActiveConversionTask(String(documentId))
+        if (newTask) {
+          setIsWaitingForTask(false)
+          setActiveConversion(newTask)
+        } else if (attempts < maxAttempts) {
+          // Wait a bit longer and try again
+          setTimeout(() => pollForTask(attempts + 1, maxAttempts), 1000)
+        } else {
+          // Give up after max attempts
+          setIsWaitingForTask(false)
+          console.error('[ConvertSinglePage] Failed to find created task after polling')
+        }
+      }
+
+      pollForTask()
     } catch (error) {
       const apiError = error as ApiError
       console.error('[ConvertSinglePage] Error creating job:', {
@@ -136,6 +163,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
         documentId,
       })
       setIsLoading(false)
+      setIsWaitingForTask(false)
       // TODO: Show user-friendly error message
     }
   }
@@ -207,7 +235,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
 
   return (
     <React.Fragment>
-      {isAgentTaskActive(activeConversion) && createModal()}
+      {(isAgentTaskActive(activeConversion) || isWaitingForTask) && createModal(isWaitingForTask)}
       <div className="convert-container">
         <div className="convert-header">
           <h3 className="convert-title">
