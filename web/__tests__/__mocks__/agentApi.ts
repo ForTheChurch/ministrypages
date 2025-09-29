@@ -3,7 +3,7 @@ import { vi } from 'vitest'
 // Mock functions for Go API
 export const convertSinglePage = vi.fn(async (pageData: any) => {
   return {
-    taskId: Math.random().toString(36).substr(2, 9),
+    taskId: Math.random().toString(36).slice(2, 11),
     status: 'started',
     message: 'Page conversion started',
     pageUrl: pageData.url,
