@@ -128,68 +128,71 @@ describe('ConvertSinglePage - Integration Tests', () => {
 
   describe('Task Creation Flow', () => {
     test('should create task and immediately check for updates', async () => {
-      // Initial check - no active tasks
+      // Mock successful task creation
+      mockedAxios.post.mockResolvedValueOnce({ data: { success: true } })
+
+      // Mock that first API call returns no task (still being created)
       mockedAxios.get.mockResolvedValueOnce({
         data: { totalDocs: 0, docs: [] },
       })
 
-      // Task creation response
+      render(<ConvertSinglePageClient />)
+
+      // Enter URL and submit
+      const urlInput = screen.getByTestId('inputConversionPageUrl')
+      const submitButton = screen.getByText('Convert')
+
+      await act(async () => {
+        fireEvent.change(urlInput, { target: { value: 'https://example.com' } })
+      })
+
+      await act(async () => {
+        fireEvent.click(submitButton)
+      })
+
+      // Should show spinner modal immediately while waiting for task
+      await waitFor(() => {
+        expect(screen.getByText('Creating conversion task...')).toBeDefined()
+        expect(screen.getByTestId('portal-content')).toBeDefined()
+      })
+
+      expect(mockedAxios.post).toHaveBeenCalledWith('/api/begin-single-page-conversion', {
+        workflow: 'convertSinglePage',
+        data: { documentId: 'test-document-123', url: 'https://example.com' },
+      })
+    })
+
+    test('should show waiting spinner when task creation is in progress', async () => {
+      // Mock successful task creation
       mockedAxios.post.mockResolvedValueOnce({ data: { success: true } })
 
-      // Check for new task after creation
-      const newTask: ConversionTask = {
-        id: 'new-task-456',
-        pageId: 'test-document-123',
-        agentTaskStatus: 'queued',
-        createdAt: '2025-09-28T10:05:00Z',
-        updatedAt: '2025-09-28T10:05:00Z',
-      }
-
-      mockedAxios.get.mockResolvedValueOnce({
-        data: { totalDocs: 1, docs: [newTask] },
+      // Mock that task isn't found immediately (still being created)
+      mockedAxios.get.mockResolvedValue({
+        data: { totalDocs: 0, docs: [] },
       })
 
       render(<ConvertSinglePageClient />)
 
-      // Wait for initial load
-      await waitFor(() => {
-        expect(screen.getByText('No task running')).toBeDefined()
-      })
-
-      // Submit conversion
-      const input = screen.getByTestId('inputConversionPageUrl')
-      const button = screen.getByTestId('button')
+      const urlInput = screen.getByTestId('inputConversionPageUrl')
+      const submitButton = screen.getByText('Convert')
 
       await act(async () => {
-        fireEvent.change(input, { target: { value: 'https://example.com/test' } })
-        fireEvent.click(button)
+        fireEvent.change(urlInput, { target: { value: 'https://example.com' } })
       })
 
-      // Should make POST request
-      await waitFor(() => {
-        expect(mockedAxios.post).toHaveBeenCalledWith('/api/begin-single-page-conversion', {
-          workflow: 'convertSinglePage',
-          data: {
-            documentId: 'test-document-123',
-            url: 'https://example.com/test',
-          },
-        })
+      await act(async () => {
+        fireEvent.click(submitButton)
       })
 
-      // Should check for new task
+      // Should show waiting state immediately after submission
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2)
+        expect(screen.getByText('Creating conversion task...')).toBeDefined()
+        expect(screen.queryByTestId('portal-content')).toBeDefined()
       })
 
-      // Should update status
-      await waitFor(() => {
-        expect(screen.getByText('queued')).toBeDefined()
-      })
-
-      // Should show modal
-      await waitFor(() => {
-        expect(screen.getByTestId('portal-content')).toBeDefined()
-      })
+      // Should show spinner
+      const spinner = document.querySelector('.spinner')
+      expect(spinner).toBeDefined()
     })
   })
 
