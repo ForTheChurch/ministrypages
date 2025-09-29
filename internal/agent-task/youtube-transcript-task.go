@@ -100,13 +100,17 @@ func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 		return fmt.Errorf("error getting youtube transcript prompt: %w", err)
 	}
 
+	ctx, b, cleanup := newBail(ctx)
+	defer cleanup()
+
 	rootAgent := agent.New(
 		"root",
 		youtubeTranscriptPrompt,
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts a sermon YouTube transcript into a formatted markdown document."),
-		agent.WithTools(toolExportMarkdown("YoutubeTranscriptTask", t.postId, t.payloadCMSClient)),
-	)
+		agent.WithTools(
+			b.BailAfterSuccessfulToolCall(toolExportMarkdown("YoutubeTranscriptTask", t.postId, t.payloadCMSClient)),
+		))
 
 	agentTeam := team.New(team.WithAgents(rootAgent))
 

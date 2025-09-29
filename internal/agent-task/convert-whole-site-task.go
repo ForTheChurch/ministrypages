@@ -139,13 +139,16 @@ func (t *ConvertWholeSiteTask) convertPage(ctx context.Context, url string, page
 		return fmt.Errorf("error getting convert page prompt: %w", err)
 	}
 
+	ctx, b, cleanup := newBail(ctx)
+	defer cleanup()
+
 	rootAgent := agent.New(
 		"root",
 		convertPagePrompt,
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts church website HTML into a PayloadCMS Page JSON object."),
 		agent.WithTools(
-			toolExportPage("ConvertWholeSiteTask", pageID, t.payloadCMSClient),
+			b.BailAfterSuccessfulToolCall(toolExportPage("ConvertWholeSiteTask", pageID, t.payloadCMSClient)),
 			toolUploadMedia("ConvertWholeSiteTask", t.payloadCMSClient)),
 	)
 
