@@ -20,7 +20,7 @@ export { customRender as render }
 
 // Helper functions for testing
 export const createMockTask = (overrides = {}) => ({
-  id: Math.random().toString(36).substr(2, 9),
+  id: Math.random().toString(36).slice(2, 11),
   title: 'Test Task',
   status: 'in-progress',
   type: 'convert-single-page',
