@@ -52,8 +52,8 @@ func (t *ConvertPageTask) ID() string {
 func (t *ConvertPageTask) Execute(ctx context.Context) error {
 	log.Println("[ConvertPageTask] Started for", t.url)
 
-	// 120 second timeout
-	ctx, cancel := context.WithTimeout(ctx, 120*time.Second)
+	// 5 minute timeout
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
 	defer cancel()
 
 	var html string
