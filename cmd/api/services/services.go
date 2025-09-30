@@ -46,7 +46,7 @@ func NewServices(ctx context.Context, cfg config.Config) (*Services, error) {
 			ctx,
 			&latest.ModelConfig{
 				Provider:   "anthropic",
-				Model:      "claude-sonnet-4-0",
+				Model:      "claude-sonnet-4-5",
 				MaxTokens:  64000,
 				TrackUsage: &trackUsage,
 			},
