@@ -10,8 +10,8 @@ import type {
   ApiError,
   BeginConversionRequest,
   ConversionTask,
-  ConversionTaskResponse,
-  TaskStatus,
+  AgentTaskResponse,
+  AgentTaskStatus,
 } from '../../custom-types'
 import Modal from './modal'
 import './styles.css'
@@ -83,7 +83,7 @@ const getActiveConversionTask = async (documentId: string): Promise<ConversionTa
   )
 
   try {
-    const result = await axios.get<ConversionTaskResponse>(
+    const result = await axios.get<AgentTaskResponse>(
       `/api/single-page-conversions${queryString}`,
     )
     if (result.data?.totalDocs !== 1) {
@@ -108,7 +108,7 @@ const isAgentTaskActive = (agentTask: ConversionTask | null | undefined): boolea
   return agentTaskStatus === 'queued' || agentTaskStatus === 'running'
 }
 
-function ConvertSinglePageClient({ field }: { field?: UIField }) {
+function GenerateVideoTranscriptButtonClient({ field }: { field?: UIField }) {
   const label = field?.label
 
   const [mounted, setMounted] = useState<boolean>(false)
@@ -199,7 +199,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     return () => clearInterval(intervalId)
   }, [activeConversion, documentId])
 
-  const getStatusClass = (status: TaskStatus | string): string => {
+  const getStatusClass = (status: AgentTaskResponse | string): string => {
     switch (status) {
       case 'queued':
         return 'convert-status-queued'
@@ -214,7 +214,7 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
     }
   }
 
-  const getStatusIcon = (status: TaskStatus | string): string => {
+  const getStatusIcon = (status: AgentTaskResponse | string): string => {
     switch (status) {
       case 'queued':
         return '⏳'
@@ -288,4 +288,4 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   )
 }
 
-export default ConvertSinglePageClient
+export default GenerateVideoTranscriptButtonClient

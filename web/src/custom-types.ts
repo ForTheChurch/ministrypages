@@ -1,14 +1,14 @@
 export interface ConversionTask {
   id: string
   pageId: string
-  agentTaskStatus: TaskStatus
+  agentTaskStatus: AgentTaskStatus
   createdAt: string
   updatedAt: string
   url?: string
   error?: string
 }
 
-export interface ConversionTaskResponse {
+export interface AgentTaskResponse {
   totalDocs: number
   docs: ConversionTask[]
 }
@@ -21,7 +21,15 @@ export interface BeginConversionRequest {
   }
 }
 
-export type TaskStatus = 'queued' | 'running' | 'completed' | 'failed' | 'idle'
+export interface GenerateVideoTranscriptRequest {
+  workflow: string
+  data: {
+    documentId: string
+    url: string
+  }
+}
+
+export type AgentTaskStatus = 'queued' | 'running' | 'completed' | 'failed' | 'idle'
 
 export interface ApiError {
   message: string

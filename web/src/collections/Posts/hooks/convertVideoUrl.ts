@@ -1,9 +1,11 @@
+'use server'
+
 import type { FieldHook } from 'payload'
 
 /**
  * Converts YouTube and Vimeo URLs to their embeddable format
  */
-export const convertVideoUrl: FieldHook = ({ value }) => {
+export const convertVideoUrl: FieldHook = async ({ value }) => {
   if (!value || typeof value !== 'string') {
     return value
   }
