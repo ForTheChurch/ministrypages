@@ -20,7 +20,6 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { convertVideoUrl } from './hooks/convertVideoUrl'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
-import { getVideoTranscript } from './hooks/getVideoTranscript'
 
 import { slugField } from '@/fields/slug'
 import {
@@ -110,7 +109,6 @@ export const Posts: CollectionConfig<'posts'> = {
               },
               hooks: {
                 beforeChange: [convertVideoUrl],
-                afterChange: [getVideoTranscript]
               },
             },
             {
