@@ -76,7 +76,6 @@ export default function RichText(props: Props) {
       className={cn(
         'break-words',
         {
-          //when hero is true, we want to make the margin on bottom of headings to be smaller
           '[&>*]:my-1': removeMargins,
           container: enableGutter,
           'max-w-none': !enableGutter,

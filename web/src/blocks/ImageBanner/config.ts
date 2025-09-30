@@ -15,7 +15,7 @@ export const ImageBanner: Block = {
   fields: [
     {
       name: 'image',
-      type: 'relationship',
+      type: 'upload',
       relationTo: 'media',
       hasMany: false,
       required: true,
