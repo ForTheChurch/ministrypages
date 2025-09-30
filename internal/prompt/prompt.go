@@ -12,10 +12,22 @@ var promptsFS embed.FS
 
 type ConvertPageTemplate struct {
 	TypeScriptFile string
+	SampleHTML     string
+	SamplePageData string
 }
 
 func GetConvertPagePrompt() (string, error) {
 	pageTypes, err := promptsFS.ReadFile(path.Join("prompts", "page-types.ts"))
+	if err != nil {
+		return "", err
+	}
+
+	sampleHTML, err := promptsFS.ReadFile(path.Join("prompts", "sample-html.html"))
+	if err != nil {
+		return "", err
+	}
+
+	samplePageData, err := promptsFS.ReadFile(path.Join("prompts", "sample-patch.json"))
 	if err != nil {
 		return "", err
 	}
@@ -27,6 +39,8 @@ func GetConvertPagePrompt() (string, error) {
 
 	data := ConvertPageTemplate{
 		TypeScriptFile: string(pageTypes),
+		SampleHTML:     string(sampleHTML),
+		SamplePageData: string(samplePageData),
 	}
 
 	var buf bytes.Buffer

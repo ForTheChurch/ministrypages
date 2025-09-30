@@ -30,6 +30,20 @@ Do not explain your process or output. Do not ask clarifying questions. Do not m
 Use the `export-page` tool only once to provide the converted data. After exporting the page, end the chat.
 
 The TypeScript type definition the JSON object should abide by is the `Page` type below:
-```
+<page_type>
 {{.TypeScriptFile}}
-```
+</page_type>
+
+Below is a sample conversation from html to the `Page` json object:
+
+<sample_conversion>
+
+<sample_html>
+{{.SampleHTML}}
+</sample_html>
+
+<assistant_tool_call_page_json>
+{{.SamplePageData}}
+</assistant_tool_call_page_json>
+
+</sample_conversion>

@@ -1,0 +1,511 @@
+{
+  "hero": {
+    "type": "highImpact",
+    "richText": {
+      "root": {
+        "children": [
+          {
+            "children": [
+              {
+                "detail": 0,
+                "format": 0,
+                "mode": "normal",
+                "style": "",
+                "text": "Real People ",
+                "type": "text",
+                "version": 1
+              }
+            ],
+            "direction": null,
+            "format": "",
+            "indent": 0,
+            "type": "heading",
+            "version": 1,
+            "tag": "h2"
+          },
+          {
+            "children": [
+              {
+                "detail": 0,
+                "format": 3,
+                "mode": "normal",
+                "style": "",
+                "text": "Following a ",
+                "type": "text",
+                "version": 1
+              }
+            ],
+            "direction": null,
+            "format": "",
+            "indent": 0,
+            "type": "paragraph",
+            "version": 1,
+            "textFormat": 3,
+            "textStyle": ""
+          },
+          {
+            "children": [
+              {
+                "detail": 0,
+                "format": 0,
+                "mode": "normal",
+                "style": "",
+                "text": "Real God",
+                "type": "text",
+                "version": 1
+              }
+            ],
+            "direction": null,
+            "format": "",
+            "indent": 0,
+            "type": "heading",
+            "version": 1,
+            "tag": "h1"
+          }
+        ],
+        "direction": "ltr",
+        "format": "",
+        "indent": 0,
+        "type": "root",
+        "version": 1
+      }
+    },
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "reference": {
+            "relationTo": "posts",
+            "value": "68ccd56136eb11f92d77dc2c"
+          },
+          "url": "#",
+          "label": "How to Plan a Visit",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "url": "#",
+          "label": "Watch Online",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "media": "68ced615e3b1f0ce6f2773a7"
+  },
+  "layout": [
+    {
+      "blockType": "twoColumn",
+      "image": "68cede22e3b1f0ce6f27811c",
+      "imagePosition": "left",
+      "imagePositionOnMobile": "top",
+      "richText": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "Sunday",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h2"
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "8:45 & 10:30",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h3"
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 1,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "600 SHOCKLEY ROAD",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 1,
+              "textStyle": ""
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 1,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "RICHLAND, WA 99352",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 1,
+              "textStyle": ""
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1,
+          "textFormat": 1
+        }
+      },
+      "centerTextOnMobile": true,
+      "sectionColor": "dark",
+      "enableLink": true,
+      "link": {
+        "type": "custom",
+        "newTab": true,
+        "url": "https://www.google.com/maps/dir//600+Shockley+Rd,+Richland,+WA+99352/@46.2435906,-119.3000563,17z/data=!4m8!4m7!1m0!1m5!1m1!1s0x549870860723c7a7:0x4678765ee5e3f3d3!2m2!1d-119.2974814!2d46.2435869?entry=ttu",
+        "label": "Get Directions",
+        "appearance": "outline"
+      },
+      "blockName": "Service Time"
+    },
+    {
+      "blockType": "eventList",
+      "introContent": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "Upcoming Events",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h2"
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "populateBy": "collection",
+      "limit": 3,
+      "blockName": "Upcoming Events"
+    },
+    {
+      "blockType": "imageBanner",
+      "image": "68cf40046af3bd574a4fea3e",
+      "richText": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "See You on Sunday",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h2"
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 1,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "8:45A & 10:30A",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 1,
+              "textStyle": ""
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "We’re real people in all stages of life learning to walk with Jesus. Come explore and find your place in our family.",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "We look forward to meeting you!",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "links": [
+        {
+          "link": {
+            "type": "custom",
+            "url": "#",
+            "label": "How to plan a visit",
+            "appearance": "default"
+          }
+        },
+        {
+          "link": {
+            "type": "custom",
+            "url": "#",
+            "label": "Kids+Families",
+            "appearance": "default"
+          }
+        }
+      ],
+      "blockName": "See you on Sunday"
+    },
+    {
+      "blockType": "twoColumn",
+      "image": "68cf3c286af3bd574a4fe3a6",
+      "imagePosition": "left",
+      "imagePositionOnMobile": "top",
+      "richText": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 1,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "SERMON SERIES | begins SEP 7",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 1,
+              "textStyle": ""
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "In The Beginning",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h2"
+            },
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "What if the oldest story ever told still answered your biggest questions? This fall, journey with us through Genesis 1–11 to discover who God is, who you are, and why it all matters. Whether you’re searching, skeptical, or seasoned in faith—there’s something here for you.",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1,
+          "textFormat": 1
+        }
+      },
+      "centerTextOnMobile": false,
+      "enableLink": true,
+      "link": {
+        "type": "custom",
+        "url": "#",
+        "label": "Watch Online",
+        "appearance": "default"
+      },
+      "blockName": "Sermon Series"
+    },
+    {
+      "blockType": "imageBanner",
+      "image": "68cf409b6af3bd574a4feb43",
+      "richText": {
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "links": [],
+      "blockName": "Image"
+    },
+    {
+      "blockType": "postList",
+      "introContent": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "News & Resources",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": null,
+              "format": "",
+              "indent": 0,
+              "type": "heading",
+              "version": 1,
+              "tag": "h2"
+            }
+          ],
+          "direction": null,
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "populateBy": "collection",
+      "limit": 3,
+      "blockName": "News and Resources"
+    },
+    {
+      "blockType": "imageBanner",
+      "image": "68cf40ee51e7f41105918f31",
+      "links": [],
+      "blockName": "Image"
+    }
+  ],
+  "title": "Home"
+}
