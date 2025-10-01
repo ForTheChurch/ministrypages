@@ -12,7 +12,7 @@ This project uses **Vitest** for testing with React Testing Libra## Current Test
   - Loading states during submission
   - Error handling for failed API calls
   - Status display with correct icons and CSS classes
-  - Modal action buttons (Go to Pages, Cancel Task)
+  - Modal action buttons (Go to Pages)
 
 - ✅ **Modal Component** - Complete modal testing:
   - Rendering children correctly
