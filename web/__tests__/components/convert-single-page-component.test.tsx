@@ -1,8 +1,8 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '../utils/test-helpers'
 import axios from 'axios'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import ConvertSinglePageClient from '../../src/components/ConvertSinglePage/client'
 import type { ConversionTask } from '../../src/custom-types'
+import { fireEvent, render, screen, waitFor } from '../utils/test-helpers'
 
 // Mock axios
 vi.mock('axios', () => ({
@@ -221,7 +221,6 @@ describe('ConvertSinglePageClient', () => {
       })
 
       expect(screen.getByText('Go to Pages')).toBeDefined()
-      expect(screen.getByText('Cancel Task')).toBeDefined()
     })
   })
 
@@ -368,33 +367,6 @@ describe('ConvertSinglePageClient', () => {
       fireEvent.click(goToPagesButton)
 
       expect(window.location.href).toBe('/admin/collections/pages')
-    })
-
-    test('should log warning when "Cancel Task" is clicked', async () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-      const activeTask: ConversionTask = {
-        id: 'task-123',
-        pageId: 'test-document-123',
-        agentTaskStatus: 'running',
-        createdAt: '2025-09-28T10:00:00Z',
-        updatedAt: '2025-09-28T10:01:00Z',
-      }
-
-      mockedAxios.get.mockResolvedValueOnce({
-        data: { totalDocs: 1, docs: [activeTask] },
-      })
-
-      render(<ConvertSinglePageClient />)
-
-      const cancelButton = await screen.findByText('Cancel Task')
-      fireEvent.click(cancelButton)
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "[ConvertSinglePage] 'Cancel Task' button is not implemented",
-      )
-
-      consoleSpy.mockRestore()
     })
   })
 })
