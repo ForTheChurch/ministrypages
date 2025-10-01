@@ -17,6 +17,7 @@ export const SinglePageConversions: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'id',
+    hidden: true,
   },
   indexes: [
     {
