@@ -17,33 +17,31 @@ const AdminAssistant: React.FC = () => {
   const runtime = useChatRuntime({})
 
   return (
-    <div className="admin-assistant-container mb-6">
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Content Assistant</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Get help with content creation, page management, and website updates.
-          </p>
-        </div>
-        <div className="p-6">
-          <AssistantRuntimeProvider runtime={runtime}>
-            <GetPagesToolUI />
-            <GetPageContentToolUI />
-            <UpdatePageToolUI />
-            <CreatePageToolUI />
-            <DeletePageToolUI />
-            <TooltipProvider>
-              <div className="grid h-[500px] grid-cols-[200px_1fr] gap-x-4">
-                <div className="border border-gray-200 rounded-lg">
-                  <ThreadList />
-                </div>
-                <div className="border border-gray-200 h-[500px] overflow-y-auto rounded-lg">
-                  <Thread />
-                </div>
+    <div className="mb-6 p-6 card flex-col">
+      <div className="py-6">
+        <h2 className="text-2xl">Content Assistant</h2>
+        <p className="mt-1">
+          Get help with content creation, page management, and website updates.
+        </p>
+      </div>
+      <div>
+        <AssistantRuntimeProvider runtime={runtime}>
+          <GetPagesToolUI />
+          <GetPageContentToolUI />
+          <UpdatePageToolUI />
+          <CreatePageToolUI />
+          <DeletePageToolUI />
+          <TooltipProvider>
+            <div className="grid h-[500px] lg:grid-cols-[200px_1fr] gap-6">
+              <div className="border border-gray-200 rounded-lg">
+                <ThreadList />
               </div>
-            </TooltipProvider>
-          </AssistantRuntimeProvider>
-        </div>
+              <div className="border border-gray-200 h-300 lg:h-[500px] overflow-y-auto rounded-lg">
+                <Thread />
+              </div>
+            </div>
+          </TooltipProvider>
+        </AssistantRuntimeProvider>
       </div>
     </div>
   )

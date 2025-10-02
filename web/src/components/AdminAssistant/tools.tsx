@@ -1,7 +1,7 @@
-import { makeAssistantToolUI } from '@assistant-ui/react'
 import { Card, CardContent } from '@/components/ui/card'
-import { CheckIcon, Loader2Icon, XIcon } from 'lucide-react'
 import { Page } from '@/payload-types'
+import { makeAssistantToolUI } from '@assistant-ui/react'
+import { CheckIcon, Loader2Icon, XIcon } from 'lucide-react'
 
 function ToolWrapper({ children }: { children: React.ReactNode }) {
   return (
