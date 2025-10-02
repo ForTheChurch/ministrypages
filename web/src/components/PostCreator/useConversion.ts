@@ -1,8 +1,8 @@
-import type { ApiError, BeginConversionRequest, ConversionTask } from '@/custom-types'
 import { reloadPage } from '@/utilities/tasks'
 import { useDocumentInfo } from '@payloadcms/ui'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import type { ApiError, BeginConversionRequest, ConversionTask } from '../../custom-types'
 import { getActiveConversionTask, isAgentTaskActive } from './api'
 
 export const useConversion = () => {
@@ -50,12 +50,12 @@ export const useConversion = () => {
     if (!documentId) return
     setIsLoading(true)
     const requestData: BeginConversionRequest = {
-      workflow: 'convertSinglePage',
+      workflow: 'createPostFromVideo',
       data: { documentId: String(documentId), url },
     }
 
     try {
-      await axios.post('/api/begin-single-page-conversion', requestData)
+      await axios.post('/api/begin-post-creation', requestData)
       setIsLoading(false)
       setIsWaitingForTask(true) // Show spinner modal immediately
 
@@ -71,14 +71,14 @@ export const useConversion = () => {
         } else {
           // Give up after max attempts
           setIsWaitingForTask(false)
-          console.error('[ConvertSinglePage] Failed to find created task after polling')
+          console.error('[PostCreator] Failed to find created task after polling')
         }
       }
 
       pollForTask()
     } catch (error) {
       const apiError = error as ApiError
-      console.error('[ConvertSinglePage] Error creating job:', {
+      console.error('[PostCreator] Error creating job:', {
         error: apiError.message,
         status: apiError.response?.status,
         url,

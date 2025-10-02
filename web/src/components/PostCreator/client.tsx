@@ -9,7 +9,7 @@ import ConversionStatus from './ConversionStatus'
 import './styles.css'
 import { useConversion } from './useConversion'
 
-function ConvertSinglePageClient({ field }: { field?: UIField }) {
+function PostCreatorClient({ field }: { field?: UIField }) {
   const label = field?.label
   const {
     mounted,
@@ -35,10 +35,10 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
       <div className="convert-container">
         <div className="convert-header">
           <h3 className="convert-title">
-            {label ? getLabelAsString(label) : 'Convert Single Page'}
+            {label ? getLabelAsString(label) : 'Create Post from URL'}
           </h3>
           <p className="convert-description">
-            Enter a URL to convert a single page into your site structure.
+            Enter a URL to a video to create a post from the video.
           </p>
         </div>
 
@@ -56,4 +56,4 @@ function ConvertSinglePageClient({ field }: { field?: UIField }) {
   )
 }
 
-export default ConvertSinglePageClient
+export default PostCreatorClient
