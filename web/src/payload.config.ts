@@ -1,7 +1,7 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import path from 'path'
-import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
+import { buildConfig, PayloadRequest } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
 
@@ -22,6 +22,7 @@ import { plugins } from './plugins'
 import { beginSinglePageConversionConfig } from './tasks/beginSinglePageConversion'
 import { waitForAgentToConvertPageConfig } from './tasks/waitForAgentToConvertPage'
 import { getServerSideURL } from './utilities/getURL'
+import { convertSinglePage } from './workflows/convertSinglePage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -111,42 +112,7 @@ export default buildConfig({
       },
     },
     tasks: [beginSinglePageConversionConfig, waitForAgentToConvertPageConfig],
-    workflows: [
-      {
-        slug: 'convertSinglePage',
-        inputSchema: [
-          {
-            name: 'documentId',
-            type: 'text',
-            required: true,
-          },
-          {
-            name: 'url',
-            type: 'text',
-            required: true,
-          },
-        ],
-        handler: async ({ job, tasks }) => {
-          // Begin the conversion and get a task ID
-          const taskIdConvertSinglePage = 'beginSinglePageConversion'
-          const { singlePageConversionId } = await tasks.beginSinglePageConversion(
-            taskIdConvertSinglePage,
-            {
-              input: {
-                documentId: job.input.documentId,
-                url: job.input.url,
-              },
-            },
-          )
-
-          // Wait on the task to complete
-          const taskIdWaitForAgentTask = 'waitForAgentToConvertPage'
-          await tasks.waitForAgentToConvertPage(taskIdWaitForAgentTask, {
-            input: { singlePageConversionId },
-          })
-        },
-      } as WorkflowConfig<'convertSinglePage'>,
-    ],
+    workflows: [convertSinglePage],
   },
   endpoints: [
     {
