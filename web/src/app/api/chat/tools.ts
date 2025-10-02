@@ -50,8 +50,8 @@ export const updatePageTool = tool({
   }),
   execute: async ({ pageId, page }) => {
     const payload = await getPayload({ config })
-    await payload.update({ collection: 'pages', id: pageId, data: JSON.parse(page) })
-    return { message: 'Page updated successfully' }
+    const newPage = await payload.update({ collection: 'pages', id: pageId, data: JSON.parse(page) })
+    return { message: `<i>${newPage.title}</i> page updated successfully` }
   },
 })
 
@@ -62,7 +62,8 @@ export const createPageTool = tool({
   }),
   execute: async ({ page }) => {
     const payload = await getPayload({ config })
-    await payload.create({ collection: 'pages', data: JSON.parse(page) })
+    const newPage = await payload.create({ collection: 'pages', data: JSON.parse(page) })
+    return { message: `<i>${newPage.title}</i> page created successfully`, pageId: newPage.id }
   },
 })
 
@@ -73,6 +74,7 @@ export const deletePageTool = tool({
   }),
   execute: async ({ pageId }) => {
     const payload = await getPayload({ config })
-    await payload.delete({ collection: 'pages', id: pageId })
+    const deletedPage = await payload.delete({ collection: 'pages', id: pageId })
+    return { message: `<i>${deletedPage.title}</i> page deleted successfully` }
   },
 })
