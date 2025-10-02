@@ -125,7 +125,7 @@ export interface Config {
   jobs: {
     tasks: {
       beginSinglePageConversion: TaskBeginSinglePageConversion;
-      waitForAgentTask: TaskWaitForAgentTask;
+      waitForAgentToConvertPage: TaskWaitForAgentToConvertPage;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -1104,7 +1104,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'beginSinglePageConversion' | 'waitForAgentTask' | 'schedulePublish';
+        taskSlug: 'inline' | 'beginSinglePageConversion' | 'waitForAgentToConvertPage' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1138,7 +1138,7 @@ export interface PayloadJob {
       }[]
     | null;
   workflowSlug?: 'convertSinglePage' | null;
-  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'waitForAgentTask' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'waitForAgentToConvertPage' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -2130,9 +2130,9 @@ export interface TaskBeginSinglePageConversion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskWaitForAgentTask".
+ * via the `definition` "TaskWaitForAgentToConvertPage".
  */
-export interface TaskWaitForAgentTask {
+export interface TaskWaitForAgentToConvertPage {
   input: {
     singlePageConversionId: string;
   };

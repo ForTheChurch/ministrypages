@@ -1,7 +1,7 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import path from 'path'
-import { buildConfig, PayloadRequest, WorkflowConfig } from 'payload'
+import { buildConfig, PayloadRequest } from 'payload'
 import sharp from 'sharp' // sharp-import
 import { fileURLToPath } from 'url'
 
@@ -15,12 +15,15 @@ import { Posts } from './collections/Posts'
 import { Series } from './collections/Series'
 import { SinglePageConversions } from './collections/SinglePageConversions'
 import { Users } from './collections/Users'
+import { beginSinglePageConversion } from './endpoints/beginSinglePageConversion'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { Logo } from './Logo/config'
 import { plugins } from './plugins'
-import agentApi from './utilities/agentApi'
+import { beginSinglePageConversionConfig } from './tasks/beginSinglePageConversion'
+import { waitForAgentToConvertPageConfig } from './tasks/waitForAgentToConvertPage'
 import { getServerSideURL } from './utilities/getURL'
+import { convertSinglePage } from './workflows/convertSinglePage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -109,245 +112,8 @@ export default buildConfig({
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [
-      {
-        // This task is for initiating a single page conversion via the agent
-        // backend.
-        retries: 2,
-        slug: 'beginSinglePageConversion',
-        inputSchema: [
-          {
-            name: 'documentId',
-            type: 'text',
-            required: true,
-          },
-          {
-            name: 'url',
-            type: 'text',
-            required: true,
-          },
-        ],
-        outputSchema: [
-          {
-            name: 'singlePageConversionId',
-            type: 'text',
-            required: true,
-          },
-        ],
-        // TODO: Move handler to a separate file
-        // https://payloadcms.com/docs/jobs-queue/tasks#defining-tasks-in-the-config
-        handler: async ({
-          input,
-          job,
-          req,
-        }: {
-          input: { documentId: string; url: string }
-          job: any
-          req: any
-        }) => {
-          const { documentId, url } = input
-
-          const activeTaskCountForPage = await req.payload.count({
-            collection: 'single-page-conversions',
-            where: {
-              pageId: { equals: documentId },
-              agentTaskStatus: { in: ['queued', 'running'] },
-            },
-          })
-
-          if (activeTaskCountForPage > 0) {
-            throw new Error(
-              '[beginSinglePageConversion] Cannot start a new conversion when an existing conversion is active.',
-            )
-          }
-
-          // TODO: Don't hardcode
-          const response = await agentApi.post('/pages/convert-single-page', {
-            url,
-            pageId: documentId,
-          })
-          const { task_id: agentTaskId, task_status: agentTaskStatus } = response.data
-
-          const singlePageConversion = await req.payload.create({
-            collection: 'single-page-conversions',
-            data: {
-              pageId: documentId,
-              agentTaskId,
-              agentTaskStatus,
-            },
-          })
-
-          return {
-            output: { singlePageConversionId: singlePageConversion?.id },
-          }
-        },
-        onFail: async () => {
-          console.error("Job 'beginSinglePageConversion' failed")
-        },
-        onSuccess: async () => {
-          console.log("Job 'beginSinglePageConversion' succeeded")
-        },
-      },
-      {
-        // This task returns success when the given task is complete
-        retries: 9999,
-        slug: 'waitForAgentTask',
-        inputSchema: [
-          {
-            name: 'singlePageConversionId',
-            type: 'text',
-            required: true,
-          },
-        ],
-        outputSchema: [
-          {
-            name: 'status',
-            type: 'text',
-            required: true,
-          },
-        ],
-        handler: async ({
-          input,
-          job,
-          req,
-        }: {
-          input: { singlePageConversionId: string }
-          job: any
-          req: any
-        }) => {
-          const { singlePageConversionId } = input
-
-          const singlePageConversion = await req.payload.findByID({
-            collection: 'single-page-conversions',
-            id: singlePageConversionId,
-          })
-          const { agentTaskId } = singlePageConversion
-
-          if (!singlePageConversion) {
-            throw new Error(
-              `Cannot find single page conversion with ID [${singlePageConversionId}]`,
-            )
-          }
-
-          // Configure a timeout on the polling for safety
-          const timeoutMs = 300000
-          const endTime = Date.now() + timeoutMs
-          while (true) {
-            // TODO: Don't hardcode
-            const response = await agentApi.get(`/pages/task/${agentTaskId}`)
-
-            const { task_status: agentTaskStatus } = response.data
-
-            // Update the task status in the document
-            await req.payload.update({
-              collection: 'single-page-conversions',
-              id: singlePageConversionId,
-              data: { agentTaskStatus },
-            })
-
-            // Status schema:
-            // {
-            //   "task_status": "queued" | "running" | "completed" | "failed"
-            // }
-            if (agentTaskStatus == 'completed' || agentTaskStatus == 'failed') {
-              return {
-                output: { status: agentTaskStatus },
-              }
-            }
-
-            // Timeout
-            if (Date.now() >= endTime) {
-              throw new Error('[waitForAgentTask] Timed out')
-            }
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-          }
-        },
-        onFail: async () => {
-          console.error("Job 'waitForAgentTask' failed")
-        },
-        onSuccess: async () => {
-          console.log("Job 'waitForAgentTask' succeeded")
-        },
-      },
-    ],
-    workflows: [
-      {
-        slug: 'convertSinglePage',
-        inputSchema: [
-          {
-            name: 'documentId',
-            type: 'text',
-            required: true,
-          },
-          {
-            name: 'url',
-            type: 'text',
-            required: true,
-          },
-        ],
-        handler: async ({ job, tasks }) => {
-          // Begin the conversion and get a task ID
-          const taskIdConvertSinglePage = '1'
-          const { singlePageConversionId } = await tasks.beginSinglePageConversion(
-            taskIdConvertSinglePage,
-            {
-              input: {
-                documentId: job.input.documentId,
-                url: job.input.url,
-              },
-            },
-          )
-
-          // Wait on the task to complete
-          const taskIdWaitForAgentTask = '2'
-          const { status } = await tasks.waitForAgentTask(taskIdWaitForAgentTask, {
-            input: { singlePageConversionId },
-          })
-        },
-      } as WorkflowConfig<'convertSinglePage'>,
-    ],
+    tasks: [beginSinglePageConversionConfig, waitForAgentToConvertPageConfig],
+    workflows: [convertSinglePage],
   },
-  endpoints: [
-    {
-      // This endpoint is for creating jobs via the REST API
-      path: '/begin-single-page-conversion',
-      method: 'post',
-      handler: async (req: PayloadRequest) => {
-        if (typeof req.json !== 'function') {
-          throw new Error('[/begin-single-page-conversion] Request has no JSON method')
-        }
-
-        const body = await req.json()
-        const { task, workflow, data } = body
-        const { documentId, url }: { documentId: string; url: string } = data
-
-        if (task && workflow) {
-          throw new Error('[/begin-single-page-conversion] Cannot queue both a task and a workflow')
-        }
-
-        const job = await req.payload.jobs.queue({
-          task,
-          workflow,
-          input: {
-            documentId,
-            url,
-          },
-        })
-
-        // Schedule the job to start asynchronously
-        setImmediate(async () => {
-          try {
-            await req.payload.jobs.runByID({ id: job.id })
-          } catch (error) {
-            console.error(`[/begin-single-page-conversion] Job '${job.id}' failed:`, error)
-          }
-        })
-
-        return Response.json(
-          { message: `Job created. Job ID: ${job.id}, URL: ${url}` },
-          { status: 201 },
-        )
-      },
-    },
-  ],
+  endpoints: [beginSinglePageConversion],
 })
