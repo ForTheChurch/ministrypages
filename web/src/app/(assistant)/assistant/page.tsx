@@ -1,17 +1,17 @@
 'use client'
 
-import { AssistantRuntimeProvider } from '@assistant-ui/react'
-import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
 import { Thread } from '@/components/assistant-ui/thread'
 import { ThreadList } from '@/components/assistant-ui/thread-list'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { AssistantRuntimeProvider } from '@assistant-ui/react'
+import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
 import {
   CreatePageToolUI,
   DeletePageToolUI,
   GetPageContentToolUI,
   GetPagesToolUI,
   UpdatePageToolUI,
-} from './tools'
+} from '../../../components/AdminAssistant/tools'
 
 export default function AssistantPage() {
   const runtime = useChatRuntime({})
