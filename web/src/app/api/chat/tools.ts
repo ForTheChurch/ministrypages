@@ -15,6 +15,7 @@ export const getPagesTool = tool({
     // Tool execution logic
     const pages = await payload.find({
       collection: 'pages',
+      limit: 30,
     })
     // Exclude content for listing
     return pages.docs.map((page) => ({
@@ -54,3 +55,24 @@ export const updatePageTool = tool({
   },
 })
 
+export const createPageTool = tool({
+  description: 'Creates a page',
+  inputSchema: z.object({
+    page: z.string().describe('The JSON page content to create'),
+  }),
+  execute: async ({ page }) => {
+    const payload = await getPayload({ config })
+    await payload.create({ collection: 'pages', data: JSON.parse(page) })
+  },
+})
+
+export const deletePageTool = tool({
+  description: 'Deletes a page',
+  inputSchema: z.object({
+    pageId: z.string().describe('The ID of the page to delete'),
+  }),
+  execute: async ({ pageId }) => {
+    const payload = await getPayload({ config })
+    await payload.delete({ collection: 'pages', id: pageId })
+  },
+})

@@ -1,7 +1,7 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { frontendTools } from "@assistant-ui/react-ai-sdk";
 import { convertToModelMessages, stepCountIs, streamText } from "ai";
-import { getPageContentTool, getPagesTool, updatePageTool } from "./tools";
+import { createPageTool, deletePageTool, getPageContentTool, getPagesTool, updatePageTool } from "./tools";
 import { systemPrompt } from "./prompt";
 
 export const maxDuration = 30;
@@ -20,6 +20,8 @@ export async function POST(req: Request) {
       getPages: getPagesTool,
       getPageContent: getPageContentTool,
       updatePage: updatePageTool,
+      createPage: createPageTool,
+      deletePage: deletePageTool,
       // add backend tools here
     },
   });
