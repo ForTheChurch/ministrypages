@@ -12,12 +12,13 @@ import { ThreadList } from '@/components/assistant-ui/thread-list'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AssistantRuntimeProvider } from '@assistant-ui/react'
 import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+import './styles.css'
 
 const AdminAssistant: React.FC = () => {
   const runtime = useChatRuntime({})
 
   return (
-    <div className="mb-6 p-6 card flex-col">
+    <div className="admin-assistant-container mb-6 p-6 card flex-col">
       <div className="py-6">
         <h2 className="text-2xl">Content Assistant</h2>
         <p className="mt-1">
