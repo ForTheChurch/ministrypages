@@ -2,6 +2,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import {
   DefaultNodeTypes,
   SerializedBlockNode,
+  SerializedInlineBlockNode,
   SerializedLinkNode,
   type DefaultTypedEditorState,
 } from '@payloadcms/richtext-lexical'
@@ -15,8 +16,10 @@ import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { ChurchName } from '@/blocks/ChurchName/Component'
 import type {
   BannerBlock as BannerBlockProps,
+  ChurchName as ChurchNameProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
 } from '@/payload-types'
@@ -25,6 +28,7 @@ import { cn } from '@/utilities/ui'
 type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  | SerializedInlineBlockNode<ChurchNameProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
@@ -52,6 +56,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     ),
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
+  },
+  inlineBlocks: {
+    churchName: ({ node }) => <ChurchName {...node.fields} />,
   },
 })
 

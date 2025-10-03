@@ -1,13 +1,15 @@
-import type { TextFieldSingleValidation } from 'payload'
+import { ChurchName } from '@/blocks/ChurchName/config'
 import {
+  BlocksFeature,
   BoldFeature,
   ItalicFeature,
+  lexicalEditor,
   LinkFeature,
   ParagraphFeature,
-  lexicalEditor,
   UnderlineFeature,
   type LinkFields,
 } from '@payloadcms/richtext-lexical'
+import type { TextFieldSingleValidation } from 'payload'
 
 export const defaultLexical = lexicalEditor({
   features: [
@@ -43,5 +45,6 @@ export const defaultLexical = lexicalEditor({
         ]
       },
     }),
+    BlocksFeature({ inlineBlocks: [ChurchName] }),
   ],
 })

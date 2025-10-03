@@ -1,0 +1,10 @@
+.admin-assistant-container {
+  button {
+    @apply outline-none border-none cursor-pointer;
+  }
+
+  textarea,
+  input {
+    @apply outline-none border-none focus:outline-none;
+  }
+}
