@@ -1,7 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Page } from '@/payload-types'
 import { makeAssistantToolUI } from '@assistant-ui/react'
-import { CheckIcon, Loader2Icon, SearchCheckIcon, SearchXIcon, XIcon } from 'lucide-react'
+import {
+  CheckIcon,
+  ExternalLinkIcon,
+  Loader2Icon,
+  SearchCheckIcon,
+  SearchXIcon,
+  XIcon,
+} from 'lucide-react'
 
 function ToolWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -95,7 +102,7 @@ export const GetPageContentToolUI = makeAssistantToolUI<
     return (
       <ToolWrapper>
         <CheckIcon className="text-green-600" /> Retrieved page content for{' '}
-        <i>{result?.title || result?.slug}</i>
+        <i>{result?.title || result?.slug}</i> page
       </ToolWrapper>
     )
   },
@@ -108,6 +115,7 @@ export const UpdatePageToolUI = makeAssistantToolUI<
   },
   | {
       message: string
+      previewUrl: string
     }
   | ErrorResult
 >({
@@ -136,8 +144,15 @@ export const UpdatePageToolUI = makeAssistantToolUI<
 
     return (
       <ToolWrapper>
-        <CheckIcon className="text-green-600" />{' '}
-        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center">
+            <CheckIcon className="text-green-600" />{' '}
+            <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+          </div>
+          <a href={result?.previewUrl} target="_blank" rel="noopener noreferrer">
+            Click here to preview the page <ExternalLinkIcon className="w-4 h-4" />
+          </a>
+        </div>
       </ToolWrapper>
     )
   },
@@ -150,6 +165,7 @@ export const PublishPageToolUI = makeAssistantToolUI<
   },
   | {
       message: string
+      publishedUrl: string
     }
   | ErrorResult
 >({
@@ -178,8 +194,15 @@ export const PublishPageToolUI = makeAssistantToolUI<
 
     return (
       <ToolWrapper>
-        <CheckIcon className="text-green-600" />{' '}
-        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center">
+            <CheckIcon className="text-green-600" />{' '}
+            <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+          </div>
+          <a href={result?.publishedUrl} target="_blank" rel="noopener noreferrer">
+            Click here see the published page <ExternalLinkIcon className="w-4 h-4" />
+          </a>
+        </div>
       </ToolWrapper>
     )
   },
@@ -191,6 +214,8 @@ export const CreatePageToolUI = makeAssistantToolUI<
   },
   | {
       message: string
+      pageId: string
+      previewUrl: string
     }
   | ErrorResult
 >({
@@ -219,8 +244,15 @@ export const CreatePageToolUI = makeAssistantToolUI<
 
     return (
       <ToolWrapper>
-        <CheckIcon className="text-green-600" />{' '}
-        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center">
+            <CheckIcon className="text-green-600" />{' '}
+            <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+          </div>
+          <a href={result?.previewUrl} target="_blank" rel="noopener noreferrer">
+            Click here to preview the page <ExternalLinkIcon className="w-4 h-4" />
+          </a>
+        </div>
       </ToolWrapper>
     )
   },

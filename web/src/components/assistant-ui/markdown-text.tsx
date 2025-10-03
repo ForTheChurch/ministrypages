@@ -136,6 +136,8 @@ const defaultComponents = memoizeMarkdownComponents({
         "aui-md-a font-medium text-primary underline underline-offset-4",
         className,
       )}
+      target="_blank"
+      rel="noopener noreferrer"
       {...props}
     />
   ),

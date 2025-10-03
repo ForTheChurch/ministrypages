@@ -4,6 +4,9 @@ import config from '@payload-config'
 import { z } from 'zod'
 import { convertLexicalToMarkdown, editorConfigFactory } from '@payloadcms/richtext-lexical'
 import { Posts } from '@/collections/Posts'
+import { generatePreviewPath } from '@/utilities/generatePreviewPath'
+import { getServerSideURL } from '@/utilities/getURL'
+import { Page } from '@/payload-types'
 
 // Define the tool
 export const getPagesTool = tool({
@@ -44,6 +47,20 @@ export const getPageContentTool = tool({
   },
 })
 
+function generatePreviewUrl(page: Page): string {
+  const path = generatePreviewPath({
+    slug: typeof page?.slug === 'string' ? page.slug : '',
+    collection: 'pages',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    req: {} as any, // not used
+  })
+  return `${getServerSideURL()}${path}`
+}
+
+function generatePublishedUrl(page: Page): string {
+  return `${getServerSideURL()}/${page.slug}`
+}
+
 export const updatePageTool = tool({
   description: 'Updates a page',
   inputSchema: z.object({
@@ -57,7 +74,10 @@ export const updatePageTool = tool({
       id: pageId,
       data: JSON.parse(page),
     })
-    return { message: `<i>${newPage.title}</i> page updated successfully` }
+    return {
+      message: `<i>${newPage.title}</i> page updated successfully`,
+      previewUrl: generatePreviewUrl(newPage),
+    }
   },
 })
 
@@ -69,7 +89,11 @@ export const createPageTool = tool({
   execute: async ({ page }) => {
     const payload = await getPayload({ config })
     const newPage = await payload.create({ collection: 'pages', data: JSON.parse(page) })
-    return { message: `<i>${newPage.title}</i> page created successfully`, pageId: newPage.id }
+    return {
+      message: `<i>${newPage.title}</i> page created successfully`,
+      pageId: newPage.id,
+      previewUrl: generatePreviewUrl(newPage),
+    }
   },
 })
 
@@ -97,7 +121,7 @@ export const publishPageTool = tool({
       id: pageId,
       data: { _status: 'published' },
     })
-    return { message: `<i>${publishedPage.title}</i> page published successfully` }
+    return { message: `<i>${publishedPage.title}</i> page published successfully`, publishedUrl: generatePublishedUrl(publishedPage) }
   },
 })
 
