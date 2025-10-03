@@ -16,10 +16,11 @@ import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { ChurchName } from '@/blocks/ChurchName/Component'
+
+import { ChurchInfo } from '@/blocks/ChurchInfo/Component'
 import type {
   BannerBlock as BannerBlockProps,
-  ChurchName as ChurchNameProps,
+  ChurchInfo as ChurchInfoProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
 } from '@/payload-types'
@@ -28,7 +29,7 @@ import { cn } from '@/utilities/ui'
 type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
-  | SerializedInlineBlockNode<ChurchNameProps>
+  | SerializedInlineBlockNode<ChurchInfoProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
@@ -58,7 +59,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
   inlineBlocks: {
-    churchName: ({ node }) => <ChurchName {...node.fields} />,
+    churchInfo: ({ node }) => <ChurchInfo {...node.fields} />,
   },
 })
 

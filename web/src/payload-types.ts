@@ -1998,7 +1998,7 @@ export interface Church {
         id?: string | null;
       }[]
     | null;
-  'Church Location': {
+  churchLocation: {
     /**
      * Add the street address of where you have Sunday services.
      */
@@ -2007,7 +2007,7 @@ export interface Church {
     state: string;
     zip: string;
   };
-  'Contact Information'?: {
+  contactInformation?: {
     phone?: string | null;
     email?: string | null;
   };
@@ -2104,7 +2104,7 @@ export interface ChurchSelect<T extends boolean = true> {
         time?: T;
         id?: T;
       };
-  'Church Location'?:
+  churchLocation?:
     | T
     | {
         address?: T;
@@ -2112,7 +2112,7 @@ export interface ChurchSelect<T extends boolean = true> {
         state?: T;
         zip?: T;
       };
-  'Contact Information'?:
+  contactInformation?:
     | T
     | {
         phone?: T;
@@ -2273,12 +2273,13 @@ export interface WorkflowCreatePostFromVideo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ChurchName".
+ * via the `definition` "ChurchInfo".
  */
-export interface ChurchName {
+export interface ChurchInfo {
+  content: 'Name' | 'Description' | 'Phone' | 'Email';
   id?: string | null;
   blockName?: string | null;
-  blockType: 'churchName';
+  blockType: 'churchInfo';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

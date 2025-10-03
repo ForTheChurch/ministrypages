@@ -60,7 +60,7 @@ export const Church: GlobalConfig = {
       ],
     },
     {
-      name: 'Church Location',
+      name: 'churchLocation',
       type: 'group',
       fields: [
         {
@@ -94,7 +94,7 @@ export const Church: GlobalConfig = {
       ],
     },
     {
-      name: 'Contact Information',
+      name: 'contactInformation',
       type: 'group',
       fields: [
         {
