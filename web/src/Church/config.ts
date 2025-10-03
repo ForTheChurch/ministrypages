@@ -36,6 +36,30 @@ export const Church: GlobalConfig = {
       },
     },
     {
+      name: 'serviceTimes',
+      type: 'array',
+      admin: {
+        description: 'Add the service times for your church.',
+      },
+      fields: [
+        {
+          name: 'day',
+          type: 'select',
+          options: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        },
+        {
+          name: 'time',
+          type: 'date',
+          admin: {
+            date: {
+              pickerAppearance: 'timeOnly',
+              timeIntervals: 15,
+            },
+          },
+        },
+      ],
+    },
+    {
       name: 'Church Location',
       type: 'group',
       fields: [

@@ -1941,6 +1941,16 @@ export interface Church {
    * Add a general description of your church that you want to display in search engine results.
    */
   description: string;
+  /**
+   * Add the service times for your church.
+   */
+  serviceTimes?:
+    | {
+        day?: ('Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday') | null;
+        time?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   'Church Location': {
     /**
      * Add the street address of where you have Sunday services.
@@ -2040,6 +2050,13 @@ export interface ChurchSelect<T extends boolean = true> {
   name?: T;
   image?: T;
   description?: T;
+  serviceTimes?:
+    | T
+    | {
+        day?: T;
+        time?: T;
+        id?: T;
+      };
   'Church Location'?:
     | T
     | {
