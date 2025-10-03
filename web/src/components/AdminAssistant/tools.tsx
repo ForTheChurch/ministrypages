@@ -11,17 +11,26 @@ function ToolWrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
+type ErrorResult = {
+  error: string
+}
+
+function isErrorResult(result: unknown): result is ErrorResult {
+  return typeof result === 'object' && result !== null && 'error' in result
+}
+
 export const GetPagesToolUI = makeAssistantToolUI<
   void,
-  Array<{
-    id: string
-    title: string
-    slug: string
-    publishedAt: string
-    updatedAt: string
-    createdAt: string
-    _status: string
-  }>
+  | Array<{
+      id: string
+      title: string
+      slug: string
+      publishedAt: string
+      updatedAt: string
+      createdAt: string
+      _status: string
+    }>
+  | ErrorResult
 >({
   toolName: 'getPages',
   render: ({ result, status }) => {
@@ -32,11 +41,16 @@ export const GetPagesToolUI = makeAssistantToolUI<
         </ToolWrapper>
       )
     }
-    if (status.type === 'incomplete' && status.reason === 'error') {
+    if (isErrorResult(result)) {
       return (
         <ToolWrapper>
-          <XIcon className="text-red-500" />{' '}
-          <div className="text-red-500">Failed to get website pages</div>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get website pages</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
         </ToolWrapper>
       )
     }
@@ -53,7 +67,7 @@ export const GetPageContentToolUI = makeAssistantToolUI<
   {
     pageId: string
   },
-  Page
+  Page | ErrorResult
 >({
   toolName: 'getPageContent',
   render: ({ result, status }) => {
@@ -64,11 +78,16 @@ export const GetPageContentToolUI = makeAssistantToolUI<
         </ToolWrapper>
       )
     }
-    if (status.type === 'incomplete' && status.reason === 'error') {
+    if (isErrorResult(result)) {
       return (
         <ToolWrapper>
-          <XIcon className="text-red-500" />{' '}
-          <div className="text-red-500">Failed to get page content</div>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get page content</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
         </ToolWrapper>
       )
     }
@@ -89,7 +108,7 @@ export const UpdatePageToolUI = makeAssistantToolUI<
   },
   {
     message: string
-  }
+  } | ErrorResult
 >({
   toolName: 'updatePage',
   render: ({ result, status }) => {
@@ -100,11 +119,16 @@ export const UpdatePageToolUI = makeAssistantToolUI<
         </ToolWrapper>
       )
     }
-    if (status.type === 'incomplete' && status.reason === 'error') {
+    if (isErrorResult(result)) {
       return (
         <ToolWrapper>
-          <XIcon className="text-red-500" />{' '}
-          <div className="text-red-500">Failed to update page</div>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to update page</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
         </ToolWrapper>
       )
     }
@@ -124,7 +148,7 @@ export const CreatePageToolUI = makeAssistantToolUI<
   },
   {
     message: string
-  }
+  } | ErrorResult
 >({
   toolName: 'createPage',
   render: ({ result, status }) => {
@@ -135,11 +159,16 @@ export const CreatePageToolUI = makeAssistantToolUI<
         </ToolWrapper>
       )
     }
-    if (status.type === 'incomplete' && status.reason === 'error') {
+    if (isErrorResult(result)) {
       return (
         <ToolWrapper>
-          <XIcon className="text-red-500" />{' '}
-          <div className="text-red-500">Failed to create page</div>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to create page</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
         </ToolWrapper>
       )
     }
@@ -159,7 +188,7 @@ export const DeletePageToolUI = makeAssistantToolUI<
   },
   {
     message: string
-  }
+  } | ErrorResult
 >({
   toolName: 'deletePage',
   render: ({ result, status }) => {
@@ -170,11 +199,16 @@ export const DeletePageToolUI = makeAssistantToolUI<
         </ToolWrapper>
       )
     }
-    if (status.type === 'incomplete' && status.reason === 'error') {
+    if (isErrorResult(result)) {
       return (
         <ToolWrapper>
-          <XIcon className="text-red-500" />{' '}
-          <div className="text-red-500">Failed to delete page</div>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to delete page</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
         </ToolWrapper>
       )
     }
