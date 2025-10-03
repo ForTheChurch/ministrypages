@@ -5,6 +5,9 @@ import {
   DeletePageToolUI,
   GetPageContentToolUI,
   GetPagesToolUI,
+  GetSermonPostContentToolUI,
+  PublishPageToolUI,
+  SearchSermonPostsToolUI,
   UpdatePageToolUI,
 } from '@/components/AdminAssistant/tools'
 import { Thread } from '@/components/assistant-ui/thread'
@@ -32,6 +35,9 @@ const AdminAssistant: React.FC = () => {
           <UpdatePageToolUI />
           <CreatePageToolUI />
           <DeletePageToolUI />
+          <PublishPageToolUI />
+          <SearchSermonPostsToolUI />
+          <GetSermonPostContentToolUI />
           <TooltipProvider>
             <div className="grid h-[500px] lg:grid-cols-[200px_1fr] gap-6">
               <div className="border border-gray-200 rounded-lg">

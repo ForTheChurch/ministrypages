@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Page } from '@/payload-types'
 import { makeAssistantToolUI } from '@assistant-ui/react'
-import { CheckIcon, Loader2Icon, XIcon } from 'lucide-react'
+import { CheckIcon, Loader2Icon, SearchCheckIcon, SearchXIcon, XIcon } from 'lucide-react'
 
 function ToolWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -106,9 +106,10 @@ export const UpdatePageToolUI = makeAssistantToolUI<
     pageId: string
     page: string
   },
-  {
-    message: string
-  } | ErrorResult
+  | {
+      message: string
+    }
+  | ErrorResult
 >({
   toolName: 'updatePage',
   render: ({ result, status }) => {
@@ -142,13 +143,56 @@ export const UpdatePageToolUI = makeAssistantToolUI<
   },
 })
 
+export const PublishPageToolUI = makeAssistantToolUI<
+  {
+    pageId: string
+    page: string
+  },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'publishPage',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Publishing page...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to publish page</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
 export const CreatePageToolUI = makeAssistantToolUI<
   {
     page: string
   },
-  {
-    message: string
-  } | ErrorResult
+  | {
+      message: string
+    }
+  | ErrorResult
 >({
   toolName: 'createPage',
   render: ({ result, status }) => {
@@ -186,9 +230,10 @@ export const DeletePageToolUI = makeAssistantToolUI<
   {
     page: string
   },
-  {
-    message: string
-  } | ErrorResult
+  | {
+      message: string
+    }
+  | ErrorResult
 >({
   toolName: 'deletePage',
   render: ({ result, status }) => {
@@ -217,6 +262,106 @@ export const DeletePageToolUI = makeAssistantToolUI<
       <ToolWrapper>
         <CheckIcon className="text-green-600" />{' '}
         <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
+export const SearchSermonPostsToolUI = makeAssistantToolUI<
+  { query: string },
+  | Array<{
+      id: string
+      title: string
+      slug: string
+      publishedAt: string
+      updatedAt: string
+      createdAt: string
+    }>
+  | ErrorResult
+>({
+  toolName: 'searchSermonPosts',
+  render: ({ args, result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <Loader2Icon className="animate-spin text-blue-600" /> Searching sermon posts...
+            </div>
+            <div className="text-gray-500">Searching for: {args.query}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to search sermon posts</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center">
+            {result?.length && result.length > 0 ? (
+              <SearchCheckIcon className="text-green-600" />
+            ) : (
+              <SearchXIcon className="text-gray-600" />
+            )}{' '}
+            Found {result?.length ?? 0} sermon posts
+          </div>
+          <div className="text-gray-500">
+            <div className="text-gray-500">Searched for: {args.query}</div>
+          </div>
+        </div>
+      </ToolWrapper>
+    )
+  },
+})
+
+export const GetSermonPostContentToolUI = makeAssistantToolUI<
+  { postId: string },
+  | {
+      id: string
+      title: string
+      content: string
+    }
+  | ErrorResult
+>({
+  toolName: 'getSermonPostContent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Getting sermon post content...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get sermon post content</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" /> Retrieved content for <i>{result?.title}</i>
       </ToolWrapper>
     )
   },
