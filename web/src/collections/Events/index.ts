@@ -18,6 +18,7 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { convertVideoUrl } from './hooks/convertVideoUrl'
 import { revalidateDelete, revalidateEvent } from './hooks/revalidateEvent'
 
+import { ChurchName } from '@/blocks/ChurchName/config'
 import { slugField } from '@/fields/slug'
 import {
   MetaDescriptionField,
@@ -115,7 +116,10 @@ export const Events: CollectionConfig<'events'> = {
                   return [
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+                    BlocksFeature({
+                      blocks: [Banner, Code, MediaBlock],
+                      inlineBlocks: [ChurchName],
+                    }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),

@@ -21,6 +21,7 @@ import { convertVideoUrl } from './hooks/convertVideoUrl'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 
+import { ChurchName } from '@/blocks/ChurchName/config'
 import { slugField } from '@/fields/slug'
 import {
   MetaDescriptionField,
@@ -119,7 +120,10 @@ export const Posts: CollectionConfig<'posts'> = {
                   return [
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+                    BlocksFeature({
+                      blocks: [Banner, Code, MediaBlock],
+                      inlineBlocks: [ChurchName],
+                    }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),

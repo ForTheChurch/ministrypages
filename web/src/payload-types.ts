@@ -2195,6 +2195,15 @@ export interface WorkflowConvertSinglePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ChurchName".
+ */
+export interface ChurchName {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'churchName';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock".
  */
 export interface BannerBlock {
