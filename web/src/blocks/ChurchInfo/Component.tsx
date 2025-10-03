@@ -1,21 +1,48 @@
-'use server'
-import React from 'react'
+'use client'
 
-import type { ChurchInfo as ChurchInfoProps } from '@/payload-types'
-import config from '@payload-config'
-import { getPayload } from 'payload'
+import React, { useEffect, useState } from 'react'
 
-export const ChurchInfo: React.FC<ChurchInfoProps> = async (props) => {
-  const payload = await getPayload({ config })
+import type { Church, ChurchInfo as ChurchInfoProps } from '@/payload-types'
 
-  const churchInfo = await payload.findGlobal({ slug: 'church' })
+export const ChurchInfo: React.FC<ChurchInfoProps> = ({ content }) => {
+  const [churchInfo, setChurchInfo] = useState<Church | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  return (
-    <>
-      {props.content === 'Description' && churchInfo?.description}
-      {props.content === 'Name' && churchInfo?.name}
-      {props.content === 'Phone' && churchInfo?.contactInformation?.phone}
-      {props.content === 'Email' && churchInfo?.contactInformation?.email}
-    </>
-  )
+  useEffect(() => {
+    const fetchChurchInfo = async () => {
+      try {
+        const response = await fetch('/api/globals/church?draft=false&depth=2')
+        if (!response.ok) {
+          throw new Error('Failed to fetch church info')
+        }
+        const data = await response.json()
+        setChurchInfo(data)
+      } catch (err) {
+        console.error(err)
+        setError('Failed to load church info')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchChurchInfo()
+  }, [])
+
+  if (loading) return <span>...</span>
+  if (error) return <span>{error}</span>
+  if (!churchInfo) return <span>No church info found.</span>
+
+  switch (content) {
+    case 'Description':
+      return <>{churchInfo.description}</>
+    case 'Name':
+      return <>{churchInfo.name}</>
+    case 'Phone':
+      return <>{churchInfo.contactInformation?.phone}</>
+    case 'Email':
+      return <>{churchInfo.contactInformation?.email}</>
+    default:
+      return null
+  }
 }
