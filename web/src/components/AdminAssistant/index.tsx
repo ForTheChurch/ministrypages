@@ -18,9 +18,9 @@ const AdminAssistant: React.FC = () => {
   const runtime = useChatRuntime({})
 
   return (
-    <div className="admin-assistant-container mb-6 p-6 card flex-col">
+    <div className="admin-assistant-container mb-6 p-6 m-1 border-solid border-gray-200 shadow-sm rounded-lg">
       <div className="py-6">
-        <h2 className="text-2xl">Content Assistant</h2>
+        <h2 className="dashboard__label">Content Assistant</h2>
         <p className="mt-1">
           Get help with content creation, page management, and website updates.
         </p>
