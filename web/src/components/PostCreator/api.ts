@@ -7,7 +7,7 @@ export const getActiveConversionTask = async (
   documentId: string,
 ): Promise<ConversionTask | null> => {
   const query: Where = {
-    and: [{ pageId: { equals: documentId } }, { agentTaskStatus: { in: 'queued,running' } }],
+    and: [{ postId: { equals: documentId } }, { agentTaskStatus: { in: 'queued,running' } }],
   }
   const queryString = stringify(
     {
@@ -20,7 +20,7 @@ export const getActiveConversionTask = async (
 
   try {
     const result = await axios.get<ConversionTaskResponse>(
-      `/api/single-page-conversions${queryString}`,
+      `/api/video-post-conversions${queryString}`,
     )
     if (result.data?.totalDocs !== 1) {
       return null
@@ -29,7 +29,7 @@ export const getActiveConversionTask = async (
     return docs[0] || null
   } catch (error) {
     const apiError = error as ApiError
-    console.error('[ConvertSinglePage] Failed to get active conversion task:', {
+    console.error('[PostCreator] Failed to get active conversion task:', {
       error: apiError.message,
       status: apiError.response?.status,
       documentId,

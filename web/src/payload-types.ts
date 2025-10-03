@@ -75,6 +75,7 @@ export interface Config {
     categories: Category;
     users: User;
     'single-page-conversions': SinglePageConversion;
+    'video-post-conversions': VideoPostConversion;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +95,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'single-page-conversions': SinglePageConversionsSelect<false> | SinglePageConversionsSelect<true>;
+    'video-post-conversions': VideoPostConversionsSelect<false> | VideoPostConversionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -126,6 +128,8 @@ export interface Config {
     tasks: {
       beginSinglePageConversion: TaskBeginSinglePageConversion;
       waitForAgentToConvertPage: TaskWaitForAgentToConvertPage;
+      beginPostCreation: TaskBeginPostCreation;
+      waitForAgentToCreatePost: TaskWaitForAgentToCreatePost;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -134,6 +138,7 @@ export interface Config {
     };
     workflows: {
       convertSinglePage: WorkflowConvertSinglePage;
+      createPostFromVideo: WorkflowCreatePostFromVideo;
     };
   };
 }
@@ -976,6 +981,18 @@ export interface SinglePageConversion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "video-post-conversions".
+ */
+export interface VideoPostConversion {
+  id: string;
+  postId: string | Post;
+  agentTaskId: string;
+  agentTaskStatus: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1104,7 +1121,13 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'beginSinglePageConversion' | 'waitForAgentToConvertPage' | 'schedulePublish';
+        taskSlug:
+          | 'inline'
+          | 'beginSinglePageConversion'
+          | 'waitForAgentToConvertPage'
+          | 'beginPostCreation'
+          | 'waitForAgentToCreatePost'
+          | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1137,8 +1160,17 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  workflowSlug?: 'convertSinglePage' | null;
-  taskSlug?: ('inline' | 'beginSinglePageConversion' | 'waitForAgentToConvertPage' | 'schedulePublish') | null;
+  workflowSlug?: ('convertSinglePage' | 'createPostFromVideo') | null;
+  taskSlug?:
+    | (
+        | 'inline'
+        | 'beginSinglePageConversion'
+        | 'waitForAgentToConvertPage'
+        | 'beginPostCreation'
+        | 'waitForAgentToCreatePost'
+        | 'schedulePublish'
+      )
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1183,6 +1215,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'single-page-conversions';
         value: string | SinglePageConversion;
+      } | null)
+    | ({
+        relationTo: 'video-post-conversions';
+        value: string | VideoPostConversion;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1662,6 +1698,17 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface SinglePageConversionsSelect<T extends boolean = true> {
   pageId?: T;
+  agentTaskId?: T;
+  agentTaskStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "video-post-conversions_select".
+ */
+export interface VideoPostConversionsSelect<T extends boolean = true> {
+  postId?: T;
   agentTaskId?: T;
   agentTaskStatus?: T;
   updatedAt?: T;
@@ -2159,6 +2206,27 @@ export interface TaskWaitForAgentToConvertPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskBeginPostCreation".
+ */
+export interface TaskBeginPostCreation {
+  input: {
+    documentId: string;
+    url: string;
+  };
+  output: {
+    postCreationId: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskWaitForAgentToCreatePost".
+ */
+export interface TaskWaitForAgentToCreatePost {
+  input?: unknown;
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TaskSchedulePublish".
  */
 export interface TaskSchedulePublish {
@@ -2188,6 +2256,16 @@ export interface TaskSchedulePublish {
  * via the `definition` "WorkflowConvertSinglePage".
  */
 export interface WorkflowConvertSinglePage {
+  input: {
+    documentId: string;
+    url: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowCreatePostFromVideo".
+ */
+export interface WorkflowCreatePostFromVideo {
   input: {
     documentId: string;
     url: string;

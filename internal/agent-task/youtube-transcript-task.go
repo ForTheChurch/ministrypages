@@ -51,8 +51,8 @@ func (t *YoutubeTranscriptTask) ID() string {
 func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 	log.Println("[YoutubeTranscriptTask] Started for", t.url)
 
-	// 4 minutes, transcripts can be long
-	ctx, cancel := context.WithTimeout(ctx, 240*time.Second)
+	// 8 minutes, transcripts can be long
+	ctx, cancel := context.WithTimeout(ctx, 8*time.Minute)
 	defer cancel()
 
 	var transcript string

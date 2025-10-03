@@ -15,15 +15,20 @@ import { Posts } from './collections/Posts'
 import { Series } from './collections/Series'
 import { SinglePageConversions } from './collections/SinglePageConversions'
 import { Users } from './collections/Users'
+import { VideoPostConversions } from './collections/VideoPostConversions'
+import { beginPostCreation } from './endpoints/beginPostCreation'
 import { beginSinglePageConversion } from './endpoints/beginSinglePageConversion'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { Logo } from './Logo/config'
 import { plugins } from './plugins'
+import { beginPostCreationConfig } from './tasks/beginPostCreation'
 import { beginSinglePageConversionConfig } from './tasks/beginSinglePageConversion'
 import { waitForAgentToConvertPageConfig } from './tasks/waitForAgentToConvertPage'
+import { waitForAgentToCreatePostConfig } from './tasks/waitForAgentToCreatePost'
 import { getServerSideURL } from './utilities/getURL'
 import { convertSinglePage } from './workflows/convertSinglePage'
+import { createPostFromVideo } from './workflows/createPostFromVideo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -81,7 +86,17 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Media, Posts, Events, Series, Categories, Users, SinglePageConversions],
+  collections: [
+    Pages,
+    Media,
+    Posts,
+    Events,
+    Series,
+    Categories,
+    Users,
+    SinglePageConversions,
+    VideoPostConversions,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Church, Logo, Header, Footer],
   plugins,
@@ -112,8 +127,13 @@ export default buildConfig({
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [beginSinglePageConversionConfig, waitForAgentToConvertPageConfig],
-    workflows: [convertSinglePage],
+    tasks: [
+      beginSinglePageConversionConfig,
+      waitForAgentToConvertPageConfig,
+      beginPostCreationConfig,
+      waitForAgentToCreatePostConfig,
+    ],
+    workflows: [convertSinglePage, createPostFromVideo],
   },
-  endpoints: [beginSinglePageConversion],
+  endpoints: [beginSinglePageConversion, beginPostCreation],
 })

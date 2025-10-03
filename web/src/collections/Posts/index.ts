@@ -89,6 +89,16 @@ export const Posts: CollectionConfig<'posts'> = {
               relationTo: 'media',
             },
             {
+              name: 'video',
+              type: 'ui',
+              label: 'Create post from video',
+              admin: {
+                components: {
+                  Field: '@/components/PostCreator',
+                },
+              },
+            },
+            {
               name: 'videoLink',
               type: 'text',
               admin: {

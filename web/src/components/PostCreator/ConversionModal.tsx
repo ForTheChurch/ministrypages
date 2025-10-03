@@ -10,8 +10,8 @@ interface ConversionModalProps {
 }
 
 const ConversionModal: React.FC<ConversionModalProps> = ({ isWaitingForTask, visible }) => {
-  const onClickGoToPages = () => {
-    navigate('/admin/collections/pages')
+  const onClickGoToPosts = () => {
+    navigate('/admin/collections/posts')
   }
 
   return createPortal(
@@ -22,17 +22,17 @@ const ConversionModal: React.FC<ConversionModalProps> = ({ isWaitingForTask, vis
             <div className="convert-modal-spinner">
               <div className="spinner"></div>
             </div>
-            <p className="convert-modal-text">Creating conversion task...</p>
+            <p className="convert-modal-text">Working on creating your post...</p>
           </>
         ) : (
           <p className="convert-modal-text">
-            A conversion is in progress. This page will automatically refresh when the task is
+            Your post is being created. This page will automatically refresh when the task is
             complete.
           </p>
         )}
         <div className="convert-modal-buttons">
-          <Button onClick={onClickGoToPages} size="large">
-            Go to Pages
+          <Button onClick={onClickGoToPosts} size="large">
+            View Posts
           </Button>
         </div>
       </div>
