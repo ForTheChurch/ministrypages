@@ -59,7 +59,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
-          <div className="max-w-[48rem] mx-auto grid gap-6">
+          <div className="max-w-3xl mx-auto grid gap-6">
             <VideoEmbed videoLink={event.videoLink} />
             <RichText data={event.content} enableGutter={false} className="w-full" />
           </div>

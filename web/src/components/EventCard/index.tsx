@@ -52,7 +52,7 @@ export const EventCard: React.FC<{
     <Link href={href} ref={link.ref}>
       <article
         className={cn(
-          'group relative overflow-hidden cursor-pointer bg-card rounded-lg shadow-sm transition-all duration-300',
+          'group relative overflow-hidden cursor-pointer bg-card rounded-lg shadow-xs transition-all duration-300',
           className,
         )}
       >
@@ -63,12 +63,12 @@ export const EventCard: React.FC<{
               <Media resource={eventImage} size="33vw" />
             </div>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="w-full h-full bg-linear-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
               <div className="text-muted-foreground text-4xl">📅</div>
             </div>
           )}
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Date badge */}
           {dateInfo && (
@@ -92,7 +92,7 @@ export const EventCard: React.FC<{
           {formatEventDateTime(startTime, endTime) && (
             <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
               <svg
-                className="w-4 h-4 flex-shrink-0"
+                className="w-4 h-4 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -112,7 +112,7 @@ export const EventCard: React.FC<{
           {location && (
             <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
               <svg
-                className="w-4 h-4 flex-shrink-0"
+                className="w-4 h-4 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

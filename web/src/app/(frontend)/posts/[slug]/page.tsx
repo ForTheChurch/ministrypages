@@ -72,7 +72,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
-          <div className="max-w-[48rem] mx-auto grid gap-6">
+          <div className="max-w-3xl mx-auto grid gap-6">
             <VideoEmbed videoLink={post.videoLink} />
             <RichText data={post.content} enableGutter={false} className="w-full" />
             {hasSeries && (
@@ -120,7 +120,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+              className="mt-12 max-w-208 lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
               docs={post.relatedPosts.filter((post) => typeof post === 'object')}
             />
           )}
