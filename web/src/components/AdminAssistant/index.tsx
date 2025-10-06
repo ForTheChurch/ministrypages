@@ -39,11 +39,11 @@ const AdminAssistant: React.FC = () => {
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
           <TooltipProvider>
-            <div className="grid h-[500px] lg:grid-cols-[200px_1fr] gap-6">
+            <div className="grid lg:grid-cols-[200px_1fr] gap-6">
               <div className="border border-gray-200 rounded-lg">
                 <ThreadList />
               </div>
-              <div className="border border-gray-200 h-300 lg:h-[500px] overflow-y-auto rounded-lg">
+              <div className="border border-gray-200 rounded-lg">
                 <Thread />
               </div>
             </div>

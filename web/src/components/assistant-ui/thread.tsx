@@ -5,7 +5,7 @@ import {
   ErrorPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
-} from "@assistant-ui/react";
+} from '@assistant-ui/react'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -16,21 +16,21 @@ import {
   PencilIcon,
   RefreshCwIcon,
   Square,
-} from "lucide-react";
-import type { FC } from "react";
+} from 'lucide-react'
+import type { FC } from 'react'
 
 import {
   ComposerAddAttachment,
   ComposerAttachments,
   UserMessageAttachments,
-} from "@/components/assistant-ui/attachment";
-import { MarkdownText } from "@/components/assistant-ui/markdown-text";
-import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
-import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/utilities/ui";
-import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
-import * as m from "motion/react-m";
+} from '@/components/assistant-ui/attachment'
+import { MarkdownText } from '@/components/assistant-ui/markdown-text'
+import { ToolFallback } from '@/components/assistant-ui/tool-fallback'
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/utilities/ui'
+import { LazyMotion, MotionConfig, domAnimation } from 'motion/react'
+import * as m from 'motion/react-m'
 
 export const Thread: FC = () => {
   return (
@@ -39,10 +39,13 @@ export const Thread: FC = () => {
         <ThreadPrimitive.Root
           className="aui-root aui-thread-root @container flex h-full flex-col bg-background"
           style={{
-            ["--thread-max-width" as string]: "44rem",
+            ['--thread-max-width' as string]: '44rem',
           }}
         >
-          <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll px-4">
+          <ThreadPrimitive.Viewport
+            className="aui-thread-viewport relative flex flex-col items-center overflow-y-auto bg-inherit px-4 pt-8"
+            style={{ height: '500px' }}
+          >
             <ThreadWelcome />
 
             <ThreadPrimitive.Messages
@@ -60,8 +63,8 @@ export const Thread: FC = () => {
         </ThreadPrimitive.Root>
       </MotionConfig>
     </LazyMotion>
-  );
-};
+  )
+}
 
 const ThreadScrollToBottom: FC = () => {
   return (
@@ -74,8 +77,8 @@ const ThreadScrollToBottom: FC = () => {
         <ArrowDownIcon />
       </TooltipIconButton>
     </ThreadPrimitive.ScrollToBottom>
-  );
-};
+  )
+}
 
 const ThreadWelcome: FC = () => {
   return (
@@ -104,23 +107,23 @@ const ThreadWelcome: FC = () => {
         </div>
       </div>
     </ThreadPrimitive.Empty>
-  );
-};
+  )
+}
 
 const ThreadWelcomeSuggestions: FC = () => {
   return (
     <div className="aui-thread-welcome-suggestions grid w-full gap-2 @md:grid-cols-2">
       {[
         {
-          title: "Put an upcoming event",
-          label: "on the home page.",
-          action: "Put an upcoming event on the home page.",
+          title: 'Put an upcoming event',
+          label: 'on the home page.',
+          action: 'Put an upcoming event on the home page.',
         },
         {
-          title: "Create a page",
-          label: "for our new ministry.",
-          action: "Create a page for our new ministry.",
-        }
+          title: 'Create a page',
+          label: 'for our new ministry.',
+          action: 'Create a page for our new ministry.',
+        },
       ].map((suggestedAction, index) => (
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -152,8 +155,8 @@ const ThreadWelcomeSuggestions: FC = () => {
         </m.div>
       ))}
     </div>
-  );
-};
+  )
+}
 
 const Composer: FC = () => {
   return (
@@ -174,8 +177,8 @@ const Composer: FC = () => {
         <ComposerAction />
       </ComposerPrimitive.Root>
     </div>
-  );
-};
+  )
+}
 
 const ComposerAction: FC = () => {
   return (
@@ -212,8 +215,8 @@ const ComposerAction: FC = () => {
         </ComposerPrimitive.Cancel>
       </ThreadPrimitive.If>
     </div>
-  );
-};
+  )
+}
 
 const MessageError: FC = () => {
   return (
@@ -222,8 +225,8 @@ const MessageError: FC = () => {
         <ErrorPrimitive.Message className="aui-message-error-message line-clamp-2" />
       </ErrorPrimitive.Root>
     </MessagePrimitive.Error>
-  );
-};
+  )
+}
 
 const AssistantMessage: FC = () => {
   return (
@@ -248,8 +251,8 @@ const AssistantMessage: FC = () => {
         </div>
       </div>
     </MessagePrimitive.Root>
-  );
-};
+  )
+}
 
 const AssistantActionBar: FC = () => {
   return (
@@ -275,8 +278,8 @@ const AssistantActionBar: FC = () => {
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
     </ActionBarPrimitive.Root>
-  );
-};
+  )
+}
 
 const UserMessage: FC = () => {
   return (
@@ -299,8 +302,8 @@ const UserMessage: FC = () => {
         <BranchPicker className="aui-user-branch-picker col-span-full col-start-1 row-start-3 -mr-1 justify-end" />
       </div>
     </MessagePrimitive.Root>
-  );
-};
+  )
+}
 
 const UserActionBar: FC = () => {
   return (
@@ -315,8 +318,8 @@ const UserActionBar: FC = () => {
         </TooltipIconButton>
       </ActionBarPrimitive.Edit>
     </ActionBarPrimitive.Root>
-  );
-};
+  )
+}
 
 const EditComposer: FC = () => {
   return (
@@ -341,18 +344,15 @@ const EditComposer: FC = () => {
         </div>
       </ComposerPrimitive.Root>
     </div>
-  );
-};
+  )
+}
 
-const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
-  className,
-  ...rest
-}) => {
+const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest }) => {
   return (
     <BranchPickerPrimitive.Root
       hideWhenSingleBranch
       className={cn(
-        "aui-branch-picker-root mr-2 -ml-2 inline-flex items-center text-xs text-muted-foreground",
+        'aui-branch-picker-root mr-2 -ml-2 inline-flex items-center text-xs text-muted-foreground',
         className,
       )}
       {...rest}
@@ -371,5 +371,5 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>
     </BranchPickerPrimitive.Root>
-  );
-};
+  )
+}
