@@ -11,7 +11,7 @@ export const EventHero: React.FC<{
   const { eventImage, title, startTime, endTime, location } = event
 
   return (
-    <div className="relative -mt-44 flex items-end">
+    <div className="relative -mt-48 flex items-end">
       <div className="min-h-[60vh] select-none">
         {eventImage && typeof eventImage !== 'string' && (
           <Media fill priority imgClassName="-z-10 object-cover" resource={eventImage} />
@@ -23,22 +23,53 @@ export const EventHero: React.FC<{
         />
       </div>
       <div
-        className={`container lg:grid lg:grid-cols-[1fr_48rem_1fr] pb-8 opacity-100 ${
+        className={`container lg:grid lg:grid-cols-[1fr_48rem_1fr] pb-8 relative z-10 ${
           eventImage && typeof eventImage !== 'string' ? 'text-white' : ''
         }`}
       >
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-4">Event</div>
+          <div
+            className={`uppercase text-sm mb-4 ${
+              eventImage && typeof eventImage !== 'string'
+                ? 'text-white/90'
+                : 'text-muted-foreground'
+            }`}
+          >
+            Event
+          </div>
 
           <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
+            <h1
+              className={`mb-6 text-3xl md:text-5xl lg:text-6xl font-bold ${
+                eventImage && typeof eventImage !== 'string' ? 'text-white' : 'text-foreground'
+              }`}
+            >
+              {title}
+            </h1>
           </div>
 
           {startTime && (
-            <div className="mb-4">
+            <div
+              className={`mb-4 ${
+                eventImage && typeof eventImage !== 'string' ? 'text-white' : 'text-foreground'
+              }`}
+            >
               <div className="flex flex-col gap-1">
-                <p className="text-sm">Event Date & Time</p>
-                <time dateTime={startTime} className="font-medium">
+                <p
+                  className={`text-sm ${
+                    eventImage && typeof eventImage !== 'string'
+                      ? 'text-white/80'
+                      : 'text-muted-foreground'
+                  }`}
+                >
+                  Event Date & Time
+                </p>
+                <time
+                  dateTime={startTime}
+                  className={`font-medium ${
+                    eventImage && typeof eventImage !== 'string' ? 'text-white' : 'text-foreground'
+                  }`}
+                >
                   {formatEventDateTime(startTime, endTime)}
                 </time>
               </div>
@@ -46,10 +77,28 @@ export const EventHero: React.FC<{
           )}
 
           {location && (
-            <div className="mb-4">
+            <div
+              className={`mb-4 ${
+                eventImage && typeof eventImage !== 'string' ? 'text-white' : 'text-foreground'
+              }`}
+            >
               <div className="flex flex-col gap-1">
-                <p className="text-sm">Location</p>
-                <p className="font-medium">{location}</p>
+                <p
+                  className={`text-sm ${
+                    eventImage && typeof eventImage !== 'string'
+                      ? 'text-white/80'
+                      : 'text-muted-foreground'
+                  }`}
+                >
+                  Location
+                </p>
+                <p
+                  className={`font-medium ${
+                    eventImage && typeof eventImage !== 'string' ? 'text-white' : 'text-foreground'
+                  }`}
+                >
+                  {location}
+                </p>
               </div>
             </div>
           )}
