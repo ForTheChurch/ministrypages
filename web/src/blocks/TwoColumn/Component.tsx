@@ -29,7 +29,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
 
   return (
     <section
-      className={clsx('py-24', {
+      className={clsx('py-32', {
         'bg-accent text-card-foreground': sectionColor === 'accent' && currentTheme === 'light',
         'bg-secondary text-card-foreground':
           sectionColor === 'secondary' && currentTheme === 'light',
@@ -46,7 +46,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
         >
           {image && <Media resource={image} />}
         </div>
-        <div className={clsx({ 'text-center md:text-left py-8': centerTextOnMobile })}>
+        <div className={clsx({ 'text-center md:text-left py-16': centerTextOnMobile })}>
           {richText && (
             <RichText
               data={richText}

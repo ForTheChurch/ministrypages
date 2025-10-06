@@ -1,6 +1,5 @@
 'use client'
 import { cn } from '@/utilities/ui'
-import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
@@ -8,7 +7,10 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<
+  Post,
+  'slug' | 'categories' | 'meta' | 'title' | 'authors' | 'publishedAt'
+>
 
 export const PostCard: React.FC<{
   alignItems?: 'center'
@@ -18,10 +20,9 @@ export const PostCard: React.FC<{
   showCategories?: boolean
   title?: string
 }> = (props) => {
-  const { link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const { slug, categories, meta, title, authors, publishedAt } = doc || {}
   const { description, image: metaImage } = meta || {}
 
   // List of fallback images
@@ -47,56 +48,117 @@ export const PostCard: React.FC<{
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  }
+
+  // Get first author
+  const firstAuthor = authors && Array.isArray(authors) && authors.length > 0 ? authors[0] : null
+
   return (
-    <Link href={href} ref={link.ref}>
-      <div
-        className={cn(
-          'rounded-lg shadow-xs overflow-hidden bg-card hover:cursor-pointer',
-          className,
-        )}
-      >
-        <div className="relative w-full max-h-48 overflow-hidden">
+    <article className={cn('flex flex-col gap-4', className)}>
+      <Link href={href} className="overflow-hidden rounded-2xl" tabIndex={-1}>
+        <div className="aspect-[1.5] w-full overflow-hidden">
           {metaImage && typeof metaImage === 'object' ? (
-            <Media resource={metaImage} size="33vw" />
+            <Media
+              resource={metaImage}
+              size="33vw"
+              className="w-full h-full object-cover transition duration-100 ease-linear hover:scale-105"
+            />
           ) : (
-            <Media src={randomFallbackImage} size="33vw" alt={titleToUse || ''} />
+            <Media
+              src={randomFallbackImage}
+              size="33vw"
+              alt={titleToUse || ''}
+              className="w-full h-full object-cover transition duration-100 ease-linear hover:scale-105"
+            />
           )}
         </div>
-        <div className="p-6">
+      </Link>
+
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
           {showCategories && hasCategories && (
-            <div className="uppercase text-sm mb-4">
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+            <span className="text-sm font-semibold text-brand-secondary">
+              {categories?.map((category, index) => {
+                if (typeof category === 'object') {
+                  const { title: titleFromCategory } = category
+                  const categoryTitle = titleFromCategory || 'Untitled category'
+                  const isLast = index === categories.length - 1
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
-            </div>
+                  return (
+                    <Fragment key={index}>
+                      {categoryTitle}
+                      {!isLast && <Fragment>, </Fragment>}
+                    </Fragment>
+                  )
+                }
+                return null
+              })}
+            </span>
           )}
-          {titleToUse && (
-            <div className="prose">
-              <h3 className="text-2xl md:text-4xl font-bold">{titleToUse}</h3>
-            </div>
-          )}
-          {description && (
-            <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>
-          )}
+
+          <div className="flex flex-col gap-1">
+            <Link
+              href={href}
+              className="group/title flex justify-between gap-x-4 rounded-md text-xl font-semibold text-primary outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              {titleToUse}
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="mt-0.5 size-6 shrink-0 text-fg-quaternary transition duration-100 ease-linear group-hover/title:text-fg-quaternary_hover"
+              >
+                <path d="M7 17 17 7m0 0H7m10 0v10"></path>
+              </svg>
+            </Link>
+
+            {sanitizedDescription && (
+              <p className="line-clamp-2 text-md text-tertiary">{sanitizedDescription}</p>
+            )}
+          </div>
         </div>
+
+        {(firstAuthor || publishedAt) && (
+          <div className="flex gap-2">
+            {firstAuthor && typeof firstAuthor === 'object' && (
+              <>
+                <Link href="#" tabIndex={-1} className="flex">
+                  <div className="relative inline-flex shrink-0 items-center justify-center rounded-full bg-avatar-bg group-outline-focus-ring group-focus-visible:outline-2 group-focus-visible:outline-offset-2 outline-avatar-contrast-border size-10 outline-1 -outline-offset-1">
+                    <div className="size-full rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium text-gray-600">
+                      {firstAuthor.name ? firstAuthor.name.charAt(0).toUpperCase() : 'A'}
+                    </div>
+                  </div>
+                </Link>
+                <div>
+                  <Link
+                    href="#"
+                    className="block rounded-xs text-sm font-semibold text-primary outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
+                    {firstAuthor.name || 'Anonymous'}
+                  </Link>
+                  {publishedAt && (
+                    <time className="block text-sm text-tertiary">{formatDate(publishedAt)}</time>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
-    </Link>
+    </article>
   )
 }

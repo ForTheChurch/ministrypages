@@ -9,7 +9,7 @@ import RichText from '@/components/RichText'
 export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (
     <div className="container grid lg:grid-cols-2 gap-8 -mt-16">
-      <div className="lg:py-16 flex flex-col justify-center items-start gap-4">
+      <div className="lg:py-32 flex flex-col justify-center items-start gap-4">
         {richText && <RichText data={richText} removeMargins enableGutter={false} />}
 
         {Array.isArray(links) && links.length > 0 && (
