@@ -63,7 +63,7 @@ export const PostCard: React.FC<{
   const firstAuthor = authors && Array.isArray(authors) && authors.length > 0 ? authors[0] : null
 
   return (
-    <article className={cn('flex flex-col gap-4', className)}>
+    <article className={cn('flex flex-col gap-4 group/card', className)}>
       <Link href={href} className="overflow-hidden rounded-2xl" tabIndex={-1}>
         <div className="aspect-[1.5] w-full overflow-hidden">
           {metaImage && typeof metaImage === 'object' ? (
@@ -108,10 +108,10 @@ export const PostCard: React.FC<{
           <div className="flex flex-col gap-1">
             <Link
               href={href}
-              className="group/title flex justify-between gap-x-4 rounded-md text-xl font-semibold text-primary outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="flex justify-between gap-x-4 rounded-md text-xl font-semibold text-primary outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               {titleToUse}
-              <ArrowUpRight />
+              <ArrowUpRight className="transition-transform duration-200 ease-out group-hover/card:translate-x-1 group-hover/card:-translate-y-1" />
             </Link>
 
             {sanitizedDescription && (
