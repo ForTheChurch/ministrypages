@@ -16,7 +16,7 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
         <div className="max-w-xl">
           {richText && hasText(richText) && (
             <RichText
-              className="mb-6 prose-lg prose-invert prose-p:text-white"
+              className="mb-6 prose-lg text-white"
               data={richText}
               enableGutter={false}
               removeMargins
