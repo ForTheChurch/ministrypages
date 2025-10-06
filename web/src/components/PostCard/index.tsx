@@ -6,6 +6,7 @@ import React, { Fragment } from 'react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { ArrowUpRight } from 'lucide-react'
 
 export type CardPostData = Pick<
   Post,
@@ -110,20 +111,7 @@ export const PostCard: React.FC<{
               className="group/title flex justify-between gap-x-4 rounded-md text-xl font-semibold text-primary outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               {titleToUse}
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="mt-0.5 size-6 shrink-0 text-fg-quaternary transition duration-100 ease-linear group-hover/title:text-fg-quaternary_hover"
-              >
-                <path d="M7 17 17 7m0 0H7m10 0v10"></path>
-              </svg>
+              <ArrowUpRight />
             </Link>
 
             {sanitizedDescription && (
