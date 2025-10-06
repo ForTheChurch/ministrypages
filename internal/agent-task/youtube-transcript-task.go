@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/ForTheChurch/buildforthechurch/internal/pagecache"
@@ -95,6 +96,9 @@ func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 		}
 	}
 
+	// Title usually contains " - YouTube", so we remove it
+	title = strings.TrimSpace(strings.ReplaceAll(title, " - YouTube", ""))
+
 	youtubeTranscriptPrompt, err := prompt.GetYoutubeTranscriptPrompt()
 	if err != nil {
 		return fmt.Errorf("error getting youtube transcript prompt: %w", err)
@@ -109,7 +113,7 @@ func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 		agent.WithModel(t.llm),
 		agent.WithDescription("An agent that converts a sermon YouTube transcript into a formatted markdown document."),
 		agent.WithTools(
-			b.BailAfterSuccessfulToolCall(toolExportMarkdown("YoutubeTranscriptTask", t.postId, t.payloadCMSClient)),
+			b.BailAfterSuccessfulToolCall(toolExportMarkdown("YoutubeTranscriptTask", t.postId, title, t.url, t.payloadCMSClient)),
 		))
 
 	agentTeam := team.New(team.WithAgents(rootAgent))

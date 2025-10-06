@@ -282,6 +282,18 @@ export const Posts: CollectionConfig<'posts'> = {
           )
         }
 
+        if (
+          !data.videoLink ||
+          !data.title ||
+          typeof data.title !== 'string' ||
+          typeof data.videoLink !== 'string'
+        ) {
+          return Response.json(
+            { errors: [{ message: 'No valid video link or title provided' }] },
+            { status: 400 },
+          )
+        }
+
         const post = await req.payload.findByID({
           id,
           collection: 'posts',
@@ -315,6 +327,8 @@ export const Posts: CollectionConfig<'posts'> = {
             content: {
               root: lexicalJson.root,
             },
+            title: data.title,
+            videoLink: data.videoLink,
           },
         })
 

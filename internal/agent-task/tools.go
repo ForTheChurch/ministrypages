@@ -115,7 +115,7 @@ func toolExportPage(logTask string, pageID string, payloadCMSClient *payloadcms.
 	}
 }
 
-func toolExportMarkdown(logTask string, postId string, payloadCMSClient *payloadcms.Client) tools.Tool {
+func toolExportMarkdown(logTask string, postId, title, videoLink string, payloadCMSClient *payloadcms.Client) tools.Tool {
 	return tools.Tool{
 		Handler: func(ctx context.Context, toolCall tools.ToolCall) (*tools.ToolCallResult, error) {
 			log.Println("[" + logTask + "] Export markdown tool called")
@@ -132,7 +132,7 @@ func toolExportMarkdown(logTask string, postId string, payloadCMSClient *payload
 				return nil, err
 			}
 
-			if err := payloadCMSClient.UpdatePostMarkdown(ctx, postId, p.Markdown); err != nil {
+			if err := payloadCMSClient.UpdatePostMarkdown(ctx, postId, title, videoLink, p.Markdown); err != nil {
 				log.Println("["+logTask+"] Error updating post markdown:", err)
 				return nil, err
 			}

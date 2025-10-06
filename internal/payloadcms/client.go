@@ -22,12 +22,16 @@ func NewClient(cfg Config, client *http.Client) *Client {
 	return &Client{cfg: cfg, client: client}
 }
 
-func (c *Client) UpdatePostMarkdown(ctx context.Context, postId string, markdown string) error {
+func (c *Client) UpdatePostMarkdown(ctx context.Context, postId, title, videoLink, markdown string) error {
 	var params struct {
-		Markdown string `json:"markdown"`
+		Title     string `json:"title"`
+		VideoLink string `json:"videoLink"`
+		Markdown  string `json:"markdown"`
 	}
 
 	params.Markdown = markdown
+	params.Title = title
+	params.VideoLink = videoLink
 
 	jsonBody, err := json.Marshal(params)
 	if err != nil {
