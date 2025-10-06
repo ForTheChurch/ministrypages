@@ -51,7 +51,7 @@ export const PostCard: React.FC<{
     <Link href={href} ref={link.ref}>
       <div
         className={cn(
-          'rounded-lg shadow-sm overflow-hidden bg-card hover:cursor-pointer',
+          'rounded-lg shadow-xs overflow-hidden bg-card hover:cursor-pointer',
           className,
         )}
       >

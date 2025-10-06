@@ -47,7 +47,7 @@ export const EventList: React.FC<
           {introContent && (
             <div className="container mb-8">
               <RichText
-                className="ms-0 max-w-[48rem]"
+                className="ms-0 max-w-3xl"
                 data={introContent}
                 removeMargins
                 enableGutter={false}

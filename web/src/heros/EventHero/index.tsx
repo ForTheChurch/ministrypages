@@ -11,7 +11,7 @@ export const EventHero: React.FC<{
   const { eventImage, title, startTime, endTime, location } = event
 
   return (
-    <div className="relative -mt-[11rem] flex items-end">
+    <div className="relative -mt-44 flex items-end">
       <div className="min-h-[60vh] select-none">
         {eventImage && typeof eventImage !== 'string' && (
           <Media fill priority imgClassName="-z-10 object-cover" resource={eventImage} />

@@ -50,7 +50,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
         className="col-start-1 col-span-3"
         imgClassName="m-0"
         {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
+        captionClassName="mx-auto max-w-3xl"
         enableGutter={false}
         disableInnerContainer={true}
       />
@@ -84,7 +84,7 @@ export default function RichText(props: Props) {
       className={cn(
         'break-words',
         {
-          '[&>*]:my-1': removeMargins,
+          '*:my-1': removeMargins,
           container: enableGutter,
           'max-w-none': !enableGutter,
           'prose md:prose-md dark:prose-invert': enableProse,
