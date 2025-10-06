@@ -46,7 +46,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
         >
           {image && <Media resource={image} />}
         </div>
-        <div className={clsx({ 'text-center md:text-left py-16': centerTextOnMobile })}>
+        <div className={clsx({ 'text-center md:text-left': centerTextOnMobile })}>
           {richText && (
             <RichText
               data={richText}
