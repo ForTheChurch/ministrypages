@@ -43,7 +43,7 @@ export const EventList: React.FC<
   return (
     <>
       {hasEvents && (
-        <div className="py-32" id={`block-${id}`}>
+        <div className="py-28" id={`block-${id}`}>
           {introContent && (
             <div className="container mb-8">
               <RichText

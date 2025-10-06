@@ -29,7 +29,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
 
   return (
     <section
-      className={clsx('py-32', {
+      className={clsx('py-28', {
         'bg-accent text-card-foreground': sectionColor === 'accent' && currentTheme === 'light',
         'bg-secondary text-card-foreground':
           sectionColor === 'secondary' && currentTheme === 'light',
