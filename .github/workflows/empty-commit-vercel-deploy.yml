@@ -1,0 +1,25 @@
+name: Empty Commit on Main Push (Needed to deploy to Vercel)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  empty-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "${{ secrets.GIT_AUTHOR_NAME }}"
+          git config --global user.email "${{ secrets.GIT_AUTHOR_EMAIL }}"
+
+      - name: Create empty commit and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        run: |
+          git commit --allow-empty -m "chore: trigger vercel deploy [skip ci]"
+          git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
