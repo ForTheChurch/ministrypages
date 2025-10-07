@@ -2,16 +2,22 @@
 
 import {
   AddNavigationItemToolUI,
+  CreateEventToolUI,
   CreateFormToolUI,
   CreatePageToolUI,
+  DeleteEventToolUI,
   DeletePageToolUI,
+  GetEventContentToolUI,
+  GetEventsToolUI,
   GetNavigationItemsToolUI,
   GetPageContentToolUI,
   GetPagesToolUI,
   GetSermonPostContentToolUI,
+  PublishEventToolUI,
   PublishPageToolUI,
   RemoveNavigationItemToolUI,
   SearchSermonPostsToolUI,
+  UpdateEventToolUI,
   UpdatePageToolUI,
 } from '@/components/AdminAssistant/tools'
 import { Thread } from '@/components/assistant-ui/thread'
@@ -44,6 +50,12 @@ const AdminAssistant: React.FC = () => {
           <AddNavigationItemToolUI />
           <RemoveNavigationItemToolUI />
           <CreateFormToolUI />
+          <GetEventsToolUI />
+          <GetEventContentToolUI />
+          <CreateEventToolUI />
+          <UpdateEventToolUI />
+          <DeleteEventToolUI />
+          <PublishEventToolUI />
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
           <TooltipProvider>

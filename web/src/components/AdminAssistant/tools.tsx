@@ -463,6 +463,241 @@ export const CreateFormToolUI = makeAssistantToolUI<
   },
 })
 
+export const GetEventsToolUI = makeAssistantToolUI<
+  void,
+  | Array<{
+      id: string
+    }>
+  | ErrorResult
+>({
+  toolName: 'getEvents',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Getting events...
+        </ToolWrapper>
+      )
+    }
+
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get events</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" /> Found {result?.length ?? 0} events
+      </ToolWrapper>
+    )
+  },
+})
+
+export const GetEventContentToolUI = makeAssistantToolUI<
+  { eventId: string },
+  | {
+      id: string
+      title: string
+    }
+  | ErrorResult
+>({
+  toolName: 'getEventContent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Getting event content...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get event content</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" /> Retrieved content for <i>{result?.title}</i> event
+      </ToolWrapper>
+    )
+  },
+})
+
+export const CreateEventToolUI = makeAssistantToolUI<
+  { event: string },
+  | {
+      message: string
+      eventId: string
+    }
+  | ErrorResult
+>({
+  toolName: 'createEvent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Creating event...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to create event</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
+export const UpdateEventToolUI = makeAssistantToolUI<
+  { eventId: string; event: string },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'updateEvent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Updating event...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to update event</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
+export const DeleteEventToolUI = makeAssistantToolUI<
+  { eventId: string },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'deleteEvent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Deleting event...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to delete event</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
+export const PublishEventToolUI = makeAssistantToolUI<
+  { eventId: string },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'publishEvent',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Publishing event...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to publish event</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
 export const SearchSermonPostsToolUI = makeAssistantToolUI<
   { query: string },
   | Array<{

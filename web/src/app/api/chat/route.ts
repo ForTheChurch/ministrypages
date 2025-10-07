@@ -3,16 +3,22 @@ import { frontendTools } from '@assistant-ui/react-ai-sdk'
 import { convertToModelMessages, stepCountIs, streamText } from 'ai'
 import {
   addNavigationItemTool,
+  createEventTool,
   createFormTool,
   createPageTool,
+  deleteEventTool,
   deletePageTool,
+  getEventContentTool,
+  getEventsTool,
   getNavigationItemsTool,
   getPageContentTool,
   getPagesTool,
   getSermonPostContentTool,
+  publishEventTool,
   publishPageTool,
   removeNavigationItemTool,
   searchSermonPostsTool,
+  updateEventTool,
   updatePageTool,
 } from './tools'
 import { systemPrompt } from './prompt'
@@ -40,6 +46,12 @@ export async function POST(req: Request) {
       addNavigationItem: addNavigationItemTool,
       removeNavigationItem: removeNavigationItemTool,
       createForm: createFormTool,
+      getEvents: getEventsTool,
+      getEventContent: getEventContentTool,
+      createEvent: createEventTool,
+      deleteEvent: deleteEventTool,
+      publishEvent: publishEventTool,
+      updateEvent: updateEventTool,
       searchSermonPosts: searchSermonPostsTool,
       getSermonPostContent: getSermonPostContentTool,
       // add backend tools here
