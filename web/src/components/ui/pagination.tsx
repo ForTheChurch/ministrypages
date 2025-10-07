@@ -13,7 +13,6 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
     {...props}
   />
 )
-
 const PaginationContent: React.FC<
   { ref?: React.Ref<HTMLUListElement> } & React.HTMLAttributes<HTMLUListElement>
 > = ({ className, ref, ...props }) => (
