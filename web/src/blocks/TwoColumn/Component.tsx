@@ -21,6 +21,8 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
     enableLink,
     link,
     sectionColor,
+    topPadding,
+    bottomPadding,
   } = props
   const { theme } = useTheme()
 
@@ -29,7 +31,13 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
 
   return (
     <section
-      className={clsx('py-28', {
+      className={clsx({
+        'pt-28': topPadding === 'large' || !topPadding, // default to large
+        'pt-10': topPadding === 'small',
+        'pt-0': topPadding === 'none',
+        'pb-28': bottomPadding === 'large' || !bottomPadding, // default to large
+        'pb-10': bottomPadding === 'small',
+        'pb-0': bottomPadding === 'none',
         'bg-accent text-card-foreground': sectionColor === 'accent' && currentTheme === 'light',
         'bg-secondary text-card-foreground':
           sectionColor === 'secondary' && currentTheme === 'light',

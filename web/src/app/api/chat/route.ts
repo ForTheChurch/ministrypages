@@ -14,12 +14,14 @@ import {
   getPageContentTool,
   getPagesTool,
   getSermonPostContentTool,
+  importExternalWebPageTool,
   publishEventTool,
   publishPageTool,
   removeNavigationItemTool,
   searchSermonPostsTool,
   updateEventTool,
   updatePageTool,
+  uploadImageFromUrlTool,
 } from './tools'
 import { systemPrompt } from './prompt'
 
@@ -54,6 +56,8 @@ export async function POST(req: Request) {
       updateEvent: updateEventTool,
       searchSermonPosts: searchSermonPostsTool,
       getSermonPostContent: getSermonPostContentTool,
+      uploadImageFromUrl: uploadImageFromUrlTool,
+      importExternalWebPage: importExternalWebPageTool,
       // add backend tools here
     },
   })

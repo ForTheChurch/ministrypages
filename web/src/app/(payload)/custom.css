@@ -6,6 +6,12 @@
 /* Import the Tailwind theme styles */
 @import 'tailwindcss/theme.css' layer(theme);
 
+@theme {
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-foreground: hsl(var(--foreground));
+  --color-background: hsl(var(--background));
+}
+
 /* Skip the preflight reset to avoid conflicts with Payload's admin styles */
 /* @import 'tailwindcss/preflight.css' layer(base); */
 
@@ -93,8 +99,4 @@
 
 .aui-composer-wrapper {
   background-color: hsl(var(--background));
-}
-
-.aui-user-message-content {
-  background-color: #f0f0f0;
 }

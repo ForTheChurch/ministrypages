@@ -475,6 +475,8 @@ export interface TwoColumn {
    * Center the text on mobile screens.
    */
   centerTextOnMobile?: boolean | null;
+  topPadding?: ('large' | 'small' | 'none') | null;
+  bottomPadding?: ('large' | 'small' | 'none') | null;
   sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   enableLink?: boolean | null;
   link?: {
@@ -643,6 +645,9 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  topPadding?: ('large' | 'small' | 'none') | null;
+  bottomPadding?: ('large' | 'small' | 'none') | null;
+  sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
@@ -1346,6 +1351,8 @@ export interface TwoColumnSelect<T extends boolean = true> {
   imagePositionOnMobile?: T;
   richText?: T;
   centerTextOnMobile?: T;
+  topPadding?: T;
+  bottomPadding?: T;
   sectionColor?: T;
   enableLink?: T;
   link?:
@@ -1433,6 +1440,9 @@ export interface ContentBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  topPadding?: T;
+  bottomPadding?: T;
+  sectionColor?: T;
   id?: T;
   blockName?: T;
 }

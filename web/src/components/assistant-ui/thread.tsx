@@ -144,7 +144,7 @@ const ThreadWelcomeSuggestions: FC = () => {
               className="aui-thread-welcome-suggestion h-auto w-full flex-1 flex-wrap items-start justify-start gap-1 rounded-3xl border px-5 py-4 text-left text-sm @md:flex-col dark:hover:bg-accent/60"
               aria-label={suggestedAction.action}
             >
-              <span className="aui-thread-welcome-suggestion-text-1 font-medium">
+              <span className="aui-thread-welcome-suggestion-text-1 font-medium text-foreground">
                 {suggestedAction.title}
               </span>
               <span className="aui-thread-welcome-suggestion-text-2 text-muted-foreground">
@@ -193,10 +193,10 @@ const ComposerAction: FC = () => {
             type="submit"
             variant="default"
             size="icon"
-            className="aui-composer-send size-[34px] rounded-full p-1"
+            className="aui-composer-send size-[34px] rounded-full p-1 bg-blue-500"
             aria-label="Send message"
           >
-            <ArrowUpIcon className="aui-composer-send-icon size-5" />
+            <ArrowUpIcon className="aui-composer-send-icon size-5 text-white" />
           </TooltipIconButton>
         </ComposerPrimitive.Send>
       </ThreadPrimitive.If>
@@ -291,7 +291,7 @@ const UserMessage: FC = () => {
         <UserMessageAttachments />
 
         <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
-          <div className="aui-user-message-content rounded-3xl bg-muted px-5 py-2.5 break-words text-foreground">
+          <div className="aui-user-message-content rounded-3xl bg-gray-100 px-5 py-2.5 break-words text-primary">
             <MessagePrimitive.Parts />
           </div>
           <div className="aui-user-action-bar-wrapper absolute top-1/2 left-0 -translate-x-full -translate-y-1/2 pr-2">

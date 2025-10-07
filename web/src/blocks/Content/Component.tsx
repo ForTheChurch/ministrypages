@@ -1,3 +1,5 @@
+'use client'
+
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
 import React from 'react'
@@ -5,9 +7,17 @@ import React from 'react'
 import type { ContentBlock as ContentBlockProps } from '@/payload-types'
 
 import { CMSLink } from '../../components/Link'
+import clsx from 'clsx'
+import { useTheme } from '@/providers/Theme'
+import { defaultTheme } from '@/providers/Theme/shared'
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
-  const { columns } = props
+  const { columns, sectionColor, bottomPadding, topPadding } = props
+
+  const { theme } = useTheme()
+
+  // Use defaultTheme when theme is undefined to ensure SSR/client consistency
+  const currentTheme = theme || defaultTheme
 
   const colsSpanClasses = {
     full: '12',
@@ -17,7 +27,20 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   }
 
   return (
-    <div className="container py-28">
+    <div
+      className={clsx('container', {
+        'pt-28': topPadding === 'large' || !topPadding, // default to large
+        'pt-10': topPadding === 'small',
+        'pt-0': topPadding === 'none',
+        'pb-28': bottomPadding === 'large' || !bottomPadding, // default to large
+        'pb-10': bottomPadding === 'small',
+        'pb-0': bottomPadding === 'none',
+        'bg-accent text-card-foreground': sectionColor === 'accent' && currentTheme === 'light',
+        'bg-secondary text-card-foreground':
+          sectionColor === 'secondary' && currentTheme === 'light',
+        'bg-primary text-primary-foreground': sectionColor === 'dark' && currentTheme === 'light',
+      })}
+    >
       <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
         {columns &&
           columns.length > 0 &&
