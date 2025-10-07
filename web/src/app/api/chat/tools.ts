@@ -55,7 +55,8 @@ function generatePreviewUrl(page: Page): string {
 }
 
 function generatePublishedUrl(page: Page): string {
-  return `${getServerSideURL()}/${page.slug}`
+  const slug = page.slug === 'home' ? '' : page.slug
+  return `${getServerSideURL()}/${slug}`
 }
 
 export const updatePageTool = tool({
@@ -214,6 +215,103 @@ export const createFormTool = tool({
       message: `<i>${newForm.title}</i> created successfully`,
       formId: newForm.id,
     }
+  },
+})
+
+export const getEventsTool = tool({
+  description: 'Gets all events',
+  inputSchema: z.object({
+    page: z.number().describe('The page number to get, starting at 1. The limit is 10 per page.'),
+  }),
+  execute: async ({ page }) => {
+    const payload = await getPayload({ config })
+    const events = await payload.find({ collection: 'events', limit: 10, page, sort: '-startTime' })
+    return events.docs.map((event) => ({
+      id: event.id,
+      title: event.title,
+      slug: event.slug,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      location: event.location,
+      publishedAt: event.publishedAt,
+      updatedAt: event.updatedAt,
+      createdAt: event.createdAt,
+      _status: event._status,
+    }))
+  },
+})
+
+export const getEventContentTool = tool({
+  description: 'Gets the content of an event',
+  inputSchema: z.object({
+    eventId: z.string().describe('The ID of the event to get the content of'),
+  }),
+  execute: async ({ eventId }) => {
+    const payload = await getPayload({ config })
+    const event = await payload.findByID({ collection: 'events', id: eventId })
+    return event
+  },
+})
+
+export const createEventTool = tool({
+  description: 'Creates an event',
+  inputSchema: z.object({
+    event: z.string().describe('The JSON event data to create'),
+  }),
+  execute: async ({ event }) => {
+    const payload = await getPayload({ config })
+    console.log('Creating event', event)
+    const newEvent = await payload.create({ collection: 'events', data: JSON.parse(event) })
+    return {
+      message: `<i>${newEvent.title}</i> created successfully`,
+      eventId: newEvent.id,
+    }
+  },
+})
+
+export const updateEventTool = tool({
+  description: 'Updates an event',
+  inputSchema: z.object({
+    eventId: z.string().describe('The ID of the event to update'),
+    event: z.string().describe('The JSON event data to update'),
+  }),
+  execute: async ({ eventId, event }) => {
+    const payload = await getPayload({ config })
+    console.log('Updating event', event)
+    const updatedEvent = await payload.update({
+      collection: 'events',
+      id: eventId,
+      data: JSON.parse(event),
+    })
+    return { message: `<i>${updatedEvent.title}</i> updated successfully` }
+  },
+})
+
+export const deleteEventTool = tool({
+  description: 'Deletes an event',
+  inputSchema: z.object({
+    eventId: z.string().describe('The ID of the event to delete'),
+  }),
+  execute: async ({ eventId }) => {
+    const payload = await getPayload({ config })
+    const deletedEvent = await payload.delete({ collection: 'events', id: eventId })
+    return { message: `<i>${deletedEvent.title}</i> deleted successfully` }
+  },
+})
+
+export const publishEventTool = tool({
+  description: 'Publishes an event',
+  inputSchema: z.object({
+    eventId: z.string().describe('The ID of the event to publish'),
+  }),
+  execute: async ({ eventId }) => {
+    const payload = await getPayload({ config })
+    const publishedEvent = await payload.update({
+      collection: 'events',
+      id: eventId,
+      data: { _status: 'published' },
+    })
+    return { message: `<i>${publishedEvent.title}</i> published successfully` }
   },
 })
 
