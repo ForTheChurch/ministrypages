@@ -131,7 +131,7 @@ export const Posts: CollectionConfig<'posts'> = {
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({
-                      blocks: [Banner, Code, MediaBlock],
+                      blocks: [Banner, MediaBlock],
                       inlineBlocks: [ChurchInfo],
                     }),
                     FixedToolbarFeature(),
