@@ -6,15 +6,12 @@ import { convertLexicalToMarkdown, editorConfigFactory } from '@payloadcms/richt
 import { Posts } from '@/collections/Posts'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { getServerSideURL } from '@/utilities/getURL'
-import { Page } from '@/payload-types'
+import { Header, Page } from '@/payload-types'
 
 // Define the tool
 export const getPagesTool = tool({
   description: 'Gets all pages on the website',
-  inputSchema: z.object({
-    // location: z.string().describe('City name or zip code'),
-    // unit: z.enum(['celsius', 'fahrenheit']).default('celsius'),
-  }),
+  inputSchema: z.object({}),
   execute: async ({}) => {
     const payload = await getPayload({ config })
     // Tool execution logic
@@ -121,7 +118,102 @@ export const publishPageTool = tool({
       id: pageId,
       data: { _status: 'published' },
     })
-    return { message: `<i>${publishedPage.title}</i> page published successfully`, publishedUrl: generatePublishedUrl(publishedPage) }
+    return {
+      message: `<i>${publishedPage.title}</i> page published successfully`,
+      publishedUrl: generatePublishedUrl(publishedPage),
+    }
+  },
+})
+
+export const getNavigationItemsTool = tool({
+  description: 'Gets the top-level navigation items',
+  inputSchema: z.object({}),
+  execute: async ({}) => {
+    const payload = await getPayload({ config })
+    const header = await payload.findGlobal({ slug: 'header', depth: 2 })
+    return {
+      navItems: header.navItems,
+    }
+  },
+})
+
+export const addNavigationItemTool = tool({
+  description: 'Adds a navigation item to the top-level navigation',
+  inputSchema: z.object({
+    pageId: z.string().describe('The page ID to add to the navigation'),
+    position: z
+      .number()
+      .describe('The position to add the navigation item at. Zero is the first position.'),
+  }),
+  execute: async ({ pageId, position }) => {
+    const payload = await getPayload({ config })
+    const header = await payload.findGlobal({ slug: 'header', depth: 2 })
+
+    if (position < 0 || position > (header.navItems || []).length) {
+      throw new Error('Position is out of bounds')
+    }
+
+    const page = await payload.findByID({ collection: 'pages', id: pageId })
+    if (!page) {
+      throw new Error('Page not found')
+    }
+
+    const newItems = [...(header.navItems || [])]
+    const newItem: NonNullable<Header['navItems']>[number] = {
+      link: {
+        type: 'reference',
+        label: page.title,
+        reference: {
+          relationTo: 'pages',
+          value: page.id,
+        },
+      },
+    }
+
+    newItems.splice(position, 0, newItem)
+
+    await payload.updateGlobal({
+      slug: 'header',
+      data: {
+        navItems: newItems,
+      },
+    })
+
+    return { message: `<i>${page.title}</i> added to navigation successfully` }
+  },
+})
+
+export const removeNavigationItemTool = tool({
+  description: 'Removes a navigation item from the top-level navigation',
+  inputSchema: z.object({
+    navItemId: z.string().describe('The navigation item ID to remove from the navigation'),
+  }),
+  execute: async ({ navItemId }) => {
+    const payload = await getPayload({ config })
+    const header = await payload.findGlobal({ slug: 'header', depth: 2 })
+    const label = header.navItems?.find((item) => item.id === navItemId)?.link.label ?? 'Unknown'
+    const newItems = header.navItems?.filter((item) => item.id !== navItemId)
+    await payload.updateGlobal({
+      slug: 'header',
+      data: { navItems: newItems },
+    })
+
+    return { message: `<i>${label}</i> removed from navigation successfully` }
+  },
+})
+
+export const createFormTool = tool({
+  description: 'Creates a form',
+  inputSchema: z.object({
+    form: z.string().describe('The JSON form data to create'),
+  }),
+  execute: async ({ form }) => {
+    const payload = await getPayload({ config })
+    const newForm = await payload.create({ collection: 'forms', data: JSON.parse(form) })
+    return {
+      message: `<i>${newForm.title}</i> created successfully`,
+      formId: newForm.id,
+    }
   },
 })
 

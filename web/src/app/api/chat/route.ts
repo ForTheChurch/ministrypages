@@ -2,12 +2,16 @@ import { anthropic } from '@ai-sdk/anthropic'
 import { frontendTools } from '@assistant-ui/react-ai-sdk'
 import { convertToModelMessages, stepCountIs, streamText } from 'ai'
 import {
+  addNavigationItemTool,
+  createFormTool,
   createPageTool,
   deletePageTool,
+  getNavigationItemsTool,
   getPageContentTool,
   getPagesTool,
   getSermonPostContentTool,
   publishPageTool,
+  removeNavigationItemTool,
   searchSermonPostsTool,
   updatePageTool,
 } from './tools'
@@ -32,6 +36,10 @@ export async function POST(req: Request) {
       createPage: createPageTool,
       deletePage: deletePageTool,
       publishPage: publishPageTool,
+      getNavigationItems: getNavigationItemsTool,
+      addNavigationItem: addNavigationItemTool,
+      removeNavigationItem: removeNavigationItemTool,
+      createForm: createFormTool,
       searchSermonPosts: searchSermonPostsTool,
       getSermonPostContent: getSermonPostContentTool,
       // add backend tools here
