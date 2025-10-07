@@ -299,6 +299,128 @@ export const DeletePageToolUI = makeAssistantToolUI<
   },
 })
 
+export const GetNavigationItemsToolUI = makeAssistantToolUI<
+  void,
+  | {
+      navItems?: unknown[]
+    }
+  | ErrorResult
+>({
+  toolName: 'getNavigationItems',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Getting site navigation...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to get site navigation</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" /> Found {result?.navItems?.length ?? 0} navigation
+        items
+      </ToolWrapper>
+    )
+  },
+})
+
+export const AddNavigationItemToolUI = makeAssistantToolUI<
+  {
+    pageId: string
+    position: number
+  },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'addNavigationItem',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Adding navigation item...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to add navigation item</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
+export const RemoveNavigationItemToolUI = makeAssistantToolUI<
+  {
+    navItemId: string
+  },
+  | {
+      message: string
+    }
+  | ErrorResult
+>({
+  toolName: 'removeNavigationItem',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Removing navigation item...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to remove navigation item</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
 export const SearchSermonPostsToolUI = makeAssistantToolUI<
   { query: string },
   | Array<{

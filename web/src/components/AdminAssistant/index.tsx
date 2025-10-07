@@ -1,12 +1,15 @@
 'use client'
 
 import {
+  AddNavigationItemToolUI,
   CreatePageToolUI,
   DeletePageToolUI,
+  GetNavigationItemsToolUI,
   GetPageContentToolUI,
   GetPagesToolUI,
   GetSermonPostContentToolUI,
   PublishPageToolUI,
+  RemoveNavigationItemToolUI,
   SearchSermonPostsToolUI,
   UpdatePageToolUI,
 } from '@/components/AdminAssistant/tools'
@@ -36,6 +39,9 @@ const AdminAssistant: React.FC = () => {
           <CreatePageToolUI />
           <DeletePageToolUI />
           <PublishPageToolUI />
+          <GetNavigationItemsToolUI />
+          <AddNavigationItemToolUI />
+          <RemoveNavigationItemToolUI />
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
           <TooltipProvider>
