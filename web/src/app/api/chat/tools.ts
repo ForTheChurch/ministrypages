@@ -436,6 +436,23 @@ export const uploadImageFromUrlTool = tool({
   },
 })
 
+function getPageSlug(url: string): string {
+  try {
+    const parsedUrl = new URL(url)
+    if (parsedUrl.pathname === '/') {
+      return 'home'
+    }
+
+    // Converts /about/ministries to about-ministries
+    return parsedUrl.pathname
+      .replace(/^\/|\/$/g, '') // Trim leading and trailing slashes
+      .replace(/\//g, '-') // Replace all remaining slashes with hyphens
+  } catch (error) {
+    throw new Error(`Error parsing URL: ${error}`)
+  }
+}
+
+
 export const importExternalWebPageTool = tool({
   description: 'Imports an external web page',
   inputSchema: z.object({
@@ -447,6 +464,7 @@ export const importExternalWebPageTool = tool({
       collection: 'pages',
       data: {
         title: 'Importing page...',
+        slug: getPageSlug(url),
         layout: [
           {
             blockType: 'content',
