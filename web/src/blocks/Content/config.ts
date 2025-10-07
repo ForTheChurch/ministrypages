@@ -76,6 +76,42 @@ export const Content: Block = {
       fields: columnFields,
     },
     {
+      name: 'topPadding',
+      type: 'select',
+      options: [
+        {
+          label: 'Large',
+          value: 'large',
+        },
+        {
+          label: 'Small',
+          value: 'small',
+        },
+        {
+          label: 'None',
+          value: 'none',
+        },
+      ],
+    },
+    {
+      name: 'bottomPadding',
+      type: 'select',
+      options: [
+        {
+          label: 'Large',
+          value: 'large',
+        },
+        {
+          label: 'Small',
+          value: 'small',
+        },
+        {
+          label: 'None',
+          value: 'none',
+        },
+      ],
+    },
+    {
       name: 'sectionColor',
       type: 'select',
       options: [
@@ -96,6 +132,6 @@ export const Content: Block = {
           value: 'dark',
         },
       ],
-    }
+    },
   ],
 }

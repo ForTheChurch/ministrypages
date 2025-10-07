@@ -12,7 +12,7 @@ import { useTheme } from '@/providers/Theme'
 import { defaultTheme } from '@/providers/Theme/shared'
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
-  const { columns, sectionColor } = props
+  const { columns, sectionColor, bottomPadding, topPadding } = props
 
   const { theme } = useTheme()
 
@@ -28,7 +28,13 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
 
   return (
     <div
-      className={clsx('container py-28', {
+      className={clsx('container', {
+        'pt-28': topPadding === 'large' || !topPadding, // default to large
+        'pt-10': topPadding === 'small',
+        'pt-0': topPadding === 'none',
+        'pb-28': bottomPadding === 'large' || !bottomPadding, // default to large
+        'pb-10': bottomPadding === 'small',
+        'pb-0': bottomPadding === 'none',
         'bg-accent text-card-foreground': sectionColor === 'accent' && currentTheme === 'light',
         'bg-secondary text-card-foreground':
           sectionColor === 'secondary' && currentTheme === 'light',

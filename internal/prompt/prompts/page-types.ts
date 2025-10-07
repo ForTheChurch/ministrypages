@@ -187,6 +187,8 @@ export interface TwoColumn {
    * Center the text on mobile screens.
    */
   centerTextOnMobile?: boolean | null;
+  topPadding?: ('large' | 'small' | 'none') | null;
+  bottomPadding?: ('large' | 'small' | 'none') | null;
   sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   enableLink?: boolean | null;
   link?: {
@@ -354,6 +356,8 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  topPadding?: ('large' | 'small' | 'none') | null;
+  bottomPadding?: ('large' | 'small' | 'none') | null;
   sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   id?: string | null;
   blockName?: string | null;
