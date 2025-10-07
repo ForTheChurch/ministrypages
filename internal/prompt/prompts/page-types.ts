@@ -354,6 +354,7 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';

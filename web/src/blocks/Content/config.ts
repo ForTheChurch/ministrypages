@@ -75,5 +75,27 @@ export const Content: Block = {
       },
       fields: columnFields,
     },
+    {
+      name: 'sectionColor',
+      type: 'select',
+      options: [
+        {
+          label: 'None',
+          value: 'none',
+        },
+        {
+          label: 'Accent',
+          value: 'accent',
+        },
+        {
+          label: 'Secondary',
+          value: 'secondary',
+        },
+        {
+          label: 'Dark',
+          value: 'dark',
+        },
+      ],
+    }
   ],
 }
