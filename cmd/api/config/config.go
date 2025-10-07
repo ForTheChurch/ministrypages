@@ -11,5 +11,6 @@ type Config struct {
 	Scraper    scraper.FirecrawlConfig
 	PayloadCMS payloadcms.Config
 
-	Port string `env:"AGENT_API_PORT,required"`
+	Port        string `env:"AGENT_API_PORT,required"`
+	AgentAPIKey string `env:"AGENT_API_KEY,required"`
 }

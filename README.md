@@ -26,6 +26,9 @@ FIRECRAWL_API_KEY=<firecrawl key>
 
 PAYLOAD_BASE_URL=http://localhost:3000
 PAYLOAD_API_KEY=<generated api key>
+
+# A secret to let the payload app talk to the agent
+AGENT_API_KEY=123456
 ```
 
 Run the API with:

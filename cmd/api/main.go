@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/ForTheChurch/buildforthechurch/cmd/api/config"
+	"github.com/ForTheChurch/buildforthechurch/cmd/api/middleware"
 	"github.com/ForTheChurch/buildforthechurch/cmd/api/routes"
 	"github.com/ForTheChurch/buildforthechurch/cmd/api/services"
 	"github.com/caarlos0/env/v11"
@@ -44,6 +45,8 @@ func main() {
 	r := gin.Default()
 
 	apiGroup := r.Group("/api")
+
+	apiGroup.Use(middleware.Auth(cfg))
 
 	routes.SetupRoutes(apiGroup, services)
 
