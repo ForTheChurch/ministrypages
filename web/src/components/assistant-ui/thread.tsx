@@ -193,10 +193,10 @@ const ComposerAction: FC = () => {
             type="submit"
             variant="default"
             size="icon"
-            className="aui-composer-send size-[34px] rounded-full p-1"
+            className="aui-composer-send size-[34px] rounded-full p-1 bg-blue-500"
             aria-label="Send message"
           >
-            <ArrowUpIcon className="aui-composer-send-icon size-5" />
+            <ArrowUpIcon className="aui-composer-send-icon size-5 text-white" />
           </TooltipIconButton>
         </ComposerPrimitive.Send>
       </ThreadPrimitive.If>
