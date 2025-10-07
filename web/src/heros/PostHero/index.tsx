@@ -99,7 +99,7 @@ export const PostHero: React.FC<{
         )}
         <div
           className={`absolute pointer-events-none left-0 bottom-0 w-full h-full ${
-            heroImage && typeof heroImage !== 'string' ? 'bg-gray-900 opacity-20' : ''
+            heroImage && typeof heroImage !== 'string' ? 'bg-gray-600 opacity-50' : ''
           }`}
         />
       </div>
