@@ -262,7 +262,6 @@ export const createEventTool = tool({
   }),
   execute: async ({ event }) => {
     const payload = await getPayload({ config })
-    console.log('Creating event', event)
     const newEvent = await payload.create({ collection: 'events', data: JSON.parse(event) })
     return {
       message: `<i>${newEvent.title}</i> created successfully`,
@@ -279,7 +278,6 @@ export const updateEventTool = tool({
   }),
   execute: async ({ eventId, event }) => {
     const payload = await getPayload({ config })
-    console.log('Updating event', event)
     const updatedEvent = await payload.update({
       collection: 'events',
       id: eventId,
