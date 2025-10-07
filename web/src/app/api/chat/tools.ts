@@ -202,6 +202,21 @@ export const removeNavigationItemTool = tool({
   },
 })
 
+export const createFormTool = tool({
+  description: 'Creates a form',
+  inputSchema: z.object({
+    form: z.string().describe('The JSON form data to create'),
+  }),
+  execute: async ({ form }) => {
+    const payload = await getPayload({ config })
+    const newForm = await payload.create({ collection: 'forms', data: JSON.parse(form) })
+    return {
+      message: `<i>${newForm.title}</i> created successfully`,
+      formId: newForm.id,
+    }
+  },
+})
+
 export const searchSermonPostsTool = tool({
   description: 'Searches for sermon posts',
   inputSchema: z.object({

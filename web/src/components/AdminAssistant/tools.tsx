@@ -421,6 +421,48 @@ export const RemoveNavigationItemToolUI = makeAssistantToolUI<
   },
 })
 
+export const CreateFormToolUI = makeAssistantToolUI<
+  {
+    form: string
+  },
+  | {
+      message: string
+      formId: string
+    }
+  | ErrorResult
+>({
+  toolName: 'createForm',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Creating form...
+        </ToolWrapper>
+      )
+    }
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to create form</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <CheckIcon className="text-green-600" />{' '}
+        <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+      </ToolWrapper>
+    )
+  },
+})
+
 export const SearchSermonPostsToolUI = makeAssistantToolUI<
   { query: string },
   | Array<{

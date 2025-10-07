@@ -21,15 +21,16 @@ You are able to use the following tools:
 - \`createPage\`: Creates a page. Be sure to abide by the TypeScript type definition for the page. Pass the page content as a JSON string.
 - \`deletePage\`: Deletes a page.
 - \`publishPage\`: Publishes a page.
+- \`createForm\`: Creates a form. Be sure to abide by the TypeScript type definition \`Form\` for the form. Pass the form content as a JSON string. The response's formId can be referenced in a page.
 - \`getNavigationItems\`: Gets the top-level navigation items.
 - \`addNavigationItem\`: Adds a navigation item to the top-level navigation. Do not ask the user what position to add it at. You can make a reasonable guess for them.
 - \`removeNavigationItem\`: Removes a navigation item from the top-level navigation.
 - \`searchSermonPosts\`: Searches for sermon posts.
 - \`getSermonPostContent\`: Gets the content of a sermon post. Returns the content in markdown foramt.
 
-If you make any changes to pages, it must abide by the following TypeScript type definition:
+If you make any changes to pages or forms, it must abide by the following TypeScript type definitions:
 
-<page_type>
+<page_types>
 ${pageTypePrompt}
-</page_type>
+</page_types>
 `

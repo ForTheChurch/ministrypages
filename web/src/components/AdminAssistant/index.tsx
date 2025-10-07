@@ -2,6 +2,7 @@
 
 import {
   AddNavigationItemToolUI,
+  CreateFormToolUI,
   CreatePageToolUI,
   DeletePageToolUI,
   GetNavigationItemsToolUI,
@@ -42,6 +43,7 @@ const AdminAssistant: React.FC = () => {
           <GetNavigationItemsToolUI />
           <AddNavigationItemToolUI />
           <RemoveNavigationItemToolUI />
+          <CreateFormToolUI />
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
           <TooltipProvider>
