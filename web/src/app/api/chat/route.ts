@@ -20,6 +20,7 @@ import {
   searchSermonPostsTool,
   updateEventTool,
   updatePageTool,
+  uploadImageFromUrlTool,
 } from './tools'
 import { systemPrompt } from './prompt'
 
@@ -54,6 +55,7 @@ export async function POST(req: Request) {
       updateEvent: updateEventTool,
       searchSermonPosts: searchSermonPostsTool,
       getSermonPostContent: getSermonPostContentTool,
+      uploadImageFromUrl: uploadImageFromUrlTool,
       // add backend tools here
     },
   })

@@ -19,6 +19,7 @@ import {
   SearchSermonPostsToolUI,
   UpdateEventToolUI,
   UpdatePageToolUI,
+  UploadImageFromUrlToolUI,
 } from '@/components/AdminAssistant/tools'
 import { Thread } from '@/components/assistant-ui/thread'
 import { ThreadList } from '@/components/assistant-ui/thread-list'
@@ -58,6 +59,7 @@ const AdminAssistant: React.FC = () => {
           <PublishEventToolUI />
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
+          <UploadImageFromUrlToolUI />
           <TooltipProvider>
             <div className="grid lg:grid-cols-[200px_1fr] gap-6">
               <div className="border border-gray-200 rounded-lg">

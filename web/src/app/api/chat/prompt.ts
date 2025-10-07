@@ -34,7 +34,8 @@ You are able to use the following tools:
 - \`addNavigationItem\`: Adds a navigation item to the top-level navigation. Do not ask the user what position to add it at. You can make a reasonable guess for them.
 - \`removeNavigationItem\`: Removes a navigation item from the top-level navigation.
 - \`searchSermonPosts\`: Searches for sermon posts.
-- \`getSermonPostContent\`: Gets the content of a sermon post. Returns the content in markdown foramt.
+- \`getSermonPostContent\`: Gets the content of a sermon post. Returns the content in markdown format.
+- \`uploadImageFromUrl\`: Uploads an image from a URL to the Media collection. Use the response's media ID in page updates or creates.
 
 If you make any changes to pages, forms, or events, it must abide by the following TypeScript type definitions:
 
