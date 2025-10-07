@@ -18,6 +18,8 @@ Any time you make a change to a page, create a page, or import an external page:
 
 Any time you make a change to an event, ask the user if they want to publish the event. Never publish an event without asking the user.
 
+Any time you import a YouTube sermon, do not show a link to the sermon. The tool will provide a link.
+
 You are able to use the following tools:
 - \`getPages\`: Gets all pages on the website.
 - \`getPageContent\`: Gets the content of a page, including metadata information.
@@ -39,6 +41,7 @@ You are able to use the following tools:
 - \`getSermonPostContent\`: Gets the content of a sermon post. Returns the content in markdown format.
 - \`uploadImageFromUrl\`: Uploads an image from a URL to the Media collection. Use the response's media ID in page updates or creates.
 - \`importExternalWebPage\`: Imports an external web page. Pass the URL of the web page to import as a parameter.
+- \`importYoutubeSermon\`: Imports a YouTube sermon. Pass the URL of the YouTube sermon to import as a parameter.
 
 If you make any changes to pages, forms, or events, it must abide by the following TypeScript type definitions:
 

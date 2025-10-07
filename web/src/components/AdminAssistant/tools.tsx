@@ -885,3 +885,51 @@ export const ImportExternalWebPageToolUI = makeAssistantToolUI<
     )
   },
 })
+
+export const ImportYoutubeSermonToolUI = makeAssistantToolUI<
+  { url: string },
+  | {
+      message: string
+      publishedUrl: string
+    }
+  | ErrorResult
+>({
+  toolName: 'importYoutubeSermon',
+  render: ({ result, status }) => {
+    if (status.type === 'running') {
+      return (
+        <ToolWrapper>
+          <Loader2Icon className="animate-spin text-blue-600" /> Importing YouTube sermon (this may take a few minutes)...
+        </ToolWrapper>
+      )
+    }
+
+    if (isErrorResult(result)) {
+      return (
+        <ToolWrapper>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center">
+              <XIcon className="text-red-500" />{' '}
+              <div className="text-red-500">Failed to import YouTube sermon</div>
+            </div>
+            <div className="text-gray-500">Error: {result?.error}</div>
+          </div>
+        </ToolWrapper>
+      )
+    }
+
+    return (
+      <ToolWrapper>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center">
+            <CheckIcon className="text-green-600" />{' '}
+            <span dangerouslySetInnerHTML={{ __html: result?.message || '' }} />
+          </div>
+          <a href={result?.publishedUrl} target="_blank" rel="noopener noreferrer">
+            Click here to see the published sermon <ExternalLinkIcon className="w-4 h-4" />
+          </a>
+        </div>
+      </ToolWrapper>
+    )
+  },
+})

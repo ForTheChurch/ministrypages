@@ -4,11 +4,15 @@ import { URL } from 'url'
 import { getPayload, RichTextField, TabsField } from 'payload'
 import config from '@payload-config'
 import { z } from 'zod'
-import { convertLexicalToMarkdown, editorConfigFactory } from '@payloadcms/richtext-lexical'
+import {
+  convertLexicalToMarkdown,
+  convertMarkdownToLexical,
+  editorConfigFactory,
+} from '@payloadcms/richtext-lexical'
 import { Posts } from '@/collections/Posts'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { getServerSideURL } from '@/utilities/getURL'
-import { Header, Page } from '@/payload-types'
+import { Header, Page, Post } from '@/payload-types'
 
 // Define the tool
 export const getPagesTool = tool({
@@ -59,6 +63,10 @@ function generatePreviewUrl(page: Page): string {
 function generatePublishedUrl(page: Page): string {
   const slug = page.slug === 'home' ? '' : page.slug
   return `${getServerSideURL()}/${slug}`
+}
+
+function generatePublishedPostUrl(post: Post): string {
+  return `${getServerSideURL()}/posts/${post.slug}`
 }
 
 export const updatePageTool = tool({
@@ -452,6 +460,12 @@ function getPageSlug(url: string): string {
   }
 }
 
+function slugify(str: string): string {
+  return str
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '')
+    .toLowerCase()
+}
 
 export const importExternalWebPageTool = tool({
   description: 'Imports an external web page',
@@ -497,6 +511,71 @@ export const importExternalWebPageTool = tool({
     return {
       message: `<i>${newPage.title}</i> page imported successfully from ${url}`,
       previewUrl: generatePreviewUrl(newPage),
+    }
+  },
+})
+
+export const importYoutubeSermonTool = tool({
+  description: 'Imports a YouTube sermon',
+  inputSchema: z.object({
+    url: z.url().describe('The URL of the YouTube sermon to import'),
+  }),
+  execute: async ({ url }) => {
+    const payload = await getPayload({ config })
+
+    const tabField = Posts.fields.find((field) => field.type === 'tabs') as TabsField
+    const tab = tabField.tabs[0]
+    if (!tab) {
+      throw new Error('Content tab not found')
+    }
+    const contentField = tab.fields.find(
+      (field) => field.type === 'richText' && field.name === 'content',
+    ) as RichTextField
+
+    let post = await payload.create({
+      collection: 'posts',
+      data: {
+        title: 'Importing sermon...',
+        videoLink: url,
+        content: {
+          root: convertMarkdownToLexical({
+            editorConfig: editorConfigFactory.fromField({
+              field: contentField,
+            }),
+            markdown: '## Importing sermon...',
+          }).root,
+        },
+      },
+    })
+
+    const job = await payload.jobs.queue({
+      workflow: 'createPostFromVideo',
+      input: {
+        documentId: post.id,
+        url,
+      },
+    })
+
+    const result = await payload.jobs.runByID({ id: job.id })
+    if (Object.values(result.jobStatus || {}).some((status) => status.status !== 'success')) {
+      throw new Error('Failed to import YouTube sermon')
+    }
+
+    post = await payload.findByID({ collection: 'posts', id: post.id })
+    if (!post) {
+      throw new Error('Post not found')
+    }
+
+    // Just publish it immediately for now and update the slug
+    post = await payload.update({
+      collection: 'posts',
+      id: post.id,
+      data: { _status: 'published', slug: slugify(post.title) },
+    })
+
+    return {
+      message: `<i>${post.title}</i> sermon imported and published successfully from ${url}`,
+      publishedUrl: generatePublishedPostUrl(post),
     }
   },
 })
