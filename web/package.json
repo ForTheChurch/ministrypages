@@ -1,7 +1,7 @@
 {
   "name": "website.forthe.church",
   "version": "1.0.0",
-  "description": "Website for ForTheChurch",
+  "description": "MinistryPages Website",
   "license": "MIT",
   "type": "module",
   "scripts": {

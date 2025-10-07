@@ -36,7 +36,9 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     meta: {
-      titleSuffix: ' - ForTheChurch Admin',
+      title: 'MinistryPages Admin',
+      description: 'Update your church website content.',
+      titleSuffix: ' - MinistryPages Admin',
       icons: {
         icon: '/favicon.svg',
       },

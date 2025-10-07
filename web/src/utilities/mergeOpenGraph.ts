@@ -12,8 +12,8 @@ const getDefaultOpenGraph = async (): Promise<Metadata['openGraph']> => {
     images: churchImageUrl
       ? [{ url: churchImageUrl }]
       : [{ url: `${getServerSideURL()}/images/hero.jpg` }],
-    siteName: churchData?.name || 'ForTheChurch',
-    title: churchData?.name || 'ForTheChurch',
+    siteName: churchData?.name || 'MinistryPages',
+    title: churchData?.name || 'MinistryPages',
   }
 }
 

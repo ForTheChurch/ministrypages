@@ -63,7 +63,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   const churchData = await getChurchData()
-  const churchName = churchData?.name || 'ForTheChurch'
+  const churchName = churchData?.name || 'MinistryPages'
 
   return {
     title: `${churchName} Posts Page ${pageNumber || ''}`,

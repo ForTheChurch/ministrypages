@@ -53,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(getServerSideURL()),
-    title: churchData?.name || 'ForTheChurch',
+    title: churchData?.name || 'MinistryPages',
     description: churchData?.description || 'Learn about our church',
     openGraph: await mergeOpenGraph(),
   }

@@ -31,7 +31,7 @@ export const generateMeta = async (args: {
 
   // Use page-specific image or fall back to Church image or default
   const ogImage = getImageURL(doc?.meta?.image) || churchImageUrl
-  const churchName = churchData?.name || 'ForTheChurch'
+  const churchName = churchData?.name || 'MinistryPages'
   // Use page title or fall back to Church name or default
   const title = doc?.meta?.title
     ? `${doc.meta.title} | ${churchName}`
