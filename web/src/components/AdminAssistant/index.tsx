@@ -13,6 +13,7 @@ import {
   GetPageContentToolUI,
   GetPagesToolUI,
   GetSermonPostContentToolUI,
+  ImportExternalWebPageToolUI,
   PublishEventToolUI,
   PublishPageToolUI,
   RemoveNavigationItemToolUI,
@@ -60,6 +61,7 @@ const AdminAssistant: React.FC = () => {
           <SearchSermonPostsToolUI />
           <GetSermonPostContentToolUI />
           <UploadImageFromUrlToolUI />
+          <ImportExternalWebPageToolUI />
           <TooltipProvider>
             <div className="grid lg:grid-cols-[200px_1fr] gap-6">
               <div className="border border-gray-200 rounded-lg">

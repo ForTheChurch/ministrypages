@@ -18,7 +18,7 @@ Key guidelines:
 - Validate that the output JSON conforms to the TypeScript type before exporting
 
 Handling page content:
-- Creatively make use of `sectionColor` to make pages more visually appealing. Do not use a `sectionColor` on blocks that are immediately next to each other.
+- Creatively make use of `sectionColor` to make pages more visually appealing. Do not use a `sectionColor` on blocks that are immediately next to each other, unless they're intended to be coupled together. If they're intended to be coupled together, make sure to use the same color.
 - `topPadding` and `bottomPadding` will default to `large` if not set. Only set them if you're trying to make padding smaller to make adjacent blocks visually coupled.
 
 Handling media:

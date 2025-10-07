@@ -392,7 +392,7 @@ function getFilename(res: Response, imageUrl: string): string {
     const base = path.basename(url.pathname)
     if (base && base.includes('.')) return base
     if (base && ext) return `${base}.${ext}`
-  } catch { }
+  } catch {}
 
   // Fallback to extension from content-type
   return `downloaded.${ext}`
@@ -402,9 +402,9 @@ export const uploadImageFromUrlTool = tool({
   description: 'Uploads an image from a URL to the Media collection',
   inputSchema: z.object({
     url: z.url().describe('The URL of the image to download'),
-    alt: z.string().optional().describe("The alt text"),
+    alt: z.string().optional().describe('The alt text'),
   }),
-  execute: async ({ url, alt }: { url: string, alt?: string }) => {
+  execute: async ({ url, alt }: { url: string; alt?: string }) => {
     const res = await fetch(url)
     if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`)
 
@@ -424,7 +424,7 @@ export const uploadImageFromUrlTool = tool({
         data: buffer,
         mimetype,
         name: filename,
-        size
+        size,
       },
     })
 
@@ -432,6 +432,49 @@ export const uploadImageFromUrlTool = tool({
       id: doc.id,
       filename: doc.filename,
       url: doc.url,
+    }
+  },
+})
+
+export const importExternalWebPageTool = tool({
+  description: 'Imports an external web page',
+  inputSchema: z.object({
+    url: z.url().describe('The URL of the web page to import'),
+  }),
+  execute: async ({ url }) => {
+    const payload = await getPayload({ config })
+    let newPage = await payload.create({
+      collection: 'pages',
+      data: {
+        title: 'Importing page...',
+        layout: [
+          {
+            blockType: 'content',
+            columns: [],
+          },
+        ],
+        hero: {
+          type: 'none',
+        },
+      },
+    })
+
+    const job = await payload.jobs.queue({
+      workflow: 'convertSinglePage',
+      input: {
+        documentId: newPage.id,
+        url,
+      },
+    })
+
+    await payload.jobs.runByID({ id: job.id })
+    newPage = await payload.findByID({ collection: 'pages', id: newPage.id })
+    if (!newPage) {
+      throw new Error('Page not found')
+    }
+    return {
+      message: `<i>${newPage.title}</i> page imported successfully from ${url}`,
+      previewUrl: generatePreviewUrl(newPage),
     }
   },
 })

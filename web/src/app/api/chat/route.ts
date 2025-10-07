@@ -14,6 +14,7 @@ import {
   getPageContentTool,
   getPagesTool,
   getSermonPostContentTool,
+  importExternalWebPageTool,
   publishEventTool,
   publishPageTool,
   removeNavigationItemTool,
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
       searchSermonPosts: searchSermonPostsTool,
       getSermonPostContent: getSermonPostContentTool,
       uploadImageFromUrl: uploadImageFromUrlTool,
+      importExternalWebPage: importExternalWebPageTool,
       // add backend tools here
     },
   })
