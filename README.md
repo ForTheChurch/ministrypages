@@ -1,4 +1,4 @@
-# Build For The Church
+# MinistryPages
 A website builder for churches
 
 # Prerequisites

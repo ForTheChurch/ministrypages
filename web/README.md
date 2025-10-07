@@ -1,6 +1,6 @@
-# WebsiteForTheChurch
+# MinistryPages Base Website Template
 
-This is the official WebsiteForTheChurch.
+This is the base website template for MinistryPages. We envision creating a complete church website platform, with multi-tenancy but for this hackathon, we decided to focus primarily on what our builder could do for end users. This website utilizes the Payload CMS for content editing, and should give you and idea of some of the things we would like to build as an end product for churches. 
 
 ## Quick Start
 
