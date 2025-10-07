@@ -90,3 +90,7 @@
 .table {
   @apply block;
 }
+
+.aui-composer-wrapper {
+  background-color: hsl(var(--background));
+}
