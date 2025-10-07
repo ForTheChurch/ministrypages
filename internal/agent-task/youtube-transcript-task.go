@@ -83,6 +83,8 @@ func (t *YoutubeTranscriptTask) Execute(ctx context.Context) error {
 			return fmt.Errorf("error scraping YouTube transcript: %w", err)
 		}
 
+		title = metadata["title"]
+
 		if err := t.transcriptCache.SetCachedPage(t.url, transcript); err != nil {
 			return fmt.Errorf("error caching transcript: %w", err)
 		}
