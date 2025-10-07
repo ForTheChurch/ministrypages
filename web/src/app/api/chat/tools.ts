@@ -467,7 +467,11 @@ export const importExternalWebPageTool = tool({
       },
     })
 
-    await payload.jobs.runByID({ id: job.id })
+    const result = await payload.jobs.runByID({ id: job.id })
+    if (Object.values(result.jobStatus || {}).some((status) => status.status !== 'success')) {
+      throw new Error('Failed to import external web page')
+    }
+
     newPage = await payload.findByID({ collection: 'pages', id: newPage.id })
     if (!newPage) {
       throw new Error('Page not found')
