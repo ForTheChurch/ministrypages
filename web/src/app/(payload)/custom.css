@@ -94,3 +94,7 @@
 .aui-composer-wrapper {
   background-color: hsl(var(--background));
 }
+
+.aui-user-message-content {
+  background-color: #f0f0f0;
+}
