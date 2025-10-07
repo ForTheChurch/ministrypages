@@ -12,7 +12,7 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
 
   return (
     <div className="relative flex items-center justify-center" data-theme="dark">
-      <div className="container z-10 relative pt-16 text-center flex flex-col items-center justify-center">
+      <div className="container z-10 relative py-16 text-center flex flex-col items-center justify-center">
         <div className="max-w-xl">
           {richText && hasText(richText) && (
             <RichText
@@ -35,7 +35,7 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
           )}
         </div>
       </div>
-      <div className="min-h-[90vh] select-none">
+      <div className="min-h-[50vh] lg:min-h-[80vh] select-none">
         {image && typeof image === 'object' && (
           <Media fill imgClassName="-z-10 object-cover" priority resource={image} />
         )}
