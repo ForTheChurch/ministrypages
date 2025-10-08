@@ -2,7 +2,7 @@
 
 import RichText from '@/components/RichText'
 import clsx from 'clsx'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { TwoColumn as TwoColumnBlockProps } from '@/payload-types'
 
@@ -25,9 +25,15 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
     bottomPadding,
   } = props
   const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  // Use defaultTheme when theme is undefined to ensure SSR/client consistency
-  const currentTheme = theme || defaultTheme
+  // Ensure component is mounted before applying theme-dependent styles
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Use defaultTheme when theme is undefined or not mounted yet to ensure SSR/client consistency
+  const currentTheme = mounted ? theme || defaultTheme : defaultTheme
 
   return (
     <section
