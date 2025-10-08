@@ -27,7 +27,7 @@ import {
 } from './tools'
 import { systemPrompt } from './prompt'
 
-export const maxDuration = 30
+export const maxDuration = 500
 
 export async function POST(req: Request) {
   const { messages, tools } = await req.json()
