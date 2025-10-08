@@ -1981,6 +1981,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Add your church information that can be referenced throughout the site and in page meta tags.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "church".
  */

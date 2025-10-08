@@ -1,12 +1,17 @@
 import type { GlobalConfig } from 'payload'
 
-import { revalidateSite } from './hooks/revalidateSite'
+import { revalidateChurch } from './hooks/revalidateChurch'
 
 export const Church: GlobalConfig = {
   slug: 'church',
   access: {
     read: () => true,
   },
+  admin: {
+    description:
+      'Add your church information that can be referenced throughout the site and in page meta tags.',
+  },
+  versions: true,
   fields: [
     {
       name: 'name',
@@ -115,6 +120,6 @@ export const Church: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [revalidateSite],
+    afterChange: [revalidateChurch],
   },
 }
