@@ -148,7 +148,10 @@ export const publishPageTool = tool({
     const publishedPage = await payload.update({
       collection: 'pages',
       id: pageId,
-      data: { _status: 'published' },
+      data: {
+        _status: 'published',
+        publishedAt: new Date().toDateString(),
+      },
     })
     return {
       message: `<i>${publishedPage.title}</i> page published successfully`,
