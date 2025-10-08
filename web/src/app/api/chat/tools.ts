@@ -14,7 +14,7 @@ import { Header, Page } from '@/payload-types'
 export const getPagesTool = tool({
   description: 'Gets all pages on the website',
   inputSchema: z.object({}),
-  execute: async ({}) => {
+  execute: async ({ }) => {
     const payload = await getPayload({ config })
     // Tool execution logic
     const pages = await payload.find({
@@ -131,7 +131,7 @@ export const publishPageTool = tool({
 export const getNavigationItemsTool = tool({
   description: 'Gets the top-level navigation items',
   inputSchema: z.object({}),
-  execute: async ({}) => {
+  execute: async ({ }) => {
     const payload = await getPayload({ config })
     const header = await payload.findGlobal({ slug: 'header', depth: 2 })
     return {
@@ -371,68 +371,107 @@ export const getSermonPostContentTool = tool({
   },
 })
 
-function getFileExt(res: Response) {
-  const contentType = res.headers.get('content-type') || 'image/jpeg'
-  const ext = contentType.split('/')[1]
-  return ext
-}
-
-function getFilename(res: Response, imageUrl: string): string {
-  // Try Content-Disposition
-  const disposition = res.headers.get('content-disposition')
-  if (disposition) {
-    const match = disposition.match(/filename\*?=(?:UTF-8'')?"?([^"]+)"?/)
-    if (match?.[1]) return match[1]
-  }
-
-  // Try URL path
-  const ext = getFileExt(res) || '.jpg'
-  try {
-    const url = new URL(imageUrl)
-    const base = path.basename(url.pathname)
-    if (base && base.includes('.')) return base
-    if (base && ext) return `${base}.${ext}`
-  } catch {}
-
-  // Fallback to extension from content-type
-  return `downloaded.${ext}`
-}
-
 export const uploadImageFromUrlTool = tool({
   description: 'Uploads an image from a URL to the Media collection',
   inputSchema: z.object({
-    url: z.url().describe('The URL of the image to download'),
+    file: z.object({
+      url: z.string().url().optional(), // For remote URLs
+      filename: z.string().optional(),
+      mimetype: z.string().optional(),
+      // For direct uploads (file://image:0)
+      data: z.any().optional()
+    }),
     alt: z.string().optional().describe('The alt text'),
   }),
-  execute: async ({ url, alt }: { url: string; alt?: string }) => {
-    const res = await fetch(url)
-    if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`)
+  execute: async ({ file, alt }: { file: { url?: string; filename?: string, mimetype?: string, data?: any }, alt?: string }) => {
+    console.log("file.url:", file.url)
+    console.log("file.filename:", file.filename)
+    console.log("file.mimetype:", file.mimetype)
+    console.log("file.data:", file.data)
+    console.log("alt:", alt)
+    const getFileExt = (res: Response) => {
+      const contentType = res.headers.get('content-type') || 'image/jpeg'
+      const ext = contentType.split('/')[1]
+      return ext
+    }
 
-    const arrayBuffer = await res.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
-    const mimetype = res.headers.get('content-type') || 'image/jpeg'
-    const size = buffer.byteLength
-    const filename = getFilename(res, url)
+    const getFilename = (res: Response, imageUrl: string): string => {
+      // Try Content-Disposition
+      const disposition = res.headers.get('content-disposition')
+      if (disposition) {
+        const match = disposition.match(/filename\*?=(?:UTF-8'')?"?([^"]+)"?/)
+        if (match?.[1]) return match[1]
+      }
+
+      // Try URL path
+      const ext = getFileExt(res) || '.jpg'
+      try {
+        const url = new URL(imageUrl)
+        const base = path.basename(url.pathname)
+        if (base && base.includes('.')) return base
+        if (base && ext) return `${base}.${ext}`
+      } catch { }
+
+      // Fallback to extension from content-type
+      return `downloaded.${ext}`
+    }
 
     const payload = await getPayload({ config })
-    const doc = await payload.create({
-      collection: 'media',
-      data: {
-        alt: alt || `Uploaded from ${url}`,
-      },
-      file: {
-        data: buffer,
-        mimetype,
-        name: filename,
-        size,
-      },
-    })
+    if (file.url && file.url.startsWith("http")) {
+      // This is a remote URL
+      const res = await fetch(file.url)
+      if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`)
 
-    return {
-      id: doc.id,
-      filename: doc.filename,
-      url: doc.url,
+      const arrayBuffer = await res.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+      const size = buffer.byteLength
+      const mimetype = file.mimetype ?? res.headers.get('content-type') ?? 'image/jpeg'
+      const filename = file.filename ?? getFilename(res, file.url)
+
+      const doc = await payload.create({
+        collection: 'media',
+        data: {
+          alt: alt || `Uploaded from ${file.url}`,
+        },
+        file: {
+          data: buffer,
+          mimetype,
+          name: filename,
+          size,
+        },
+      })
+
+      return {
+        id: doc.id,
+        filename: doc.filename,
+        url: doc.url,
+      }
     }
+    else if (file.data) {
+      const mimetype = file.mimetype ?? 'image/jpeg'
+      const filename = file.filename ?? 'upload'
+      const buffer = Buffer.isBuffer(file.data)
+        ? file.data
+        : Buffer.from(file.data, 'base64')
+      console.log("Buffer.isBuffer(file.data):", Buffer.isBuffer(file.data))
+      console.log("buffer:", buffer)
+      const size = buffer.byteLength
+      console.log("size:", size)
+      return await payload.create({
+        collection: 'media',
+        data: {
+          alt: alt ?? ''
+        },
+        file: {
+          data: buffer,
+          mimetype,
+          name: filename,
+          size,
+        },
+      })
+    }
+
+    throw new Error('No valid file source provided.')
   },
 })
 
