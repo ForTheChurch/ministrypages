@@ -1993,11 +1993,11 @@ export interface Church {
   /**
    * Upload an image of your church. This will be displayed by default on social media sharing when a page doesn't have an image.
    */
-  image: string | Media;
+  image?: (string | null) | Media;
   /**
    * Add a general description of your church that you want to display in search engine results.
    */
-  description: string;
+  description?: string | null;
   /**
    * Add the service times for your church.
    */

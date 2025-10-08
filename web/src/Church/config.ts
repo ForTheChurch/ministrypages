@@ -20,7 +20,7 @@ export const Church: GlobalConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
       admin: {
         description:
           "Upload an image of your church. This will be displayed by default on social media sharing when a page doesn't have an image.",
@@ -29,7 +29,7 @@ export const Church: GlobalConfig = {
     {
       name: 'description',
       type: 'textarea',
-      required: true,
+      required: false,
       admin: {
         description:
           'Add a general description of your church that you want to display in search engine results.',
