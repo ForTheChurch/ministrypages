@@ -124,6 +124,16 @@ const ThreadWelcomeSuggestions: FC = () => {
           label: 'for our new ministry.',
           action: 'Create a page for our new ministry.',
         },
+        {
+          title: 'Create a sermon post',
+          label: 'from a YouTube video',
+          action: 'Create a post from a YouTube sermon video',
+        },
+        {
+          title: 'Create a new form',
+          label: 'for our pages to use.',
+          action: 'Create a new website form I can use.',
+        },
       ].map((suggestedAction, index) => (
         <m.div
           initial={{ opacity: 0, y: 20 }}
