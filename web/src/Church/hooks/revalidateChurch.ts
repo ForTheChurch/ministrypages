@@ -6,7 +6,7 @@ export const revalidateChurch: GlobalAfterChangeHook = ({ doc, req: { payload, c
   if (!context.disableRevalidate) {
     payload.logger.info(`Revalidating church`)
 
-    revalidateTag('church')
+    revalidateTag('global_church')
   }
 
   return doc
