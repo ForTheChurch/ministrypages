@@ -1,8 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-
-import type { Church, ChurchInfo as ChurchInfoProps } from '@/payload-types'
+import type { ChurchInfo as ChurchInfoProps } from '@/payload-types'
 import { useChurch } from '@/providers/Church'
 
 export const ChurchInfo: React.FC<ChurchInfoProps> = ({ content }) => {

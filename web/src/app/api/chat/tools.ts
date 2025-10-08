@@ -97,7 +97,7 @@ export const updateChurchInfoTool = tool({
   }),
   execute: async ({ churchName, churchDescription }) => {
     const payload = await getPayload({ config })
-    const updatedChurch = await payload.updateGlobal({
+    await payload.updateGlobal({
       slug: 'church',
       data: {
         name: churchName,
