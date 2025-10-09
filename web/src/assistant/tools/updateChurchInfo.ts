@@ -4,22 +4,60 @@ import config from '@payload-config'
 import { z } from 'zod'
 
 export const updateChurchInfoTool = tool({
-  description: 'Updates global church info',
+  description: 'Updates global church info - only updates provided properties',
   inputSchema: z.object({
-    churchName: z.string().describe('The church name.'),
-    churchDescription: z.string().max(255).describe('The meta description of the church.'),
+    name: z.string().optional().describe('The church name.'),
+    description: z.string().max(255).optional().describe('The meta description of the church.'),
+    image: z.string().optional().describe('The church image ID (media relation).'),
+    serviceTimes: z
+      .array(
+        z.object({
+          day: z.enum([
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+          ]),
+          time: z
+            .string()
+            .describe(
+              'Time in current timezone of user in string pass a full timestamp with the time.',
+            ),
+        }),
+      )
+      .optional()
+      .describe('Array of service times for the church.'),
+    churchLocation: z
+      .object({
+        address: z.string().optional().describe('Street address of the church.'),
+        city: z.string().optional().describe('City where the church is located.'),
+        state: z.string().optional().describe('State where the church is located.'),
+        zip: z.string().optional().describe('ZIP code of the church.'),
+      })
+      .optional()
+      .describe('Church location information.'),
+    contactInformation: z
+      .object({
+        phone: z.string().optional().describe('Church phone number.'),
+        email: z.string().optional().describe('Church email address.'),
+      })
+      .optional()
+      .describe('Church contact information.'),
   }),
-  execute: async ({ churchName, churchDescription }) => {
+  execute: async (churchData) => {
     const payload = await getPayload({ config })
+
     await payload.updateGlobal({
       slug: 'church',
-      data: {
-        name: churchName,
-        description: churchDescription,
-      },
+      data: churchData,
     })
+
+    const updatedFields = Object.keys(churchData)
     return {
-      message: `<i>${churchName}</i> church info updated!`,
+      message: `Church info updated! Updated fields: ${updatedFields.join(', ')}`,
     }
   },
 })

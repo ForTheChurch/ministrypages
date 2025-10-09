@@ -41,6 +41,14 @@ export const Church: GlobalConfig = {
       },
     },
     {
+      name: 'givingLink',
+      type: 'text',
+      required: false,
+      admin: {
+        description: 'Add a link to where church members can financially support your church.',
+      },
+    },
+    {
       name: 'serviceTimes',
       type: 'array',
       admin: {

@@ -2001,6 +2001,10 @@ export interface Church {
    */
   description?: string | null;
   /**
+   * Add a link to where church members can financially support your church.
+   */
+  givingLink?: string | null;
+  /**
    * Add the service times for your church.
    */
   serviceTimes?:
@@ -2109,6 +2113,7 @@ export interface ChurchSelect<T extends boolean = true> {
   name?: T;
   image?: T;
   description?: T;
+  givingLink?: T;
   serviceTimes?:
     | T
     | {
