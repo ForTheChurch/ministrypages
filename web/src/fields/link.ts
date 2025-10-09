@@ -49,6 +49,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
                 label: 'Custom URL',
                 value: 'custom',
               },
+              {
+                label: 'Giving Link',
+                value: 'giving',
+              },
             ],
           },
           {

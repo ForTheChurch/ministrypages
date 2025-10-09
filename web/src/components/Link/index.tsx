@@ -1,9 +1,13 @@
+'use client'
+
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
 
 import type { Event, Page, Post } from '@/payload-types'
+import { Church } from 'lucide-react'
+import { useChurch } from '@/providers/Church'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -16,7 +20,7 @@ type CMSLinkType = {
     value: Page | Post | Event | string | number
   } | null
   size?: ButtonProps['size'] | null
-  type?: 'custom' | 'reference' | null
+  type?: 'custom' | 'reference' | 'giving' | null
   url?: string | null
 }
 
@@ -32,13 +36,13 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     size: sizeFromProps,
     url,
   } = props
-
+  const { church } = useChurch()
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
-          reference.value.slug
-        }`
-      : url
+      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${reference.value.slug}`
+      : type === 'giving' && church?.givingLink
+        ? church.givingLink
+        : url // Fallback to url if neither condition is met
 
   if (!href) return null
 
