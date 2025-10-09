@@ -24,12 +24,13 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
           </ul>
         )}
       </div>
-      <div className="order-first lg:order-last max-h-[60vh] lg:max-h-full h-full">
+      <div className="order-first lg:order-last max-h-[60vh] lg:max-h-full h-full overflow-hidden rounded-2xl">
         {media && typeof media === 'object' && (
           <>
             <Media
-              className="max-h-full overflow-hidden"
-              imgClassName="object-cover"
+              className="h-full w-full"
+              imgClassName="object-cover h-full w-full"
+              pictureClassName="w-full h-full"
               priority
               resource={media}
             />
