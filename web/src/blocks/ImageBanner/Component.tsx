@@ -35,7 +35,7 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
           )}
         </div>
       </div>
-      <div className="min-h-[50vh] lg:min-h-[80vh] select-none">
+      <div className="min-h-[50vh] lg:min-h-[90vh] select-none">
         {image && typeof image === 'object' && (
           <Media fill imgClassName="-z-10 object-cover" priority resource={image} />
         )}
