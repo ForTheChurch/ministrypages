@@ -26,6 +26,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { ChurchAddress } from '@/blocks/ChurchAddress/config'
 
 export const Events: CollectionConfig<'events'> = {
   slug: 'events',
@@ -116,7 +117,7 @@ export const Events: CollectionConfig<'events'> = {
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({
-                      blocks: [Banner, MediaBlock],
+                      blocks: [Banner, MediaBlock, ChurchAddress],
                       inlineBlocks: [ChurchInfo],
                     }),
                     FixedToolbarFeature(),

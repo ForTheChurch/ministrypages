@@ -2290,7 +2290,16 @@ export interface WorkflowCreatePostFromVideo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ChurchInfo".
+ * via the `definition` "Church Address".
+ */
+export interface ChurchAddress {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'churchAddress';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Church Info".
  */
 export interface ChurchInfo {
   content: 'Name' | 'Description' | 'Phone' | 'Email';

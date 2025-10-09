@@ -2,7 +2,7 @@ import type { Block } from 'payload'
 
 export const ChurchInfo: Block = {
   slug: 'churchInfo',
-  interfaceName: 'ChurchInfo',
+  interfaceName: 'Church Info',
   fields: [
     {
       name: 'content',

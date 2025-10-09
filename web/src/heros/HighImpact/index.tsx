@@ -23,7 +23,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         <div>
           {richText && (
             <RichText
-              className="mb-6 prose-p:text-white prose-p:text-lg"
+              className="mb-6 prose-p:text-white prose-p:text-lg text-white"
               data={richText}
               enableGutter={false}
               removeMargins

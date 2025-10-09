@@ -1,3 +1,4 @@
+import { ChurchAddress } from '@/blocks/ChurchAddress/config'
 import { ChurchInfo } from '@/blocks/ChurchInfo/config'
 import {
   BlocksFeature,
@@ -45,6 +46,9 @@ export const defaultLexical = lexicalEditor({
         ]
       },
     }),
-    BlocksFeature({ inlineBlocks: [ChurchInfo] }),
+    BlocksFeature({
+      blocks: [ChurchAddress],
+      inlineBlocks: [ChurchInfo],
+    }),
   ],
 })

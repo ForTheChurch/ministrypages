@@ -24,12 +24,17 @@ import type {
   ChurchInfo as ChurchInfoProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
+  ChurchAddress as ChurchAddressBlockProps,
 } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 
+import { ChurchAddressBlock } from '@/blocks/ChurchAddress/Component'
+
 type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  | SerializedBlockNode<
+      CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps | ChurchAddressBlockProps
+    >
   | SerializedInlineBlockNode<ChurchInfoProps>
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
@@ -61,6 +66,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     ),
     cta: ({ node }: { node: SerializedBlockNode<CTABlockProps> }) => (
       <CallToActionBlock {...node.fields} />
+    ),
+    churchAddress: ({ node }: { node: SerializedBlockNode<ChurchAddressBlockProps> }) => (
+      <ChurchAddressBlock {...node.fields} />
     ),
   } as const
 
