@@ -8,15 +8,15 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://player.vimeo.com https://*.esvmedia.org;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.esvmedia.org;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://player.vimeo.com https://*.esvmedia.org https://www.esv.org;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.esvmedia.org https://www.esv.org;
     img-src 'self' blob: data: https:;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self';
-    frame-src 'self' https://www.youtube.com https://player.vimeo.com https://esvmedia.org https://static.esvmedia.org;
+  frame-src 'self' https://www.youtube.com https://player.vimeo.com https://*.esvmedia.org/ https://www.esv.org;
     connect-src 'self' https://www.youtube.com https://player.vimeo.com ws: wss:;
     media-src 'self' https://www.youtube.com https://player.vimeo.com;
     upgrade-insecure-requests;
