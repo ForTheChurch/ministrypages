@@ -7,11 +7,11 @@ export const updateChurchInfoTool = tool({
   description: 'Updates global church info - only updates provided properties',
   inputSchema: z.object({
     name: z.string().optional().describe('The church name.'),
+    image: z.string().optional().describe('The church image ID (media relation).'),
     description: z.string().max(255).optional().describe('The meta description of the church.'),
     givingLink: z
       .url()
       .describe('Add a link to where church members can financially support the church.'),
-    image: z.string().optional().describe('The church image ID (media relation).'),
     serviceTimes: z
       .array(
         z.object({

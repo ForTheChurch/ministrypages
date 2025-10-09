@@ -5,6 +5,7 @@ import {
   ErrorPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
+  useAssistantInstructions,
   useAssistantState,
 } from '@assistant-ui/react'
 import {
@@ -18,7 +19,7 @@ import {
   RefreshCwIcon,
   Square,
 } from 'lucide-react'
-import type { FC } from 'react'
+import { useMemo, type FC } from 'react'
 
 import {
   ComposerAddAttachment,
@@ -34,8 +35,29 @@ import { LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import * as m from 'motion/react-m'
 import { MessagePartPrimitiveText } from 'node_modules/@assistant-ui/react/dist/primitives/messagePart/MessagePartText'
 import { MessagePartPrimitiveInProgress } from 'node_modules/@assistant-ui/react/dist/primitives/messagePart/MessagePartInProgress'
+const getUserTimeContext = () => {
+  const now = new Date()
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
+  return {
+    currentTime: now.toLocaleTimeString(),
+    currentDate: now.toLocaleDateString(),
+    timezone,
+    timestamp: now.toISOString(),
+  }
+}
 export const Thread: FC = () => {
+  const timeContext = getUserTimeContext()
+
+  useAssistantInstructions({
+    instruction: `
+      You are a helpful assistant who:
+      - Knows the user's current date and time is ${timeContext.currentDate} ${timeContext.currentTime}
+      - Ensures all generated content aligns with historic reformed Christian Theology
+      - Updates content according to the user's requests and builds pages with good semantic HTML
+    `,
+  })
+
   return (
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
@@ -83,14 +105,14 @@ const ThreadScrollToBottom: FC = () => {
   )
 }
 
-export const ThreadPrimitiveUserMessageEmpty: FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+export const ThreadPrimitiveUserMessageEmpty: FC<React.PropsWithChildren> = ({ children }) => {
   const empty = useAssistantState(
-    ({ thread }) => thread.messages.filter(message => message.role === 'user').length === 0 && !thread.isLoading,
-  );
-  return empty ? children : null;
-};
+    ({ thread }) =>
+      thread.messages.filter((message) => message.role === 'user').length === 0 &&
+      !thread.isLoading,
+  )
+  return empty ? children : null
+}
 
 const ThreadWelcome: FC = () => {
   return (
@@ -179,7 +201,6 @@ const ThreadWelcomeSuggestions: FC = () => {
     </div>
   )
 }
-
 
 const Composer: FC = () => {
   return (

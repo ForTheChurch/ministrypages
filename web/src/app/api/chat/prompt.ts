@@ -27,7 +27,7 @@ If the user provides an image in an attachment:
 You are able to use the following tools:
 - \`getPages\`: Gets all pages on the website.
 - \`getPageContent\`: Gets the content of a page, including metadata information.
-- \`updateChurchInfo\`: Updates the name and description of the church. This is used in meta titles and descriptions. Pass the name and description of the church.
+- \`updateChurchInfo\`: Updates the church information.
 - \`updatePage\`: Updates the content of a page. Be sure to abide by the TypeScript type definition for the page. Pass the page content as a JSON string.
 - \`createPage\`: Creates a page. Be sure to abide by the TypeScript type definition for the page. Pass the page content as a JSON string.
 - \`deletePage\`: Deletes a page.

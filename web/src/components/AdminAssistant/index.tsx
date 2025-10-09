@@ -40,56 +40,11 @@ const AdminAssistant: React.FC = () => {
     new MediaUploadAttachmentAdapter(),
     new SimpleTextAttachmentAdapter(),
   ])
-  const getUserTimeContext = () => {
-    const now = new Date()
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-    return {
-      currentTime: now.toLocaleTimeString(),
-      currentDate: now.toLocaleDateString(),
-      timezone,
-      timestamp: now.toISOString(),
-    }
-  }
-
-  const timeContext = getUserTimeContext()
 
   const runtime = useChatRuntime({
     adapters: {
       attachments: compositeAdapter,
     },
-    messages: [
-      {
-        id: 'system-message-1',
-        role: 'system',
-        parts: [
-          {
-            type: 'text',
-            text: `The users current timezone is ${timeContext.timezone}`,
-          },
-        ],
-      },
-      {
-        id: 'system-message-2',
-        role: 'system',
-        parts: [
-          {
-            type: 'text',
-            text: `The users current date and time is ${timeContext.currentDate} ${timeContext.currentTime}`,
-          },
-        ],
-      },
-      {
-        id: 'system-message-3',
-        role: 'system',
-        parts: [
-          {
-            type: 'text',
-            text: 'Please ensure that all generated content aligns with historic reformed Christian Theology.',
-          },
-        ],
-      },
-    ],
   })
 
   return (
