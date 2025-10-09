@@ -7,7 +7,7 @@ import { CMSLink } from '@/components/Link'
 
 export const CallToActionBlock: React.FC<CTABlockProps> = ({ links, richText }) => {
   return (
-    <div className="container py-16">
+    <section className="container py-16">
       <div className="bg-gradient-to-br from-muted/40 to-muted/20 dark:from-card dark:to-muted rounded-2xl border border-border/50 p-8 md:p-12 lg:p-16">
         <div className="flex flex-col gap-8 items-center text-center">
           <div className="flex-1 max-w-3xl">
@@ -31,6 +31,6 @@ export const CallToActionBlock: React.FC<CTABlockProps> = ({ links, richText }) 
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

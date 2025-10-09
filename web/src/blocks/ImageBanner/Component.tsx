@@ -11,7 +11,7 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
   const { image, richText, links } = props
 
   return (
-    <div className="relative flex items-center justify-center" data-theme="dark">
+    <section className="relative flex items-center justify-center" data-theme="dark">
       <div className="container z-10 relative py-16 text-center flex flex-col items-center justify-center">
         <div className="max-w-xl">
           {richText && hasText(richText) && (
@@ -47,6 +47,6 @@ export const ImageBannerBlock: React.FC<ImageBannerBlockProps> = (props) => {
           }`}
         />
       </div>
-    </div>
+    </section>
   )
 }
