@@ -5,6 +5,7 @@ import {
   ErrorPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
+  useAssistantState,
 } from '@assistant-ui/react'
 import {
   ArrowDownIcon,
@@ -82,9 +83,18 @@ const ThreadScrollToBottom: FC = () => {
   )
 }
 
+export const ThreadPrimitiveUserMessageEmpty: FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  const empty = useAssistantState(
+    ({ thread }) => thread.messages.filter(message => message.role === 'user').length === 0 && !thread.isLoading,
+  );
+  return empty ? children : null;
+};
+
 const ThreadWelcome: FC = () => {
   return (
-    <ThreadPrimitive.Empty>
+    <ThreadPrimitiveUserMessageEmpty>
       <div className="aui-thread-welcome-root mx-auto my-auto flex w-full max-w-(--thread-max-width) grow flex-col">
         <div className="aui-thread-welcome-center flex w-full grow flex-col items-center justify-center">
           <div className="aui-thread-welcome-message flex size-full flex-col justify-center px-8">
@@ -108,7 +118,7 @@ const ThreadWelcome: FC = () => {
           </div>
         </div>
       </div>
-    </ThreadPrimitive.Empty>
+    </ThreadPrimitiveUserMessageEmpty>
   )
 }
 
@@ -170,13 +180,14 @@ const ThreadWelcomeSuggestions: FC = () => {
   )
 }
 
+
 const Composer: FC = () => {
   return (
     <div className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl bg-background pb-4 md:pb-6">
       <ThreadScrollToBottom />
-      <ThreadPrimitive.Empty>
+      <ThreadPrimitiveUserMessageEmpty>
         <ThreadWelcomeSuggestions />
-      </ThreadPrimitive.Empty>
+      </ThreadPrimitiveUserMessageEmpty>
       <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col rounded-3xl border border-border bg-muted px-1 pt-2 shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),0_2px_5px_0px_rgba(0,0,0,0.06)] dark:border-muted-foreground/15">
         <ComposerAttachments />
         <ComposerPrimitive.Input
