@@ -48,7 +48,7 @@ const AdminAssistant: React.FC = () => {
   })
 
   return (
-    <div className="admin-assistant-container mb-6 mt-4 p-6 border-solid border-gray-200 shadow-xs rounded-lg">
+    <div className="admin-assistant-container mb-6 mt-4 p-6 border-solid border-gray-200 shadow-xs">
       <div className="py-6">
         <h2 className="dashboard__label">Content Assistant</h2>
         <p className="mt-1">
