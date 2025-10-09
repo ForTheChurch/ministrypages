@@ -71,7 +71,6 @@ export const Church: GlobalConfig = {
         {
           name: 'address',
           type: 'text',
-          required: true,
           admin: {
             description: 'Add the street address of where you have Sunday services.',
           },
@@ -82,17 +81,14 @@ export const Church: GlobalConfig = {
             {
               name: 'city',
               type: 'text',
-              required: true,
             },
             {
               name: 'state',
               type: 'text',
-              required: true,
             },
             {
               name: 'zip',
               type: 'text',
-              required: true,
             },
           ],
         },
