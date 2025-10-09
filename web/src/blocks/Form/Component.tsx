@@ -127,8 +127,8 @@ export const FormBlock: React.FC<
             {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
             {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
             {!hasSubmitted && (
-              <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-                <div className="mb-4 last:mb-0">
+              <form id={formID} onSubmit={handleSubmit(onSubmit)} className="-m-2">
+                <div className="flex flex-wrap">
                   {formFromProps &&
                     formFromProps.fields &&
                     formFromProps.fields?.map((field, index) => {
@@ -136,23 +136,22 @@ export const FormBlock: React.FC<
                       const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
                       if (Field) {
                         return (
-                          <div className="mb-6 last:mb-0" key={index}>
-                            <Field
-                              form={formFromProps}
-                              {...field}
-                              {...formMethods}
-                              control={control}
-                              errors={errors}
-                              register={register}
-                            />
-                          </div>
+                          <Field
+                            form={formFromProps}
+                            {...field}
+                            {...formMethods}
+                            control={control}
+                            errors={errors}
+                            register={register}
+                            key={index}
+                          />
                         )
                       }
                       return null
                     })}
                 </div>
 
-                <Button form={formID} type="submit" variant="default">
+                <Button form={formID} type="submit" variant="default" className="m-2 mt-4">
                   {submitButtonLabel}
                 </Button>
               </form>
