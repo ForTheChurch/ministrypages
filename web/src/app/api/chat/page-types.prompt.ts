@@ -25,7 +25,10 @@ export interface Page {
     links?:
       | {
           link: {
-            type?: ('reference' | 'custom') | null;
+          /**
+           * When giving is selected, the church info giving url will be used.
+           */
+            type?: ('reference' | 'custom'| 'giving') | null;
             newTab?: boolean | null;
             reference?:
               | ({
@@ -193,7 +196,10 @@ export interface TwoColumn {
   sectionColor?: ('none' | 'accent' | 'secondary' | 'dark') | null;
   enableLink?: boolean | null;
   link?: {
-    type?: ('reference' | 'custom') | null;
+    /**
+    * When giving is selected, the church info giving url will be used.
+    */
+    type?: ('reference' | 'custom' | 'giving') | null;
     newTab?: boolean | null;
     reference?:
       | ({
@@ -239,7 +245,10 @@ export interface ImageBanner {
   links?:
     | {
         link: {
-          type?: ('reference' | 'custom') | null;
+          /**
+           * When giving is selected, the church info giving url will be used.
+           */
+          type?: ('reference' | 'custom' | 'giving') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -286,7 +295,10 @@ export interface CallToActionBlock {
   links?:
     | {
         link: {
-          type?: ('reference' | 'custom') | null;
+          /**
+           * When giving is selected, the church info giving url will be used.
+           */
+          type?: ('reference' | 'custom' | 'giving') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -336,7 +348,10 @@ export interface ContentBlock {
         } | null;
         enableLink?: boolean | null;
         link?: {
-          type?: ('reference' | 'custom') | null;
+          /**
+           * When giving is selected, the church info giving url will be used.
+           */
+          type?: ('reference' | 'custom' | 'giving') | null;
           newTab?: boolean | null;
           reference?:
             | ({
