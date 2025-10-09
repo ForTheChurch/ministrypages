@@ -89,7 +89,7 @@ func toolExportPage(logTask string, pageID string, payloadCMSClient *payloadcms.
 
 			log.Println("[" + logTask + "] Patching page produced by agent")
 
-			if err := payloadCMSClient.UpdatePage(ctx, pageData); err != nil {
+			if err := payloadCMSClient.UpdatePageRaw(ctx, p.PageJSON, pageID); err != nil {
 				log.Println("["+logTask+"] Error patching page:", err)
 				return nil, err
 			}

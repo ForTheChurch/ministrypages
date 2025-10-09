@@ -28,7 +28,8 @@ type ConvertPageTask struct {
 	firecrawlScraper scraper.Scraper
 	payloadCMSClient *payloadcms.Client
 	llm              provider.Provider
-	pageCache        pagecache.PageCache
+	htmlCache        pagecache.PageCache
+	markdownCache    pagecache.PageCache
 }
 
 func NewConvertPageTask(url string, pageID string, firecrawlScraper scraper.Scraper, payloadCMSClient *payloadcms.Client, llm provider.Provider) *ConvertPageTask {
@@ -39,7 +40,8 @@ func NewConvertPageTask(url string, pageID string, firecrawlScraper scraper.Scra
 		firecrawlScraper: firecrawlScraper,
 		payloadCMSClient: payloadCMSClient,
 		llm:              llm,
-		pageCache:        pagecache.NewPageCache("html"),
+		htmlCache:        pagecache.NewPageCache("html"),
+		markdownCache:    pagecache.NewPageCache("md"),
 	}
 }
 
@@ -57,21 +59,27 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 	defer cancel()
 
 	var html string
-	cachedPage, err := t.pageCache.GetCachedPage(t.url)
+	var markdown string
+	cachedPage, err := t.htmlCache.GetCachedPage(t.url)
+	cachedMarkdown, err := t.markdownCache.GetCachedPage(t.url)
 	if err != nil {
 		return fmt.Errorf("error getting cached page: %w", err)
 	}
-	if cachedPage != "" {
+	if cachedPage != "" && cachedMarkdown != "" {
 		html = cachedPage
+		markdown = cachedMarkdown
 		log.Println("[ConvertPageTask] Using cached page")
 	} else {
 		log.Println("[ConvertPageTask] No cached page found, scraping page")
-		html, err = t.scrapePageHtml(ctx)
+		html, markdown, err = t.scrapePage(ctx)
 		if err != nil {
 			return fmt.Errorf("error scraping page HTML: %w", err)
 		}
-		if err := t.pageCache.SetCachedPage(t.url, html); err != nil {
+		if err := t.htmlCache.SetCachedPage(t.url, html); err != nil {
 			return fmt.Errorf("error caching page: %w", err)
+		}
+		if err := t.markdownCache.SetCachedPage(t.url, markdown); err != nil {
+			return fmt.Errorf("error caching markdown: %w", err)
 		}
 	}
 
@@ -100,7 +108,7 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 		return fmt.Errorf("error creating runtime: %w", err)
 	}
 
-	p := "I retrieved the following HTML from a church website at " + t.url + "\n\n" + html
+	p := "The following markdown came from a church website at " + t.url + "\n\n" + markdown + "\n\n"
 	sess := session.New(session.WithUserMessage("", p))
 	sess.ToolsApproved = true
 
@@ -113,7 +121,7 @@ func (t *ConvertPageTask) Execute(ctx context.Context) error {
 	return nil
 }
 
-func (t *ConvertPageTask) scrapePageHtml(ctx context.Context) (string, error) {
+func (t *ConvertPageTask) scrapePage(ctx context.Context) (string, string, error) {
 	log.Println("[ConvertPageTask] Scraping page at", t.url)
 	resultCh := t.firecrawlScraper.Scrape(t.url)
 
@@ -122,15 +130,15 @@ func (t *ConvertPageTask) scrapePageHtml(ctx context.Context) (string, error) {
 	case result = <-resultCh:
 		break
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return "", "", ctx.Err()
 	}
 
 	if result.Error != nil {
 		log.Println("[ConvertPageTask] Error scraping page:", result.Error)
-		return "", result.Error
+		return "", "", result.Error
 	}
 
-	return result.Html, nil
+	return result.Html, result.Markdown, nil
 }
 
 func downloadMedia(ctx context.Context, url string) ([]byte, error) {

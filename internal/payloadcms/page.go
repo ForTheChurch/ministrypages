@@ -26,10 +26,10 @@ type PagePatch struct {
 
 // Hero represents the hero section of a page
 type Hero struct {
-	Type     string      `json:"type"` // 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact'
-	RichText *RichText   `json:"richText,omitempty"`
-	Links    []HeroLink  `json:"links,omitempty"`
-	Media    interface{} `json:"media,omitempty"` // string | Media
+	Type     string     `json:"type"` // 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact'
+	RichText *RichText  `json:"richText,omitempty"`
+	Links    []HeroLink `json:"links,omitempty"`
+	Media    string     `json:"media,omitempty"` // string | Media
 }
 
 // HeroLink represents a link in the hero section
@@ -71,9 +71,9 @@ type RichTextRoot struct {
 
 // Meta represents metadata for pages and posts
 type Meta struct {
-	Title       *string     `json:"title,omitempty"`
-	Image       interface{} `json:"image,omitempty"` // string | Media
-	Description *string     `json:"description,omitempty"`
+	Title       *string `json:"title,omitempty"`
+	Image       string  `json:"image,omitempty"` // string | Media
+	Description *string `json:"description,omitempty"`
 }
 
 // Block represents a layout block (union type)
@@ -94,7 +94,7 @@ type Block struct {
 type Post struct {
 	ID               string            `json:"id,omitempty"`
 	Title            string            `json:"title"`
-	HeroImage        interface{}       `json:"heroImage,omitempty"` // string | Media
+	HeroImage        string            `json:"heroImage,omitempty"` // string | Media
 	Content          RichText          `json:"content"`
 	RelatedPosts     []interface{}     `json:"relatedPosts,omitempty"` // []string | []Post
 	Series           interface{}       `json:"series,omitempty"`       // string | Series
@@ -112,21 +112,21 @@ type Post struct {
 
 // Event represents an event in the CMS
 type Event struct {
-	ID          string      `json:"id,omitempty"`
-	Title       string      `json:"title"`
-	EventImage  interface{} `json:"eventImage,omitempty"` // string | Media
-	VideoLink   *string     `json:"videoLink,omitempty"`
-	Content     RichText    `json:"content"`
-	Location    *string     `json:"location,omitempty"`
-	StartTime   *string     `json:"startTime,omitempty"`
-	EndTime     *string     `json:"endTime,omitempty"`
-	Meta        *Meta       `json:"meta,omitempty"`
-	PublishedAt *string     `json:"publishedAt,omitempty"`
-	Slug        *string     `json:"slug,omitempty"`
-	SlugLock    *bool       `json:"slugLock,omitempty"`
-	UpdatedAt   string      `json:"updatedAt"`
-	CreatedAt   string      `json:"createdAt"`
-	Status      *string     `json:"_status,omitempty"`
+	ID          string   `json:"id,omitempty"`
+	Title       string   `json:"title"`
+	EventImage  string   `json:"eventImage,omitempty"` // string | Media
+	VideoLink   *string  `json:"videoLink,omitempty"`
+	Content     RichText `json:"content"`
+	Location    *string  `json:"location,omitempty"`
+	StartTime   *string  `json:"startTime,omitempty"`
+	EndTime     *string  `json:"endTime,omitempty"`
+	Meta        *Meta    `json:"meta,omitempty"`
+	PublishedAt *string  `json:"publishedAt,omitempty"`
+	Slug        *string  `json:"slug,omitempty"`
+	SlugLock    *bool    `json:"slugLock,omitempty"`
+	UpdatedAt   string   `json:"updatedAt"`
+	CreatedAt   string   `json:"createdAt"`
+	Status      *string  `json:"_status,omitempty"`
 }
 
 // PopulatedAuthor represents a populated author reference
@@ -177,14 +177,14 @@ type MediaSize struct {
 
 // Series represents a series of posts
 type Series struct {
-	ID          string      `json:"id,omitempty"`
-	Title       string      `json:"title"`
-	Image       interface{} `json:"image,omitempty"` // string | Media
-	Description string      `json:"description"`
-	Slug        *string     `json:"slug,omitempty"`
-	SlugLock    *bool       `json:"slugLock,omitempty"`
-	UpdatedAt   string      `json:"updatedAt"`
-	CreatedAt   string      `json:"createdAt"`
+	ID          string  `json:"id,omitempty"`
+	Title       string  `json:"title"`
+	Image       string  `json:"image,omitempty"` // string | Media
+	Description string  `json:"description"`
+	Slug        *string `json:"slug,omitempty"`
+	SlugLock    *bool   `json:"slugLock,omitempty"`
+	UpdatedAt   string  `json:"updatedAt"`
+	CreatedAt   string  `json:"createdAt"`
 }
 
 // Category represents a content category
@@ -233,27 +233,27 @@ type UserSession struct {
 
 // TwoColumn represents a two-column layout block
 type TwoColumn struct {
-	ImagePosition         *string     `json:"imagePosition,omitempty"`         // 'left' | 'right'
-	ImagePositionOnMobile *string     `json:"imagePositionOnMobile,omitempty"` // 'top' | 'bottom'
-	RichText              *RichText   `json:"richText,omitempty"`
-	CenterTextOnMobile    *bool       `json:"centerTextOnMobile,omitempty"`
-	SectionColor          *string     `json:"sectionColor,omitempty"` // 'none' | 'accent' | 'secondary' | 'dark'
-	EnableLink            *bool       `json:"enableLink,omitempty"`
-	Link                  *Link       `json:"link,omitempty"`
-	Image                 interface{} `json:"image,omitempty"` // string | Media
-	ID                    *string     `json:"id,omitempty"`
-	BlockName             *string     `json:"blockName,omitempty"`
-	BlockType             string      `json:"blockType"` // 'twoColumn'
+	ImagePosition         *string `json:"imagePosition,omitempty"`         // 'left' | 'right'
+	ImagePositionOnMobile *string `json:"imagePositionOnMobile,omitempty"` // 'top' | 'bottom'
+	Markdown              *string `json:"markdown,omitempty"`
+	CenterTextOnMobile    *bool   `json:"centerTextOnMobile,omitempty"`
+	SectionColor          *string `json:"sectionColor,omitempty"` // 'none' | 'accent' | 'secondary' | 'dark'
+	EnableLink            *bool   `json:"enableLink,omitempty"`
+	Link                  *Link   `json:"link,omitempty"`
+	Image                 string  `json:"image,omitempty"` // string | Media
+	ID                    *string `json:"id,omitempty"`
+	BlockName             *string `json:"blockName,omitempty"`
+	BlockType             string  `json:"blockType"` // 'twoColumn'
 }
 
 // ImageBanner represents a image banner layout block
 type ImageBanner struct {
-	RichText  *RichText   `json:"richText,omitempty"`
-	Image     interface{} `json:"image,omitempty"` // string | Media
-	Links     []Link      `json:"links,omitempty"`
-	ID        *string     `json:"id,omitempty"`
-	BlockName *string     `json:"blockName,omitempty"`
-	BlockType string      `json:"blockType"` // 'imageBanner'
+	RichText  *RichText `json:"richText,omitempty"`
+	Image     string    `json:"image,omitempty"` // string | Media
+	Links     []Link    `json:"links,omitempty"`
+	ID        *string   `json:"id,omitempty"`
+	BlockName *string   `json:"blockName,omitempty"`
+	BlockType string    `json:"blockType"` // 'imageBanner'
 }
 
 // CallToActionBlock represents a call-to-action block
@@ -284,10 +284,10 @@ type ContentColumn struct {
 
 // MediaBlock represents a media block
 type MediaBlock struct {
-	Media     interface{} `json:"media"` // string | Media
-	ID        *string     `json:"id,omitempty"`
-	BlockName *string     `json:"blockName,omitempty"`
-	BlockType string      `json:"blockType"` // 'mediaBlock'
+	Media     string  `json:"media"` // string | Media
+	ID        *string `json:"id,omitempty"`
+	BlockName *string `json:"blockName,omitempty"`
+	BlockType string  `json:"blockType"` // 'mediaBlock'
 }
 
 // PostListBlock represents a post list block

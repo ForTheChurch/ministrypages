@@ -1,6 +1,8 @@
-import type { Block, Field } from 'payload'
+import type { Block, Field, RichTextField } from 'payload'
 
 import {
+  convertMarkdownToLexical,
+  editorConfigFactory,
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
@@ -34,6 +36,19 @@ const columnFields: Field[] = [
     ],
   },
   {
+    name: 'markdown',
+    type: 'textarea',
+    label: 'Markdown Source',
+    hidden: true,
+    hooks: {
+      beforeChange: [
+        () => {
+          return '' // don't save the markdown value
+        },
+      ],
+    },
+  },
+  {
     name: 'richText',
     type: 'richText',
     editor: lexicalEditor({
@@ -46,6 +61,26 @@ const columnFields: Field[] = [
         ]
       },
     }),
+    hooks: {
+      beforeValidate: [
+        ({ value, siblingData, siblingFields }) => {
+          const { markdown } = siblingData
+          if (markdown) {
+            return {
+              root: convertMarkdownToLexical({
+                editorConfig: editorConfigFactory.fromField({
+                  field: siblingFields.find(
+                    (f) => f.type === 'richText' && f.name === 'richText',
+                  ) as RichTextField,
+                }),
+                markdown,
+              }).root,
+            }
+          }
+          return value
+        },
+      ],
+    },
     label: false,
   },
   {

@@ -456,6 +456,7 @@ export interface TwoColumn {
    * Choose where the image should be on mobile screens.
    */
   imagePositionOnMobile?: ('top' | 'bottom') | null;
+  markdown?: string | null;
   richText?: {
     root: {
       type: string;
@@ -607,6 +608,7 @@ export interface ContentBlock {
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        markdown?: string | null;
         richText?: {
           root: {
             type: string;
@@ -1349,6 +1351,7 @@ export interface TwoColumnSelect<T extends boolean = true> {
   image?: T;
   imagePosition?: T;
   imagePositionOnMobile?: T;
+  markdown?: T;
   richText?: T;
   centerTextOnMobile?: T;
   topPadding?: T;
@@ -1426,6 +1429,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
     | T
     | {
         size?: T;
+        markdown?: T;
         richText?: T;
         enableLink?: T;
         link?:

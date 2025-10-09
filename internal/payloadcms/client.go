@@ -122,6 +122,32 @@ func (c *Client) CreatePage(ctx context.Context, title string, slug string) (str
 	return response.Doc.ID, nil
 }
 
+func (c *Client) UpdatePageRaw(ctx context.Context, pageContent string, pageId string) error {
+	req, err := http.NewRequestWithContext(ctx, "PATCH", c.cfg.BaseURL+"/api/pages/"+pageId, bytes.NewBuffer([]byte(pageContent)))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "users API-Key "+c.cfg.APIKey)
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var response Response
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return err
+	}
+	if len(response.Errors) > 0 {
+		return response.Errors
+	}
+
+	return nil
+}
+
 func (c *Client) UpdatePage(ctx context.Context, page PagePatch) error {
 	jsonBody, err := json.Marshal(page)
 	if err != nil {

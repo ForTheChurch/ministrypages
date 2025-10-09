@@ -168,21 +168,7 @@ export interface TwoColumn {
    * Choose where the image should be on mobile screens.
    */
   imagePositionOnMobile?: ('top' | 'bottom') | null;
-  richText?: {
-    root: {
-      type: string;
-      children: { // This can't have nested children
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  markdown?: string | null;
   /**
    * Center the text on mobile screens.
    */
@@ -318,21 +304,7 @@ export interface ContentBlock {
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-          root: {
-            type: string;
-            children: { // This can't have nested children
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
+        markdown?: string | null;
         enableLink?: boolean | null;
         link?: {
           type?: ('reference' | 'custom') | null;
