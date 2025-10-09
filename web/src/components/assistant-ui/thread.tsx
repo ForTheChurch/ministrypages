@@ -31,6 +31,8 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import { LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import * as m from 'motion/react-m'
+import { MessagePartPrimitiveText } from 'node_modules/@assistant-ui/react/dist/primitives/messagePart/MessagePartText'
+import { MessagePartPrimitiveInProgress } from 'node_modules/@assistant-ui/react/dist/primitives/messagePart/MessagePartInProgress'
 
 export const Thread: FC = () => {
   return (
@@ -302,7 +304,20 @@ const UserMessage: FC = () => {
 
         <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
           <div className="aui-user-message-content rounded-3xl bg-gray-100 dark:bg-gray-800 px-5 py-2.5 break-words text-primary">
-            <MessagePrimitive.Parts />
+            <MessagePrimitive.Parts
+              components={{
+                Text: ({ text }) =>
+                  // Hack to hide media tags that provide the llm with extra information
+                  text.trim().startsWith('<media') && text.trim().endsWith('/>') ? null : (
+                    <p style={{ whiteSpace: 'pre-line' }}>
+                      <MessagePartPrimitiveText />
+                      <MessagePartPrimitiveInProgress>
+                        <span style={{ fontFamily: 'revert' }}>{' \u25CF'}</span>
+                      </MessagePartPrimitiveInProgress>
+                    </p>
+                  ),
+              }}
+            />
           </div>
           <div className="aui-user-action-bar-wrapper absolute top-1/2 left-0 -translate-x-full -translate-y-1/2 pr-2">
             <UserActionBar />
