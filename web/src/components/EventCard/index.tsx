@@ -57,10 +57,10 @@ export const EventCard: React.FC<{
               <Media
                 resource={eventImage}
                 size="33vw"
-                className="w-full h-full object-cover transition duration-100 ease-linear group-hover/card:scale-105"
+                className="w-full h-full object-cover transition duration-200 ease-in-out group-hover/card:scale-105"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center transition duration-100 ease-linear group-hover/card:scale-105">
+              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center transition duration-200 ease-in-out group-hover/card:scale-105">
                 <div className="text-muted-foreground text-6xl">📅</div>
               </div>
             )}

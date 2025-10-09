@@ -71,14 +71,14 @@ export const PostCard: React.FC<{
               <Media
                 resource={metaImage}
                 size="33vw"
-                className="w-full h-full object-cover transition duration-100 ease-linear group-hover/card:scale-105"
+                className="w-full h-full object-cover transition duration-200 ease-in-out group-hover/card:scale-105"
               />
             ) : (
               <Media
                 src={randomFallbackImage}
                 size="33vw"
                 alt={titleToUse || ''}
-                className="w-full h-full object-cover transition duration-100 ease-linear group-hover/card:scale-105"
+                className="w-full h-full object-cover transition duration-200 ease-in-out group-hover/card:scale-105"
               />
             )}
           </div>

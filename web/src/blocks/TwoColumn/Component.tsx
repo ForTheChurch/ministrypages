@@ -62,7 +62,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
             <div className="overflow-hidden rounded-2xl group">
               <Media
                 resource={image}
-                className="w-full h-full object-cover transition duration-100 ease-linear group-hover:scale-105"
+                className="w-full h-full object-cover transition duration-200 ease-in-out group-hover:scale-105"
               />
             </div>
           )}
