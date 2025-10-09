@@ -50,7 +50,7 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
         'bg-primary text-primary-foreground': sectionColor === 'dark' && currentTheme === 'light',
       })}
     >
-      <div className="container grid gap-8 md:gap-12 md:grid-cols-2 items-center">
+      <div className="container grid gap-8 md:gap-16 md:grid-cols-2 items-center">
         <div
           className={clsx('md:py-6', {
             'md:order-first': imagePosition === 'left',
@@ -58,7 +58,14 @@ export const TwoColumnBlock: React.FC<TwoColumnBlockProps> = (props) => {
             'order-last': imagePositionOnMobile === 'bottom',
           })}
         >
-          {image && <Media resource={image} />}
+          {image && (
+            <div className="overflow-hidden rounded-2xl group">
+              <Media
+                resource={image}
+                className="w-full h-full object-cover transition duration-100 ease-linear group-hover:scale-105"
+              />
+            </div>
+          )}
         </div>
         <div className={clsx({ 'text-center md:text-left': centerTextOnMobile })}>
           {richText && (
