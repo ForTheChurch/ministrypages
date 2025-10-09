@@ -73,6 +73,16 @@ const AdminAssistant: React.FC = () => {
         parts: [
           {
             type: 'text',
+            text: `The users current timestamp is ${getUserTimeContext().timestamp}`,
+          },
+        ],
+      },
+      {
+        id: 'system-message-3',
+        role: 'system',
+        parts: [
+          {
+            type: 'text',
             text: 'Please ensure that all generated content aligns with historic reformed Christian Theology.',
           },
         ],

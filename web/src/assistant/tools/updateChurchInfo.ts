@@ -8,6 +8,9 @@ export const updateChurchInfoTool = tool({
   inputSchema: z.object({
     name: z.string().optional().describe('The church name.'),
     description: z.string().max(255).optional().describe('The meta description of the church.'),
+    givingLink: z
+      .url()
+      .describe('Add a link to where church members can financially support the church.'),
     image: z.string().optional().describe('The church image ID (media relation).'),
     serviceTimes: z
       .array(
