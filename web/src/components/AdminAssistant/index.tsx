@@ -52,6 +52,8 @@ const AdminAssistant: React.FC = () => {
     }
   }
 
+  const timeContext = getUserTimeContext()
+
   const runtime = useChatRuntime({
     adapters: {
       attachments: compositeAdapter,
@@ -63,7 +65,7 @@ const AdminAssistant: React.FC = () => {
         parts: [
           {
             type: 'text',
-            text: `The users current timezone is ${getUserTimeContext().timezone}`,
+            text: `The users current timezone is ${timeContext.timezone}`,
           },
         ],
       },
@@ -73,7 +75,7 @@ const AdminAssistant: React.FC = () => {
         parts: [
           {
             type: 'text',
-            text: `The users current timestamp is ${getUserTimeContext().timestamp}`,
+            text: `The users current date and time is ${timeContext.currentDate} ${timeContext.currentTime}`,
           },
         ],
       },
