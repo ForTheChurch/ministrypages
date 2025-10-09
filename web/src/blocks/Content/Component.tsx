@@ -27,8 +27,8 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   }
 
   return (
-    <div
-      className={clsx('container', {
+    <section
+      className={clsx({
         'pt-28': topPadding === 'large' || !topPadding, // default to large
         'pt-10': topPadding === 'small',
         'pt-0': topPadding === 'none',
@@ -41,7 +41,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
         'bg-primary text-primary-foreground': sectionColor === 'dark' && currentTheme === 'light',
       })}
     >
-      <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
+      <div className="container grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
         {columns &&
           columns.length > 0 &&
           columns.map((col, index) => {
@@ -61,6 +61,6 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
             )
           })}
       </div>
-    </div>
+    </section>
   )
 }
