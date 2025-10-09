@@ -2302,7 +2302,7 @@ export interface ChurchAddress {
  * via the `definition` "Church Info".
  */
 export interface ChurchInfo {
-  content: 'Name' | 'Description' | 'Phone' | 'Email';
+  content: 'Name' | 'Description' | 'Phone' | 'Email' | 'Service Times';
   id?: string | null;
   blockName?: string | null;
   blockType: 'churchInfo';

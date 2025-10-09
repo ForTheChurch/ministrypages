@@ -7,7 +7,7 @@ export const ChurchInfo: Block = {
     {
       name: 'content',
       type: 'select',
-      options: ['Name', 'Description', 'Phone', 'Email'],
+      options: ['Name', 'Description', 'Phone', 'Email', 'Service Times'],
       defaultValue: 'Name',
       required: true,
     },
