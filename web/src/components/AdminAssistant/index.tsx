@@ -26,12 +26,25 @@ import {
 import { Thread } from '@/components/assistant-ui/thread'
 import { ThreadList } from '@/components/assistant-ui/thread-list'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { AssistantRuntimeProvider } from '@assistant-ui/react'
+import {
+  AssistantRuntimeProvider,
+  CompositeAttachmentAdapter,
+  SimpleTextAttachmentAdapter,
+} from '@assistant-ui/react'
 import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
 import './styles.css'
+import { MediaUploadAttachmentAdapter } from './attachments'
 
 const AdminAssistant: React.FC = () => {
-  const runtime = useChatRuntime({})
+  const compositeAdapter = new CompositeAttachmentAdapter([
+    new MediaUploadAttachmentAdapter(),
+    new SimpleTextAttachmentAdapter(),
+  ])
+  const runtime = useChatRuntime({
+    adapters: {
+      attachments: compositeAdapter,
+    },
+  })
 
   return (
     <div className="admin-assistant-container mb-6 mt-4 p-6 border-solid border-gray-200 shadow-xs rounded-lg">
