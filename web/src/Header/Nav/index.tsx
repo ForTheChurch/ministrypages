@@ -7,6 +7,7 @@ import type { Header as HeaderType } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Menu, SearchIcon, X } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@/utilities/ui'
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
@@ -30,20 +31,21 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
 
       {/* Mobile Navigation Toggle */}
       <button
-        className="md:hidden z-10 p-2 rounded-full hover:bg-muted transition-colors"
+        className={cn([
+          'md:hidden z-10 p-2 rounded-full hover:bg-background hover:text-foreground transition-colors',
+          {
+            isMenuOpen: 'text-foreground/80 hover:text-primary',
+          },
+        ])}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
       >
-        {isMenuOpen ? (
-          <X className="w-6 h-6 text-foreground/80" />
-        ) : (
-          <Menu className="w-6 h-6 text-foreground/80" />
-        )}
+        {isMenuOpen ? <X className="w-6 h-6 text-foreground/80" /> : <Menu className="w-6 h-6" />}
       </button>
 
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
-        <div className="absolute top-0 bg-background left-0 right-0 shadow-md pt-20 pb-4 md:hidden">
+        <div className="absolute top-0 bg-background left-0 right-0 shadow-md pt-28 pb-4 md:hidden">
           <div className="container">
             <nav className="flex flex-col gap-4">
               {navItems.map(({ link }, i) => {
