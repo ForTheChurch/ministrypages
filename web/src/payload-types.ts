@@ -2010,14 +2010,14 @@ export interface Church {
         id?: string | null;
       }[]
     | null;
-  churchLocation: {
+  churchLocation?: {
     /**
      * Add the street address of where you have Sunday services.
      */
-    address: string;
-    city: string;
-    state: string;
-    zip: string;
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zip?: string | null;
   };
   contactInformation?: {
     phone?: string | null;
