@@ -1,5 +1,10 @@
 # MinistryPages
-A website builder for churches
+Ministry Pages is a AI-enabled website template for Churches.
+
+## Want to test this out?
+Visit https://ministrypages.vercel.app/admin
+Username: chris+gloo-tester@sol.company
+Password: bRzaET9snNeuLbJ
 
 # Prerequisites
 
