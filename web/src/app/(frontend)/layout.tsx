@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="w-full overflow-x-hidden">
+      <body className="w-full overflow-x-hidden" suppressHydrationWarning>
         <Providers>
           <AdminBar
             adminBarProps={{
