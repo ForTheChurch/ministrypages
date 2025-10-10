@@ -1,12 +1,14 @@
 # MinistryPages Base Website Template
 
-This is the base website template for MinistryPages. We envision creating a complete church website platform, with multi-tenancy but for this hackathon, we decided to focus primarily on what our builder could do for end users. This website utilizes the Payload CMS for content editing, and should give you and idea of some of the things we would like to build as an end product for churches. 
+This is the base website template for MinistryPages. We envision creating a complete church website platform, with multi-tenancy but for this hackathon, we decided to focus primarily on what our builder could do for end users. This website utilizes the Payload CMS for content editing, and should give you and idea of some of the things we would like to build as an end product for churches.
 
 ## Quick Start
 
 To spin up this website locally, follow these steps:
 
 ### Development
+
+This is a Payload website template. You'll need to have Node.js, and NPM installed, and it works best on a Unix-based OS (Linux or MacOS). Windows users can use WSL2.
 
 1. `cd web && cp .env.example .env` to copy the example environment variables
   - Make sure to create a mongodb database and update the database connection string in `.env`
