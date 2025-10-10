@@ -8,7 +8,7 @@ import RichText from '@/components/RichText'
 
 export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (
-    <div className="container pb-16 md:py-16 grid lg:grid-cols-2 gap-8">
+    <div className="container pb-16 grid lg:grid-cols-2 gap-8">
       <div className="lg:py-28 flex flex-col justify-center items-start gap-4">
         {richText && <RichText data={richText} removeMargins enableGutter={false} />}
 
