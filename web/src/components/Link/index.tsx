@@ -6,7 +6,6 @@ import Link from 'next/link'
 import React from 'react'
 
 import type { Event, Page, Post } from '@/payload-types'
-import { Church } from 'lucide-react'
 import { useChurch } from '@/providers/Church'
 
 type CMSLinkType = {
