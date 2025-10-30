@@ -1,20 +1,20 @@
 ![logo (4)](https://github.com/user-attachments/assets/4435e2fc-ebf5-485f-818b-5e4e3261528b)
 
 # MinistryPages
+
 Ministry Pages is an AI-enabled website template for Churches.
 
 ## In this directory 
+
 This directory contains our backend service that makes our AI features of migrating an existing website from a URL and generating a post from a sermon video link possible. 
 
 ## In the /web directory
+
 The web directory contains our website template. It uses assistant-ui for a chatbot interface with our custom tools, allowing users to do things like update a piece of content on every page of the site, migrate existing sites, and more.
 
-## We'd love it if you tested it out.
-**Visit** https://ministrypages.vercel.app/admin
+## Check out a site we built with the AI features
 
-**Username:** chris+gloo-tester@sol.company
-
-**Password:** bRzaET9snNeuLbJ
+**Visit** https://ministrypages.vercel.app
 
 ## Contributing
 
