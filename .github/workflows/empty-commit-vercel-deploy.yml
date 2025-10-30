@@ -41,13 +41,8 @@ jobs:
           fi
           
           # Extract the author's username from the API response
-          if ! LAST_COMMIT_USERNAME=$(jq -r '.author.login // empty' /tmp/commit_response.json 2>/dev/null); then
-            echo "Failed to parse commit data. Proceeding with empty commit."
-            echo "skip=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          if [ -z "$LAST_COMMIT_USERNAME" ] || [ "$LAST_COMMIT_USERNAME" = "null" ]; then
+          if ! LAST_COMMIT_USERNAME=$(jq -r '.author.login // empty' /tmp/commit_response.json 2>/dev/null) || \
+             [ -z "$LAST_COMMIT_USERNAME" ] || [ "$LAST_COMMIT_USERNAME" = "null" ]; then
             echo "Could not determine GitHub username from commit. Proceeding with empty commit."
             echo "skip=false" >> $GITHUB_OUTPUT
             exit 0
