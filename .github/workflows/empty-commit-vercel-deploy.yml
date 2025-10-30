@@ -28,15 +28,22 @@ jobs:
           echo "Last commit SHA: $LAST_COMMIT_SHA"
           
           # Get commit details from GitHub API to extract the author's username
-          COMMIT_DATA=$(curl -s \
+          HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/commit_response.json \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/commits/$LAST_COMMIT_SHA")
           
-          # Extract the author's username from the API response
-          LAST_COMMIT_USERNAME=$(echo "$COMMIT_DATA" | jq -r '.author.login // empty')
+          # Check if the API call was successful
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Failed to fetch commit data (HTTP $HTTP_CODE). Proceeding with empty commit."
+            echo "skip=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           
-          if [ -z "$LAST_COMMIT_USERNAME" ] || [ "$LAST_COMMIT_USERNAME" = "null" ]; then
+          # Extract the author's username from the API response
+          LAST_COMMIT_USERNAME=$(jq -r '.author.login // empty' /tmp/commit_response.json 2>/dev/null)
+          
+          if [ $? -ne 0 ] || [ -z "$LAST_COMMIT_USERNAME" ] || [ "$LAST_COMMIT_USERNAME" = "null" ]; then
             echo "Could not determine GitHub username from commit. Proceeding with empty commit."
             echo "skip=false" >> $GITHUB_OUTPUT
             exit 0
@@ -52,12 +59,16 @@ jobs:
           
           echo "API response status: $HTTP_STATUS"
           
+          # Check for successful collaborator check (204) or handle errors
           if [ "$HTTP_STATUS" = "204" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
             echo "Skipping because last commit author is a collaborator"
-          else
+          elif [ "$HTTP_STATUS" = "404" ]; then
             echo "skip=false" >> $GITHUB_OUTPUT
             echo "Proceeding because last commit author is not a collaborator"
+          else
+            echo "Unexpected API response ($HTTP_STATUS). Proceeding with empty commit."
+            echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Set up Git user
