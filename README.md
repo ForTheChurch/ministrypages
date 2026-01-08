@@ -12,10 +12,6 @@ This directory contains our backend service that makes our AI features of migrat
 
 The web directory contains our website template. It uses assistant-ui for a chatbot interface with our custom tools, allowing users to do things like update a piece of content on every page of the site, migrate existing sites, and more.
 
-## Check out a site we built with the AI features
-
-**Visit** https://ministrypages.vercel.app
-
 ## Contributing
 
 We welcome contributions! Please read our [Contribution Guide](https://github.com/ForTheChurch/ministrypages/blob/main/CONTRIBUTING.md) for instructions and best practices before opening issues or submitting pull requests.
